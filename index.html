@@ -1,94 +1,1083 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<title>كشف العائلة</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>طلب عرض سعر مكيفات | SMOU GROUP</title>
 
-<style>
-body{
-  font-family: Tahoma, Arial;
-  background:#f7f7f7;
-  padding:20px;
-}
-h2{margin-bottom:10px}
-input{
-  padding:10px;
-  width:300px;
-  font-size:16px;
-}
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:15px;
-  background:#fff;
-}
-th,td{
-  border:1px solid #ccc;
-  padding:10px;
-  text-align:right;
-}
-th{
-  background:#0f5c6e;
-  color:#fff;
-}
-tr:nth-child(even){background:#f2f2f2}
-.note{color:#666;margin-top:8px}
-</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    :root{
+      --navy:#0b1b2b;
+      --glass:rgba(255,255,255,.10);
+      --border:rgba(255,255,255,.18);
+      --text:#ffffff;
+      --muted:rgba(255,255,255,.82);
+      --shadow:0 12px 35px rgba(0,0,0,.28);
+      --bg:#071320;
+      --danger:#ff5c5c;
+      --ok:#17b26a;
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      padding:0;
+      font-family:"Tajawal",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    body{min-height:100vh}
+
+    .hero{
+      min-height:100vh;
+      position:relative;
+      overflow:hidden;
+      padding:28px 16px 40px;
+      background:linear-gradient(180deg, rgba(8,24,40,.70), rgba(5,15,26,.88));
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at top center, rgba(28,111,173,.28), transparent 35%),
+        linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.65));
+      z-index:0;
+    }
+
+    .container{
+      position:relative;
+      z-index:1;
+      max-width:1280px;
+      margin:0 auto;
+    }
+
+    .topBox{
+      text-align:center;
+      margin-bottom:20px;
+    }
+
+    .logo{
+      width:84px;
+      height:84px;
+      margin:0 auto 16px;
+      border-radius:22px;
+      background:rgba(255,255,255,.12);
+      border:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      backdrop-filter:blur(10px);
+      box-shadow:var(--shadow);
+    }
+
+    .logo img{
+      width:84%;
+      height:84%;
+      object-fit:contain;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(28px,4vw,50px);
+      font-weight:800;
+      line-height:1.25;
+    }
+
+    .subtitle{
+      margin:10px 0 0;
+      color:var(--muted);
+      font-size:clamp(15px,2vw,21px);
+      font-weight:500;
+    }
+
+    .portalCard{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:28px;
+      padding:22px;
+      backdrop-filter:blur(12px);
+      box-shadow:0 20px 55px rgba(0,0,0,.30);
+    }
+
+    .sectionHeader{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:16px;
+    }
+
+    .sectionTitle{
+      font-size:20px;
+      font-weight:800;
+    }
+
+    .divider{
+      flex:1;
+      height:1px;
+      background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.28), rgba(255,255,255,0));
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .field.full{grid-column:1/-1}
+
+    .label{
+      font-size:15px;
+      font-weight:700;
+      color:#fff;
+    }
+
+    .label small{
+      opacity:.8;
+      font-weight:500;
+    }
+
+    input,select,textarea{
+      width:100%;
+      padding:14px 16px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.16);
+      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.08));
+      color:#fff;
+      outline:none;
+      box-shadow:var(--shadow);
+      font-family:inherit;
+      font-size:16px;
+      transition:.2s ease;
+      resize:vertical;
+    }
+
+    input::placeholder,
+    textarea::placeholder{
+      color:rgba(255,255,255,.52);
+    }
+
+    select option,
+    datalist option{
+      color:#000;
+    }
+
+    .checkbox-wrap{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      padding:12px 14px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.16);
+      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.08));
+      box-shadow:var(--shadow);
+      transition:.2s ease;
+    }
+
+    .checkbox-item{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
+      min-height:44px;
+    }
+
+    .checkbox-item input{
+      width:auto;
+      margin:0;
+      box-shadow:none;
+      accent-color:#1d70b7;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:20px;
+    }
+
+    .btn{
+      border:none;
+      cursor:pointer;
+      min-height:58px;
+      padding:14px 20px;
+      border-radius:18px;
+      color:#fff;
+      font-size:16px;
+      font-weight:800;
+      font-family:inherit;
+      text-decoration:none;
+      background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.10));
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow:var(--shadow);
+      transition:.25s ease;
+    }
+
+    .btn:hover{
+      transform:translateY(-3px);
+      background:linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,.12));
+    }
+
+    .btn.success{
+      background:linear-gradient(180deg, #1ca767, #117347);
+    }
+
+    .status{
+      margin-top:12px;
+      font-size:14px;
+      color:var(--muted);
+    }
+
+    .status.ok{color:#8df0ba}
+    .status.error{color:#ff9191}
+
+    .note{
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:18px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color:rgba(255,255,255,.88);
+      line-height:1.8;
+    }
+
+    .priceBox{
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.13);
+      border-radius:22px;
+      padding:18px;
+    }
+
+    .priceGrid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .priceItem{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      padding:14px;
+    }
+
+    .priceItem h3{
+      margin:0 0 10px;
+      font-size:16px;
+      font-weight:800;
+    }
+
+    .priceValue{
+      font-size:22px;
+      font-weight:800;
+      color:#fff;
+    }
+
+    .priceSub{
+      margin-top:8px;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.8;
+    }
+
+    .error-field{
+      border-color:var(--danger)!important;
+      box-shadow:0 0 0 2px rgba(255,92,92,.18)!important;
+    }
+
+    .pdf-card{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:794px;
+      min-height:1123px;
+      overflow:hidden;
+      background:#fff;
+      color:#111;
+      padding:12px;
+      font-family:"Tajawal",sans-serif;
+    }
+
+    .pdf-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:2px solid #12324f;
+      padding-bottom:6px;
+      margin-bottom:6px;
+    }
+
+    .pdf-brand{
+      font-size:18px;
+      font-weight:800;
+      color:#12324f;
+    }
+
+    .pdf-sub{
+      font-size:10px;
+      color:#4a5568;
+    }
+
+    .pdf-title{
+      font-size:14px;
+      font-weight:800;
+      text-align:center;
+      margin:6px 0;
+      color:#0b1b2b;
+    }
+
+    .pdf-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:9px;
+      table-layout:fixed;
+    }
+
+    .pdf-table th,
+    .pdf-table td{
+      border:1px solid #cbd5e0;
+      padding:4px 5px;
+      vertical-align:top;
+      word-wrap:break-word;
+      line-height:1.3;
+    }
+
+    .pdf-table th{
+      background:#eff6ff;
+      color:#0b1b2b;
+      text-align:right;
+      width:33%;
+    }
+
+    .pdf-section{
+      background:#dbeafe;
+      font-weight:800;
+      color:#0b1b2b;
+    }
+
+    .pdf-footer{
+      margin-top:6px;
+      font-size:9px;
+      color:#64748b;
+      text-align:center;
+    }
+
+    @media (max-width:1000px){
+      .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    @media (max-width:768px){
+      .grid,.priceGrid{grid-template-columns:1fr}
+      .portalCard{padding:16px;border-radius:22px}
+      .logo{width:70px;height:70px;border-radius:18px}
+      h1{font-size:34px}
+      .actions{flex-direction:column}
+      .btn{width:100%}
+    }
+  </style>
 </head>
-
 <body>
+  <section class="hero">
+    <div class="container">
+      <div class="topBox">
+        <div class="logo">
+          <img src="logo.png" alt="SMOU GROUP" onerror="this.style.display='none'">
+        </div>
+        <h1>طلب عرض سعر المكيفات</h1>
+        <h1>RFQ (Request for Quotation)</h1>
+        <p class="subtitle">نموذج سمو الرسمي لتعبئة بيانات طلب عرض سعر المكيفات</p>
+      </div>
 
-<h2>🔎 البحث باسم العائلة</h2>
+      <div class="portalCard">
+        <div class="sectionHeader">
+          <div class="sectionTitle">Form — النموذج</div>
+          <div class="divider"></div>
+        </div>
 
-<input id="search" placeholder="اكتب اسم العائلة" />
-<div class="note" id="info">يرجى رفع ملف البيانات</div>
-<br><br>
-<input type="file" id="file" accept=".csv">
+        <form id="rfqForm" class="grid" novalidate>
 
-<table id="table" style="display:none">
-  <thead></thead>
-  <tbody></tbody>
-</table>
+          <div class="field">
+            <label class="label">التاريخ <small>Date</small></label>
+            <input name="requestDate" id="requestDate" readonly>
+          </div>
 
-<script>
-let data=[], headers=[];
-const FAMILY_COL = "العائلة";
+          <div class="field">
+            <label class="label">مسؤول البيع <small>Sales Representative</small></label>
+            <select name="salesRepresentative" required data-label="مسؤول البيع">
+              <option value="">اختر مسؤول البيع</option>
+              <option>Sayed Samak - سيد سمك</option>
+              <option>Moustafa AboTaleb - مصطفى ابوطالب</option>
+              <option>Ahmed Salah - احمد صلاح</option>
+              <option>Amir Nabil - امير نبيل</option>
+              <option>Mohamed Hany - محمد هاني</option>
+              <option>Ahmad Taha - احمد طه</option>
+              <option>Ahmad Al-Maghazi - احمد المغازي</option>
+              <option>Omar Shalash - عمر شلش</option>
+              <option>Mohamed Al-Saoudi - محمد السعودي</option>
+              <option>Maher Amer - ماهر عامر</option>
+              <option>Raouf Al-Mishir - رؤوف المشير</option>
+              <option>Ahmad Abdullah - احمد عبدالله</option>
+              <option>Abdulhadi Al-Hariri - عبدالهادي الحريري</option>
+              <option>Ahmad Al-Dinari - احمد الديناري</option>
+              <option>Mohamed Gamal - محمد جمال</option>
+              <option>Rami Moussa - رامي موسى</option>
+              <option>Yousry Fayez - يسري فايز</option>
+              <option>Mostafa Aswad - مصطفى اسود</option>
+              <option>Hossam Radi - حسام راضي</option>
+              <option>Ahmad Al-Attar - احمد العطار</option>
+              <option>Mohamed Saqr - محمد صقر</option>
+            </select>
+          </div>
 
-document.getElementById("file").addEventListener("change", async e=>{
-  const text = await e.target.files[0].text();
-  const lines = text.trim().split("\n");
-  headers = lines[0].split(",");
-  data = lines.slice(1).map(l=>{
-    let obj={};
-    l.split(",").forEach((v,i)=>obj[headers[i]]=v);
-    return obj;
-  });
-  document.getElementById("info").innerText="تم تحميل البيانات";
-});
+          <div class="field">
+            <label class="label">المرحلة <small>Stage</small></label>
+            <select name="stage" required data-label="المرحلة">
+              <option value="">اختر المرحلة</option>
+              <option>مخططات</option>
+              <option>أساسات</option>
+              <option>خرسانة</option>
+              <option>تشطيب</option>
+              <option>أخرى</option>
+            </select>
+          </div>
 
-document.getElementById("search").addEventListener("input",()=>{
-  const q = document.getElementById("search").value.trim();
-  const table = document.getElementById("table");
-  const thead = table.querySelector("thead");
-  const tbody = table.querySelector("tbody");
+          <div class="field">
+            <label class="label">اسم العميل <small>Client Name</small></label>
+            <input name="clientName" placeholder="اسم العميل" required data-label="اسم العميل">
+          </div>
 
-  if(!q){ table.style.display="none"; return; }
+          <div class="field">
+            <label class="label">رقم الهاتف1 <small>Phone Number1</small></label>
+            <input name="phone1" placeholder="رقم الهاتف1" required data-label="رقم الهاتف1">
+          </div>
 
-  const norm = s => (s||"").toString().trim().replace(/\s+/g," ");
-const res = data.filter(r => norm(r[FAMILY_COL]).includes(norm(q)));
+          <div class="field">
+            <label class="label">رقم الهاتف2 <small>Phone Number2</small></label>
+            <input name="phone2" placeholder="رقم الهاتف2">
+          </div>
 
-  if(!res.length){
-    document.getElementById("info").innerText="لا توجد نتائج";
-    table.style.display="none";
-    return;
-  }
+          <div class="field">
+            <label class="label">اسم المكتب الاستشاري <small>Consultant Office</small></label>
+            <input
+              name="consultantOfficeName"
+              id="consultantOfficeName"
+              placeholder="اسم المكتب الاستشاري"
+              list="consultantSuggestions"
+              autocomplete="off"
+            >
+            <datalist id="consultantSuggestions"></datalist>
+          </div>
 
-  thead.innerHTML="<tr>"+headers.map(h=>`<th>${h}</th>`).join("")+"</tr>";
-  tbody.innerHTML=res.map(r=>"<tr>"+headers.map(h=>`<td>${r[h]||""}</td>`).join("")+"</tr>").join("");
-  table.style.display="table";
-  document.getElementById("info").innerText=`عدد النتائج: ${res.length}`;
-});
-</script>
+          <div class="field">
+            <label class="label">رقم الهاتف <small>Phone Number</small></label>
+            <input name="consultantPhone" placeholder="رقم هاتف المكتب الاستشاري">
+          </div>
 
+          <div class="field">
+            <label class="label">العمولة <small>Commission</small></label>
+            <input type="number" name="consultantCommission" id="consultantCommission" placeholder="عملة درهم" min="0" step="0.01" value="0">
+          </div>
+
+          <div class="field">
+            <label class="label">اسم مكتب المقاول <small>Contractor Office</small></label>
+            <input
+              name="contractorOfficeName"
+              id="contractorOfficeName"
+              placeholder="اسم مكتب المقاول"
+              list="contractorSuggestions"
+              autocomplete="off"
+            >
+            <datalist id="contractorSuggestions"></datalist>
+          </div>
+
+          <div class="field">
+            <label class="label">رقم الهاتف <small>Phone Number</small></label>
+            <input name="contractorPhone" placeholder="رقم هاتف مكتب المقاول">
+          </div>
+
+          <div class="field">
+            <label class="label">نوع العميل <small>Client Type</small></label>
+            <select name="clientType">
+              <option value="">اختر نوع العميل</option>
+              <option>مقاول</option>
+              <option>استشاري</option>
+              <option>مالك</option>
+              <option>أخرى</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label class="label">تفاصيل الطلب <small>Request Details</small></label>
+          </div>
+
+          <div class="field full">
+            <label class="label">بيانات المكيف <small>AC Type</small></label>
+            <div class="checkbox-wrap" id="acTypeWrap">
+              <label class="checkbox-item">
+                <input type="checkbox" name="acType" value="داكت فقط">
+                <span>داكت فقط</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="acType" value="اسبليت فقط">
+                <span>اسبليت فقط</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="acType" value="داكت و اسبليت">
+                <span>داكت و اسبليت</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="acType" value="خدمات">
+                <span>خدمات</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">الحمولة <small>Capacity (Ton)</small></label>
+            <input name="acCapacity" placeholder="مثال: 5 طن" required data-label="الحمولة">
+          </div>
+
+          <div class="field full">
+            <label class="label">البراندات المطلوبة <small>Requested Brands</small></label>
+            <input name="requestedBrands" placeholder="مثال: O General / Gree / Midea">
+          </div>
+
+          <div class="field">
+            <label class="label">الداكت <small>Duct Type</small></label>
+            <select name="ductType" required data-label="الداكت">
+              <option value="">اختر نوع الداكت</option>
+              <option>GI</option>
+              <option>PI</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="label">مواسير النحاس <small>Copper Pipes</small></label>
+            <select name="copperPipes" required data-label="مواسير النحاس">
+              <option value="">اختر نوع مواسير النحاس</option>
+              <option>MAKSAL (SA)</option>
+              <option>MUELLER (USA)</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label class="label">أخرى 1 <small>Other 1</small></label>
+            <input name="other1" placeholder="أدخل أي متطلبات إضافية">
+          </div>
+
+          <div class="field full">
+            <label class="label">أخرى 2 <small>Other 2</small></label>
+            <input name="other2" placeholder="أدخل أي متطلبات إضافية أخرى">
+          </div>
+
+          <div class="field full">
+            <label class="label">متطلبات خاصة <small>Special Requirements</small></label>
+            <textarea name="specialRequirements" rows="3" placeholder="اكتب المتطلبات الخاصة"></textarea>
+          </div>
+
+          <div class="field">
+            <label class="label">السعر 1 <small>Price 1</small></label>
+            <input type="number" name="price1" id="price1" placeholder="عملة درهم" min="0" step="0.01" value="0">
+          </div>
+
+          <div class="field">
+            <label class="label">البراند 1 <small>Brand 1</small></label>
+            <input name="brand1" placeholder="اسم البراند">
+          </div>
+
+          <div class="field">
+            <label class="label">السعر 2 <small>Price 2</small></label>
+            <input type="number" name="price2" id="price2" placeholder="عملة درهم" min="0" step="0.01" value="0">
+          </div>
+
+          <div class="field">
+            <label class="label">البراند 2 <small>Brand 2</small></label>
+            <input name="brand2" placeholder="اسم البراند">
+          </div>
+
+          <div class="field">
+            <label class="label">السعر 3 <small>Price 3</small></label>
+            <input type="number" name="price3" id="price3" placeholder="عملة درهم" min="0" step="0.01" value="0">
+          </div>
+
+          <div class="field">
+            <label class="label">البراند 3 <small>Brand 3</small></label>
+            <input name="brand3" placeholder="اسم البراند">
+          </div>
+
+          <div class="field">
+            <label class="label">السعر 4 <small>Price 4</small></label>
+            <input type="number" name="price4" id="price4" placeholder="عملة درهم" min="0" step="0.01" value="0">
+          </div>
+
+          <div class="field">
+            <label class="label">البراند 4 <small>Brand 4</small></label>
+            <input name="brand4" placeholder="اسم البراند">
+          </div>
+
+          <div class="field full">
+            <div class="priceBox">
+              <div class="sectionHeader" style="margin-bottom:14px">
+                <div class="sectionTitle">عرض السعر — Price Offer</div>
+                <div class="divider"></div>
+              </div>
+
+              <div class="priceGrid">
+                <div class="priceItem">
+                  <h3>السعر 1</h3>
+                  <div class="priceValue" id="price1Display">0.00 AED</div>
+                  <div class="priceSub" id="price1BrandDisplay">-</div>
+                </div>
+
+                <div class="priceItem">
+                  <h3>السعر 2</h3>
+                  <div class="priceValue" id="price2Display">0.00 AED</div>
+                  <div class="priceSub" id="price2BrandDisplay">-</div>
+                </div>
+
+                <div class="priceItem">
+                  <h3>السعر 3</h3>
+                  <div class="priceValue" id="price3Display">0.00 AED</div>
+                  <div class="priceSub" id="price3BrandDisplay">-</div>
+                </div>
+
+                <div class="priceItem">
+                  <h3>السعر 4</h3>
+                  <div class="priceValue" id="price4Display">0.00 AED</div>
+                  <div class="priceSub" id="price4BrandDisplay">-</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+
+        <div class="actions">
+          <button class="btn success" type="button" id="autoSendBtn">إنشاء PDF وإرسال واتساب</button>
+          <button class="btn success" type="button" id="pdfOnlyBtn">إنشاء PDF فقط</button>
+        </div>
+
+        <div class="status" id="statusText">جاهز لتعبئة نموذج طلب عرض سعر المكيفات.</div>
+
+        <div class="note">
+          <strong>ملاحظة:</strong><br>
+          تم تعديل النموذج ليكون خاصًا بطلب عرض سعر المكيفات وفق نموذجك الجديد.<br>
+          عند الضغط على إنشاء PDF أو واتساب يتم حفظ البيانات في Google Sheet أولًا إن كان Google Apps Script مهيأ بشكل صحيح.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="pdfTemplate" class="pdf-card">
+    <div class="pdf-header">
+      <div>
+        <div class="pdf-brand">SMOU GROUP</div>
+        <div class="pdf-sub">AC RFQ Report</div>
+      </div>
+      <div style="text-align:left">
+        <div class="pdf-sub">طلب عرض سعر مكيفات</div>
+        <div class="pdf-sub" id="pdfDate"></div>
+      </div>
+    </div>
+
+    <div class="pdf-title">طلب عرض سعر مكيفات - Request for Quotation</div>
+
+    <table class="pdf-table">
+      <tr><th colspan="2" class="pdf-section">General Information — البيانات العامة</th></tr>
+      <tr><th>التاريخ / Date</th><td id="v_requestDate"></td></tr>
+      <tr><th>مسؤول البيع / Sales Representative</th><td id="v_salesRepresentative"></td></tr>
+      <tr><th>المرحلة / Stage</th><td id="v_stage"></td></tr>
+      <tr><th>اسم العميل / Client Name</th><td id="v_clientName"></td></tr>
+      <tr><th>رقم الهاتف1 / Phone Number1</th><td id="v_phone1"></td></tr>
+      <tr><th>رقم الهاتف2 / Phone Number2</th><td id="v_phone2"></td></tr>
+      <tr><th>اسم المكتب الاستشاري / Consultant Office</th><td id="v_consultantOfficeName"></td></tr>
+      <tr><th>رقم الهاتف / Consultant Phone</th><td id="v_consultantPhone"></td></tr>
+      <tr><th>العمولة / Consultant Commission</th><td id="v_consultantCommission"></td></tr>
+      <tr><th>اسم مكتب المقاول / Contractor Office</th><td id="v_contractorOfficeName"></td></tr>
+      <tr><th>رقم الهاتف / Contractor Phone</th><td id="v_contractorPhone"></td></tr>
+      <tr><th>نوع العميل / Client Type</th><td id="v_clientType"></td></tr>
+
+      <tr><th colspan="2" class="pdf-section">Request Details — تفاصيل الطلب</th></tr>
+      <tr><th>بيانات المكيف / AC Type</th><td id="v_acType"></td></tr>
+      <tr><th>الحمولة / Capacity</th><td id="v_acCapacity"></td></tr>
+      <tr><th>البراندات المطلوبة / Requested Brands</th><td id="v_requestedBrands"></td></tr>
+      <tr><th>الداكت / Duct Type</th><td id="v_ductType"></td></tr>
+      <tr><th>مواسير النحاس / Copper Pipes</th><td id="v_copperPipes"></td></tr>
+      <tr><th>أخرى 1 / Other 1</th><td id="v_other1"></td></tr>
+      <tr><th>أخرى 2 / Other 2</th><td id="v_other2"></td></tr>
+      <tr><th>متطلبات خاصة / Special Requirements</th><td id="v_specialRequirements"></td></tr>
+
+      <tr><th colspan="2" class="pdf-section">Price Offer — عرض السعر</th></tr>
+      <tr><th>السعر 1 / Price 1</th><td id="v_price1"></td></tr>
+      <tr><th>البراند 1 / Brand 1</th><td id="v_brand1"></td></tr>
+      <tr><th>السعر 2 / Price 2</th><td id="v_price2"></td></tr>
+      <tr><th>البراند 2 / Brand 2</th><td id="v_brand2"></td></tr>
+      <tr><th>السعر 3 / Price 3</th><td id="v_price3"></td></tr>
+      <tr><th>البراند 3 / Brand 3</th><td id="v_brand3"></td></tr>
+      <tr><th>السعر 4 / Price 4</th><td id="v_price4"></td></tr>
+      <tr><th>البراند 4 / Brand 4</th><td id="v_brand4"></td></tr>
+    </table>
+
+    <div class="pdf-footer">SMOU GROUP © AC RFQ Report</div>
+  </div>
+
+  <script>
+    const SHEETS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxqAi3rkNu9WQqYXXeZUiSap-hd8sj1jv6EayOxx_edz2KmatJkk4Gm6ESden-pAngY9w/exec';
+
+    const form = document.getElementById('rfqForm');
+    const statusText = document.getElementById('statusText');
+    const pdfTemplate = document.getElementById('pdfTemplate');
+    const acTypeWrap = document.getElementById('acTypeWrap');
+
+    const fields = [
+      'requestDate','salesRepresentative','stage','clientName','phone1','phone2',
+      'consultantOfficeName','consultantPhone','consultantCommission',
+      'contractorOfficeName','contractorPhone','clientType',
+      'acType','acCapacity','requestedBrands','ductType','copperPipes',
+      'other1','other2','specialRequirements',
+      'price1','brand1','price2','brand2','price3','brand3','price4','brand4'
+    ];
+
+    function setTodayDate(){
+      document.getElementById('requestDate').value = new Date().toLocaleString('en-GB');
+    }
+
+    function toNumber(value){
+      const num = parseFloat(value);
+      return isNaN(num) ? 0 : num;
+    }
+
+    function formatMoney(value){
+      return `${toNumber(value).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })} AED`;
+    }
+
+    function getAcTypes(){
+      return [...document.querySelectorAll('input[name="acType"]:checked')]
+        .map(el => el.value)
+        .join(' / ');
+    }
+
+    function getFormData(){
+      return {
+        requestDate: document.getElementById('requestDate').value,
+        salesRepresentative: form.elements['salesRepresentative'].value,
+        stage: form.elements['stage'].value,
+        clientName: form.elements['clientName'].value,
+        phone1: form.elements['phone1'].value,
+        phone2: form.elements['phone2'].value,
+        consultantOfficeName: form.elements['consultantOfficeName'].value,
+        consultantPhone: form.elements['consultantPhone'].value,
+        consultantCommission: form.elements['consultantCommission'].value,
+        contractorOfficeName: form.elements['contractorOfficeName'].value,
+        contractorPhone: form.elements['contractorPhone'].value,
+        clientType: form.elements['clientType'].value,
+        acType: getAcTypes(),
+        acCapacity: form.elements['acCapacity'].value,
+        requestedBrands: form.elements['requestedBrands'].value,
+        ductType: form.elements['ductType'].value,
+        copperPipes: form.elements['copperPipes'].value,
+        other1: form.elements['other1'].value,
+        other2: form.elements['other2'].value,
+        specialRequirements: form.elements['specialRequirements'].value,
+        price1: form.elements['price1'].value,
+        brand1: form.elements['brand1'].value,
+        price2: form.elements['price2'].value,
+        brand2: form.elements['brand2'].value,
+        price3: form.elements['price3'].value,
+        brand3: form.elements['brand3'].value,
+        price4: form.elements['price4'].value,
+        brand4: form.elements['brand4'].value
+      };
+    }
+
+    function clearErrors(){
+      document.querySelectorAll('.error-field').forEach(el => el.classList.remove('error-field'));
+      acTypeWrap.classList.remove('error-field');
+    }
+
+    function validateForm(){
+      clearErrors();
+
+      let valid = true;
+      let firstInvalid = null;
+
+      form.querySelectorAll('[required]').forEach(el => {
+        if(!el.value || (typeof el.value === 'string' && !el.value.trim())){
+          el.classList.add('error-field');
+          valid = false;
+          if(!firstInvalid) firstInvalid = el;
+        }
+      });
+
+      if(!document.querySelector('input[name="acType"]:checked')){
+        acTypeWrap.classList.add('error-field');
+        valid = false;
+        if(!firstInvalid) firstInvalid = acTypeWrap;
+      }
+
+      if(!valid && firstInvalid){
+        firstInvalid.scrollIntoView({ behavior:'smooth', block:'center' });
+        statusText.textContent = 'يرجى تعبئة الحقول المطلوبة.';
+        statusText.className = 'status error';
+      }
+
+      return valid;
+    }
+
+    function updatePriceDisplays(){
+      document.getElementById('price1Display').textContent = formatMoney(form.elements['price1'].value || 0);
+      document.getElementById('price2Display').textContent = formatMoney(form.elements['price2'].value || 0);
+      document.getElementById('price3Display').textContent = formatMoney(form.elements['price3'].value || 0);
+      document.getElementById('price4Display').textContent = formatMoney(form.elements['price4'].value || 0);
+
+      document.getElementById('price1BrandDisplay').textContent = form.elements['brand1'].value || '-';
+      document.getElementById('price2BrandDisplay').textContent = form.elements['brand2'].value || '-';
+      document.getElementById('price3BrandDisplay').textContent = form.elements['brand3'].value || '-';
+      document.getElementById('price4BrandDisplay').textContent = form.elements['brand4'].value || '-';
+    }
+
+    function fillPdf(data){
+      document.getElementById('pdfDate').textContent = data.requestDate || '-';
+
+      Object.keys(data).forEach(key => {
+        const el = document.getElementById(`v_${key}`);
+        if(!el) return;
+
+        if ([
+          'consultantCommission',
+          'price1','price2','price3','price4'
+        ].includes(key)) {
+          el.textContent = data[key] !== '' ? formatMoney(data[key]) : '-';
+        } else {
+          el.textContent = data[key] || '-';
+        }
+      });
+    }
+
+    async function generatePdfBlob(data){
+      fillPdf(data);
+
+      const canvas = await html2canvas(pdfTemplate, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('p', 'pt', 'a4');
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight);
+
+      return pdf.output('blob');
+    }
+
+    async function downloadPdf(data){
+      const blob = await generatePdfBlob(data);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `AC-RFQ-${Date.now()}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function makeSummaryMessage(data){
+      return [
+        'طلب عرض سعر مكيفات - RFQ',
+        `التاريخ: ${data.requestDate || '-'}`,
+        `مسؤول البيع: ${data.salesRepresentative || '-'}`,
+        `المرحلة: ${data.stage || '-'}`,
+        `اسم العميل: ${data.clientName || '-'}`,
+        `رقم الهاتف1: ${data.phone1 || '-'}`,
+        `رقم الهاتف2: ${data.phone2 || '-'}`,
+        `اسم المكتب الاستشاري: ${data.consultantOfficeName || '-'}`,
+        `رقم الهاتف الاستشاري: ${data.consultantPhone || '-'}`,
+        `عمولة المكتب الاستشاري: ${formatMoney(data.consultantCommission || 0)}`,
+        `اسم مكتب المقاول: ${data.contractorOfficeName || '-'}`,
+        `رقم هاتف المقاول: ${data.contractorPhone || '-'}`,
+        `نوع العميل: ${data.clientType || '-'}`,
+        `بيانات المكيف: ${data.acType || '-'}`,
+        `الحمولة: ${data.acCapacity || '-'}`,
+        `البراندات المطلوبة: ${data.requestedBrands || '-'}`,
+        `الداكت: ${data.ductType || '-'}`,
+        `مواسير النحاس: ${data.copperPipes || '-'}`,
+        `أخرى 1: ${data.other1 || '-'}`,
+        `أخرى 2: ${data.other2 || '-'}`,
+        `متطلبات خاصة: ${data.specialRequirements || '-'}`,
+        `السعر 1: ${formatMoney(data.price1 || 0)} | البراند: ${data.brand1 || '-'}`,
+        `السعر 2: ${formatMoney(data.price2 || 0)} | البراند: ${data.brand2 || '-'}`,
+        `السعر 3: ${formatMoney(data.price3 || 0)} | البراند: ${data.brand3 || '-'}`,
+        `السعر 4: ${formatMoney(data.price4 || 0)} | البراند: ${data.brand4 || '-'}`
+      ].join('\n');
+    }
+
+    async function saveToGoogleSheet(data){
+      if(!SHEETS_WEBAPP_URL || SHEETS_WEBAPP_URL.includes('PASTE')){
+        return { ok:false, message:'رابط Google Apps Script غير مضاف.' };
+      }
+
+      try {
+        const response = await fetch(SHEETS_WEBAPP_URL, {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const text = await response.text();
+
+        return {
+          ok: response.ok,
+          message: text || 'تم الإرسال'
+        };
+      } catch (error) {
+        return {
+          ok:false,
+          message:error.message
+        };
+      }
+    }
+
+    async function handlePdfOnly(){
+      try{
+        if(!validateForm()) return;
+
+        statusText.textContent = 'جاري إنشاء ملف PDF...';
+        statusText.className = 'status';
+
+        const data = getFormData();
+        await downloadPdf(data);
+
+        statusText.textContent = 'تم إنشاء ملف PDF بنجاح.';
+        statusText.className = 'status ok';
+      } catch(err){
+        console.error(err);
+        statusText.textContent = `حدث خطأ: ${err.message}`;
+        statusText.className = 'status error';
+      }
+    }
+
+    async function handleSubmit(){
+      try{
+        if(!validateForm()) return;
+
+        statusText.textContent = 'جاري حفظ البيانات وإنشاء PDF...';
+        statusText.className = 'status';
+
+        const data = getFormData();
+
+        const saveResult = await saveToGoogleSheet(data);
+
+        const pdfBlob = await generatePdfBlob(data);
+        const pdfFile = new File([pdfBlob], `AC-RFQ-${Date.now()}.pdf`, { type: 'application/pdf' });
+
+        const message = makeSummaryMessage(data);
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+
+        const tempUrl = URL.createObjectURL(pdfBlob);
+        const a = document.createElement('a');
+        a.href = tempUrl;
+        a.download = pdfFile.name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(tempUrl);
+
+        window.open(whatsappUrl, '_blank');
+
+        statusText.textContent =
+          saveResult.ok
+            ? 'تم حفظ البيانات وإنشاء PDF وفتح واتساب بنجاح. إذا لم يتم إرفاق الملف تلقائيًا، أرفقه يدويًا من التنزيلات.'
+            : `تم إنشاء PDF وفتح واتساب، لكن تعذر حفظ البيانات في Google Sheet: ${saveResult.message}`;
+
+        statusText.className = saveResult.ok ? 'status ok' : 'status error';
+      } catch(err){
+        console.error(err);
+        statusText.textContent = `حدث خطأ: ${err.message}`;
+        statusText.className = 'status error';
+      }
+    }
+
+    async function loadSuggestions(type, listId){
+      try{
+        if(!SHEETS_WEBAPP_URL) return;
+
+        const response = await fetch(`${SHEETS_WEBAPP_URL}?action=suggestions&type=${encodeURIComponent(type)}`);
+        if(!response.ok) return;
+
+        const data = await response.json();
+        const list = document.getElementById(listId);
+        list.innerHTML = '';
+
+        (Array.isArray(data) ? data : []).forEach(item => {
+          const option = document.createElement('option');
+          option.value = item;
+          list.appendChild(option);
+        });
+      } catch(err){
+        console.warn('Suggestions load failed:', err);
+      }
+    }
+
+    function bindEvents(){
+      form.querySelectorAll('input, select, textarea').forEach(el => {
+        el.addEventListener('input', () => el.classList.remove('error-field'));
+        el.addEventListener('change', () => el.classList.remove('error-field'));
+      });
+
+      document.querySelectorAll('input[name="acType"]').forEach(el => {
+        el.addEventListener('change', () => {
+          acTypeWrap.classList.remove('error-field');
+        });
+      });
+
+      ['price1','price2','price3','price4','brand1','brand2','brand3','brand4'].forEach(name => {
+        const el = form.elements[name];
+        if(el){
+          el.addEventListener('input', updatePriceDisplays);
+          el.addEventListener('change', updatePriceDisplays);
+        }
+      });
+    }
+
+    document.getElementById('autoSendBtn').addEventListener('click', handleSubmit);
+    document.getElementById('pdfOnlyBtn').addEventListener('click', handlePdfOnly);
+
+    setTodayDate();
+    bindEvents();
+    updatePriceDisplays();
+    loadSuggestions('consultant', 'consultantSuggestions');
+    loadSuggestions('contractor', 'contractorSuggestions');
+  </script>
 </body>
 </html>
