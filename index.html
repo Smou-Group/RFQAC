@@ -1,286 +1,588 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RFQSC | طلب عرض سعر مكيفات - SMOU GROUP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#071320;
+      --card:#102031;
+      --card-2:#1b2c3d;
+      --text:#ffffff;
+      --muted:#b8c6d3;
+      --line:#2a4157;
+      --primary:#1ca767;
+      --primary-dark:#148453;
+      --accent:#8b5cf6;
+      --danger:#ff6b6b;
+      --shadow:0 12px 32px rgba(0,0,0,.22);
+      --radius:18px;
+    }
 
-<title>طلب عرض سعر مكيفات | SMOU GROUP</title>
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:"Tajawal",sans-serif;
+      background:linear-gradient(180deg,#071320 0%, #0b1826 100%);
+      color:var(--text);
+      line-height:1.5;
+    }
 
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    .container{
+      max-width:1100px;
+      margin:auto;
+      padding:22px;
+    }
 
-<style>
-body{
-  margin:0;
-  font-family:"Tajawal",sans-serif;
-  background:#071320;
-  color:#fff;
-}
+    .hero{
+      background:linear-gradient(135deg, rgba(139,92,246,.18), rgba(28,167,103,.12));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      padding:28px 24px;
+      margin-bottom:20px;
+    }
 
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:20px;
-}
+    .hero h1{
+      margin:0 0 8px;
+      text-align:center;
+      font-size:34px;
+      font-weight:800;
+    }
 
-h1{
-  text-align:center;
-  font-weight:800;
-}
+    .hero p{
+      margin:0;
+      text-align:center;
+      color:var(--muted);
+      font-size:15px;
+    }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:15px;
-}
+    .required-note{
+      margin-top:12px;
+      text-align:center;
+      color:#ffb4b4;
+      font-size:13px;
+      font-weight:700;
+    }
 
-.field{
-  display:flex;
-  flex-direction:column;
-}
+    .success,
+    .error{
+      display:none;
+      border-radius:14px;
+      padding:14px 16px;
+      margin-bottom:16px;
+      font-weight:700;
+    }
 
-.field.full{
-  grid-column:1/-1;
-}
+    .success{
+      background:#123824;
+      color:#b8f3cd;
+      border:1px solid #256f46;
+    }
 
-label{
-  margin-bottom:6px;
-  font-weight:700;
-}
+    .error{
+      background:#3a1717;
+      color:#ffc4c4;
+      border:1px solid #7a2f2f;
+    }
 
-input,select,textarea{
-  padding:12px;
-  border-radius:12px;
-  border:none;
-  background:#1b2c3d;
-  color:#fff;
-  text-align:right;
-}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:15px;
+    }
 
-textarea{
-  min-height:80px;
-}
+    .field{
+      display:flex;
+      flex-direction:column;
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--radius);
+      padding:18px 16px;
+      box-shadow:var(--shadow);
+    }
 
-.checkbox-wrap{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
+    .field.full{grid-column:1/-1}
 
-.actions{
-  margin-top:20px;
-  text-align:center;
-}
+    label.main-label,
+    .main-label{
+      margin-bottom:10px;
+      font-weight:800;
+      font-size:18px;
+      color:#fff;
+    }
 
-button{
-  padding:14px 20px;
-  border:none;
-  border-radius:10px;
-  background:#1ca767;
-  color:#fff;
-  font-weight:bold;
-  cursor:pointer;
-}
+    .req{color:var(--danger)}
 
-.priceBox{
-  margin-top:20px;
-}
+    .help{
+      color:var(--muted);
+      font-size:13px;
+      margin-top:-2px;
+      margin-bottom:10px;
+    }
 
-.priceGrid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-}
+    input,select,textarea{
+      width:100%;
+      padding:13px 14px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:var(--card-2);
+      color:#fff;
+      text-align:right;
+      outline:none;
+      font:inherit;
+      transition:.2s ease;
+    }
 
-.priceItem{
-  background:#1b2c3d;
-  padding:12px;
-  border-radius:10px;
-}
+    input::placeholder, textarea::placeholder{color:#9cb0c2}
+    input:focus,select:focus,textarea:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(139,92,246,.16);
+    }
 
-.priceValue{
-  font-size:20px;
-  font-weight:bold;
-}
+    textarea{min-height:90px;resize:vertical}
 
-</style>
+    .choices{
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px 18px;
+      padding-top:6px;
+    }
+
+    .choice{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      background:var(--card-2);
+      border:1px solid var(--line);
+      padding:10px 14px;
+      border-radius:999px;
+      font-size:16px;
+    }
+
+    .choice input[type="checkbox"],
+    .choice input[type="radio"]{
+      width:18px;
+      height:18px;
+      accent-color:var(--primary);
+      cursor:pointer;
+    }
+
+    .choice label{cursor:pointer}
+
+    .file-box{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:6px;
+    }
+
+    .file-input{display:none}
+
+    .file-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 16px;
+      border:none;
+      border-radius:12px;
+      background:#19344b;
+      color:#9fd0ff;
+      font:inherit;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .file-name{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .priceBox{
+      margin-top:20px;
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+
+    .priceTitle{
+      margin:0 0 14px;
+      font-size:22px;
+      font-weight:800;
+      text-align:center;
+    }
+
+    .priceItem{
+      background:var(--card-2);
+      border:1px solid var(--line);
+      padding:16px;
+      border-radius:16px;
+    }
+
+    .priceLabel{
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:6px;
+    }
+
+    .priceValue{
+      font-size:24px;
+      font-weight:800;
+      margin-bottom:6px;
+      color:#fff;
+    }
+
+    .brandValue{font-size:14px;color:#b9d4e9}
+    .notesValue{font-size:13px;color:#d7e4ef;margin-top:8px;white-space:pre-wrap}
+
+    .actions{
+      margin-top:20px;
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    button{
+      padding:14px 20px;
+      border:none;
+      border-radius:12px;
+      color:#fff;
+      font-weight:800;
+      cursor:pointer;
+      font:inherit;
+      transition:.2s ease;
+    }
+
+    .btn-primary{background:var(--primary)}
+    .btn-primary:hover{background:var(--primary-dark)}
+    .btn-secondary{background:#33485c}
+    .btn-secondary:hover{background:#405972}
+    .btn-reset{background:#8b5cf6}
+    .btn-reset:hover{background:#7743eb}
+
+    .footer-note{
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+      margin-top:18px;
+    }
+
+    @media (max-width:850px){
+      .grid{grid-template-columns:1fr}
+      .hero h1{font-size:27px}
+    }
+  </style>
 </head>
-
 <body>
+  <div class="container">
+    <div class="hero">
+      <h1>طلب عرض سعر مكيفات</h1>
+      <p>SMOU GROUP – RFQSC.smougroup.com</p>
+      <div class="required-note">* يشير إلى سؤال مطلوب</div>
+    </div>
 
-<div class="container">
+    <div class="success" id="successBox">تم إرسال البيانات بنجاح إلى Google Sheet.</div>
+    <div class="error" id="errorBox">حدث خطأ أثناء الإرسال. تأكد من رابط Google Apps Script.</div>
 
-<h1>طلب عرض سعر مكيفات</h1>
+    <form id="rfqForm" class="grid">
+      <div class="field">
+        <label class="main-label" for="ownerName">اسم المالك</label>
+        <input id="ownerName" name="ownerName" type="text" placeholder="إجابتك">
+      </div>
 
-<form id="form" class="grid">
+      <div class="field">
+        <label class="main-label" for="consultant">الاستشاري</label>
+        <input id="consultant" name="consultant" type="text" placeholder="إجابتك">
+      </div>
 
-<div class="field">
-<label>اسم العميل</label>
-<input id="clientName">
-</div>
+      <div class="field">
+        <label class="main-label" for="contractor">المقاول</label>
+        <input id="contractor" name="contractor" type="text" placeholder="إجابتك">
+      </div>
 
-<div class="field">
-<label>رقم الهاتف</label>
-<input id="phone">
-</div>
+      <div class="field">
+        <label class="main-label" for="contactNumber">رقم تواصل (مقاول &amp; استشاري &amp; مالك) <span class="req">*</span></label>
+        <input id="contactNumber" name="contactNumber" type="text" placeholder="إجابتك" required>
+      </div>
 
-<div class="field full">
-<label>بيانات المكيف</label>
-<div class="checkbox-wrap">
-<label><input type="checkbox" name="acType" value="داكت"> داكت</label>
-<label><input type="checkbox" name="acType" value="اسبليت"> اسبليت</label>
-<label><input type="checkbox" name="acType" value="داكت + اسبليت"> الاثنين</label>
-<label><input type="checkbox" name="acType" value="خدمات"> خدمات</label>
-</div>
-</div>
+      <div class="field">
+        <label class="main-label" for="villaNumber">رقم الفيلا <span class="req">*</span></label>
+        <input id="villaNumber" name="villaNumber" type="text" placeholder="إجابتك" required>
+      </div>
 
-<div class="field">
-<label>الحمولة (طن)</label>
-<input id="capacity">
-</div>
+      <div class="field">
+        <label class="main-label" for="commission">عمولة</label>
+        <input id="commission" name="commission" type="text" placeholder="إجابتك">
+      </div>
 
-<div class="field full">
-<label>البراندات المطلوبة</label>
-<select id="requestedBrands"></select>
-</div>
+      <div class="field full">
+        <label class="main-label" for="requestedBrands">البرندات المطلوبة</label>
+        <select id="requestedBrands" name="requestedBrands"></select>
+      </div>
 
-<div class="field">
-<label>الداكت</label>
-<select id="duct">
-<option>GI</option>
-<option>PI</option>
-</select>
-</div>
+      <div class="field full">
+        <div class="main-label">نوع التكييف</div>
+        <div class="choices">
+          <div class="choice"><input id="ac1" name="acType" type="checkbox" value="داكت"><label for="ac1">داكت</label></div>
+          <div class="choice"><input id="ac2" name="acType" type="checkbox" value="اسبيلت"><label for="ac2">اسبيلت</label></div>
+          <div class="choice"><input id="ac3" name="acType" type="checkbox" value="داكت + اسبيلت"><label for="ac3">داكت + اسبيلت</label></div>
+          <div class="choice"><input id="ac4" name="acType" type="checkbox" value="خدمات"><label for="ac4">خدمات</label></div>
+        </div>
+      </div>
 
-<div class="field">
-<label>مواسير النحاس</label>
-<select id="copper">
-<option>MAKSAL</option>
-<option>MUELLER</option>
-</select>
-</div>
+      <div class="field full">
+        <div class="main-label">هل تم معاينة المخطط</div>
+        <div class="choices">
+          <div class="choice"><input id="planYes" name="planReviewed" type="radio" value="نعم"><label for="planYes">نعم</label></div>
+          <div class="choice"><input id="planNo" name="planReviewed" type="radio" value="لا"><label for="planNo">لا</label></div>
+          <div class="choice"><input id="planOther" name="planReviewed" type="radio" value="خيار 3"><label for="planOther">خيار 3</label></div>
+        </div>
+      </div>
 
-<div class="field full">
-<label>متطلبات خاصة</label>
-<textarea id="notes"></textarea>
-</div>
+      <div class="field">
+        <label class="main-label" for="ductType">نوع الداكت</label>
+        <select id="ductType" name="ductType">
+          <option value="">اختر النوع</option>
+          <option>GI</option>
+          <option>PI</option>
+        </select>
+      </div>
 
-<!-- PRICES -->
+      <div class="field">
+        <label class="main-label" for="splitType">نوع السبلت</label>
+        <input id="splitType" name="splitType" type="text" placeholder="إجابتك">
+      </div>
 
-<div class="field">
-<label>السعر 1</label>
-<input id="price1" type="number">
-</div>
+      <div class="field full">
+        <div class="main-label">مطلوب مراوح تهوية</div>
+        <div class="choices">
+          <div class="choice"><input id="fanYes" name="ventilationFans" type="radio" value="نعم"><label for="fanYes">نعم</label></div>
+          <div class="choice"><input id="fanNo" name="ventilationFans" type="radio" value="لا"><label for="fanNo">لا</label></div>
+        </div>
+      </div>
 
-<div class="field">
-<label>البراند 1</label>
-<select id="brand1"></select>
-</div>
+      <div class="field">
+        <label class="main-label" for="copper">مواسير النحاس</label>
+        <select id="copper" name="copper">
+          <option value="">اختر النوع</option>
+          <option>MAKSAL</option>
+          <option>MUELLER</option>
+        </select>
+      </div>
 
-<div class="field">
-<label>السعر 2</label>
-<input id="price2" type="number">
-</div>
+      <div class="field">
+        <label class="main-label" for="capacity">الحمولة (طن)</label>
+        <input id="capacity" name="capacity" type="number" placeholder="0">
+      </div>
 
-<div class="field">
-<label>البراند 2</label>
-<select id="brand2"></select>
-</div>
+      <div class="field full">
+        <label class="main-label" for="specialRequirements">متطلبات خاصة</label>
+        <textarea id="specialRequirements" name="specialRequirements" placeholder="إجابتك"></textarea>
+      </div>
 
-<div class="field">
-<label>السعر 3</label>
-<input id="price3" type="number">
-</div>
+      <div class="field">
+        <label class="main-label" for="representativeName">اسم المندوب</label>
+        <input id="representativeName" name="representativeName" type="text" placeholder="إجابتك">
+      </div>
 
-<div class="field">
-<label>البراند 3</label>
-<select id="brand3"></select>
-</div>
+      <div class="field">
+        <label class="main-label" for="representativePhone">رقم تليفون للمندوب</label>
+        <input id="representativePhone" name="representativePhone" type="text" placeholder="إجابتك">
+      </div>
 
-<div class="field">
-<label>السعر 4</label>
-<input id="price4" type="number">
-</div>
+      <div class="field full">
+        <div class="main-label">محل المخطط</div>
+        <div class="help">يمكنك اختيار الملفات، وسيتم حفظ أسماء الملفات فقط داخل الشيت.</div>
+        <div class="file-box">
+          <label class="file-btn" for="planFile"><span>📎</span><span>إضافة ملف</span></label>
+          <input class="file-input" id="planFile" name="planFile" type="file" multiple>
+        </div>
+        <div class="file-name" id="fileName">لم يتم اختيار أي ملف</div>
+      </div>
 
-<div class="field">
-<label>البراند 4</label>
-<select id="brand4"></select>
-</div>
+      <div class="field">
+        <label class="main-label" for="price">السعر</label>
+        <input id="price" name="price" type="number" placeholder="0">
+      </div>
 
-</form>
+      <div class="field">
+        <label class="main-label" for="brand">البراند</label>
+        <select id="brand" name="brand"></select>
+      </div>
 
-<!-- DISPLAY -->
+      <div class="field full">
+        <label class="main-label" for="priceNotes">ملاحظات السعر</label>
+        <textarea id="priceNotes" name="priceNotes" placeholder="مثال: السعر يشمل التركيب ولا يشمل الكهرباء"></textarea>
+      </div>
+    </form>
 
-<div class="priceBox">
-<div class="priceGrid">
+    <div class="priceBox">
+      <h2 class="priceTitle">عرض السعر</h2>
+      <div class="priceItem">
+        <div class="priceLabel">السعر النهائي</div>
+        <div id="priceView" class="priceValue">0</div>
+        <div id="brandView" class="brandValue">-</div>
+        <div id="priceNotesView" class="notesValue">-</div>
+      </div>
+    </div>
 
-<div class="priceItem">
-<div id="p1" class="priceValue">0</div>
-<div id="b1">-</div>
-</div>
+    <div class="actions">
+      <button type="button" class="btn-primary" onclick="updatePriceCard()">تحديث السعر</button>
+      <button type="submit" form="rfqForm" class="btn-secondary" id="submitBtn">إرسال</button>
+      <button type="reset" form="rfqForm" class="btn-reset">محو النموذج</button>
+    </div>
 
-<div class="priceItem">
-<div id="p2" class="priceValue">0</div>
-<div id="b2">-</div>
-</div>
+    <div class="footer-note">عدم إرسال كلمة مرور عبر النموذج.</div>
+  </div>
 
-<div class="priceItem">
-<div id="p3" class="priceValue">0</div>
-<div id="b3">-</div>
-</div>
+  <script>
+    // ضع هنا رابط Google Apps Script بعد النشر
+    const SCRIPT_URL = "PUT_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
 
-<div class="priceItem">
-<div id="p4" class="priceValue">0</div>
-<div id="b4">-</div>
-</div>
+    const brands = `
+      <option value="">اختر البراند</option>
+      <option>Mitsubishi (ميتسوبيشي)</option>
+      <option>Ogeneral (او جنرال)</option>
+      <option>Carrier (كاريير)</option>
+      <option>Daikin (دايكن)</option>
+      <option>Super General (سوبر جنرال)</option>
+      <option>York (يورك)</option>
+      <option>Gree (جري)</option>
+      <option>Midea (ميديا)</option>
+      <option>Samsung (سامسونج)</option>
+      <option>Panasonic (باناسونيك)</option>
+      <option>LG (إل جي)</option>
+      <option>Hisense (هايسنس)</option>
+      <option>TCL (تي سي إل)</option>
+      <option>Toshiba (توشيبا)</option>
+      <option>Westpoint (ويست بوينت)</option>
+      <option>Akai (أكاي)</option>
+    `;
 
-</div>
-</div>
+    ['requestedBrands','brand'].forEach(id => {
+      document.getElementById(id).innerHTML = brands;
+    });
 
-<div class="actions">
-<button onclick="update()">تحديث الأسعار</button>
-</div>
+    const form = document.getElementById('rfqForm');
+    const successBox = document.getElementById('successBox');
+    const errorBox = document.getElementById('errorBox');
+    const fileInput = document.getElementById('planFile');
+    const fileName = document.getElementById('fileName');
+    const submitBtn = document.getElementById('submitBtn');
 
-</div>
+    fileInput.addEventListener('change', () => {
+      if (!fileInput.files.length) {
+        fileName.textContent = 'لم يتم اختيار أي ملف';
+        return;
+      }
+      fileName.textContent = Array.from(fileInput.files).map(f => f.name).join(' ، ');
+    });
 
-<script>
+    function updatePriceCard(){
+      document.getElementById('priceView').innerText =
+        document.getElementById('price').value || 0;
 
-const brands = `
-<option value="">اختر البراند</option>
-<option>Mitsubishi (ميتسوبيشي)</option>
-<option>Ogeneral (او جنرال)</option>
-<option>Carrier (كاريير)</option>
-<option>Daikin (دايكن)</option>
-<option>Super General (سوبر جنرال)</option>
-<option>York (يورك)</option>
-<option>Gree (جري)</option>
-<option>Midea (ميديا)</option>
-<option>Samsung (سامسونج)</option>
-<option>Panasonic (باناسونيك)</option>
-<option>LG (إل جي)</option>
-<option>Hisense (هايسنس)</option>
-<option>TCL (تي سي إل)</option>
-<option>Toshiba (توشيبا)</option>
-<option>Westpoint (ويست بوينت)</option>
-<option>Akai (أكاي)</option>
-`;
+      document.getElementById('brandView').innerText =
+        document.getElementById('brand').value || '-';
 
-['requestedBrands','brand1','brand2','brand3','brand4'].forEach(id=>{
-  document.getElementById(id).innerHTML = brands;
-});
+      document.getElementById('priceNotesView').innerText =
+        document.getElementById('priceNotes').value || '-';
+    }
 
-function update(){
-  document.getElementById('p1').innerText = document.getElementById('price1').value || 0;
-  document.getElementById('p2').innerText = document.getElementById('price2').value || 0;
-  document.getElementById('p3').innerText = document.getElementById('price3').value || 0;
-  document.getElementById('p4').innerText = document.getElementById('price4').value || 0;
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
 
-  document.getElementById('b1').innerText = document.getElementById('brand1').value || '-';
-  document.getElementById('b2').innerText = document.getElementById('brand2').value || '-';
-  document.getElementById('b3').innerText = document.getElementById('brand3').value || '-';
-  document.getElementById('b4').innerText = document.getElementById('brand4').value || '-';
-}
+      successBox.style.display = 'none';
+      errorBox.style.display = 'none';
 
-</script>
+      if(!form.checkValidity()){
+        form.reportValidity();
+        return;
+      }
 
+      if (!SCRIPT_URL || SCRIPT_URL.includes('PUT_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE')) {
+        errorBox.textContent = 'ضع رابط Google Apps Script داخل المتغير SCRIPT_URL أولاً.';
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      const data = {
+        ownerName: document.getElementById('ownerName').value.trim(),
+        consultant: document.getElementById('consultant').value.trim(),
+        contractor: document.getElementById('contractor').value.trim(),
+        contactNumber: document.getElementById('contactNumber').value.trim(),
+        villaNumber: document.getElementById('villaNumber').value.trim(),
+        commission: document.getElementById('commission').value.trim(),
+        requestedBrands: document.getElementById('requestedBrands').value,
+        acType: Array.from(document.querySelectorAll('input[name="acType"]:checked')).map(el => el.value).join(', '),
+        planReviewed: document.querySelector('input[name="planReviewed"]:checked')?.value || '',
+        ductType: document.getElementById('ductType').value,
+        splitType: document.getElementById('splitType').value.trim(),
+        ventilationFans: document.querySelector('input[name="ventilationFans"]:checked')?.value || '',
+        copperType: document.getElementById('copper').value,
+        capacity: document.getElementById('capacity').value,
+        specialRequirements: document.getElementById('specialRequirements').value.trim(),
+        representativeName: document.getElementById('representativeName').value.trim(),
+        representativePhone: document.getElementById('representativePhone').value.trim(),
+        files: Array.from(fileInput.files).map(f => f.name).join(', '),
+        price: document.getElementById('price').value,
+        brand: document.getElementById('brand').value,
+        priceNotes: document.getElementById('priceNotes').value.trim()
+      };
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'جاري الإرسال...';
+
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          updatePriceCard();
+          successBox.style.display = 'block';
+          form.reset();
+          fileName.textContent = 'لم يتم اختيار أي ملف';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'إرسال';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          throw new Error(result.message || 'فشل الحفظ');
+        }
+      } catch (err) {
+        errorBox.textContent = 'حدث خطأ أثناء الإرسال: ' + err.message;
+        errorBox.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'إرسال';
+      }
+    });
+
+    form.addEventListener('reset', () => {
+      setTimeout(() => {
+        fileName.textContent = 'لم يتم اختيار أي ملف';
+        successBox.style.display = 'none';
+        errorBox.style.display = 'none';
+        document.getElementById('priceView').innerText = '0';
+        document.getElementById('brandView').innerText = '-';
+        document.getElementById('priceNotesView').innerText = '-';
+      }, 50);
+    });
+  </script>
 </body>
 </html>
