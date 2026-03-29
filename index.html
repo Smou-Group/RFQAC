@@ -205,45 +205,6 @@
       font-size:13px;
     }
 
-    .priceBox{
-      margin-top:20px;
-      background:var(--card);
-      border:1px solid rgba(255,255,255,.06);
-      border-radius:24px;
-      box-shadow:var(--shadow);
-      padding:18px;
-    }
-
-    .priceTitle{
-      margin:0 0 14px;
-      font-size:22px;
-      font-weight:800;
-      text-align:center;
-    }
-
-    .priceItem{
-      background:var(--card-2);
-      border:1px solid var(--line);
-      padding:16px;
-      border-radius:16px;
-    }
-
-    .priceLabel{
-      color:var(--muted);
-      font-size:14px;
-      margin-bottom:6px;
-    }
-
-    .priceValue{
-      font-size:24px;
-      font-weight:800;
-      margin-bottom:6px;
-      color:#fff;
-    }
-
-    .brandValue{font-size:14px;color:#b9d4e9}
-    .notesValue{font-size:13px;color:#d7e4ef;margin-top:8px;white-space:pre-wrap}
-
     .actions{
       margin-top:20px;
       display:flex;
@@ -263,8 +224,6 @@
       transition:.2s ease;
     }
 
-    .btn-primary{background:var(--primary)}
-    .btn-primary:hover{background:var(--primary-dark)}
     .btn-secondary{background:#33485c}
     .btn-secondary:hover{background:#405972}
     .btn-reset{background:#8b5cf6}
@@ -292,7 +251,7 @@
     </div>
 
     <div class="success" id="successBox">تم إرسال البيانات بنجاح إلى Google Sheet.</div>
-    <div class="error" id="errorBox">حدث خطأ أثناء الإرسال. تأكد من رابط Google Apps Script.</div>
+    <div class="error" id="errorBox">حدث خطأ أثناء الإرسال.</div>
 
     <form id="rfqForm" class="grid">
       <div class="field">
@@ -311,13 +270,13 @@
       </div>
 
       <div class="field">
-        <label class="main-label" for="contactNumber">رقم تواصل (مقاول &amp; استشاري &amp; مالك) <span class="req">*</span></label>
-        <input id="contactNumber" name="contactNumber" type="text" placeholder="إجابتك" required>
+        <label class="main-label" for="plateNumber">رقم اللوحة</label>
+        <input id="plateNumber" name="plateNumber" type="text" placeholder="إجابتك">
       </div>
 
       <div class="field">
-        <label class="main-label" for="villaNumber">رقم الفيلا <span class="req">*</span></label>
-        <input id="villaNumber" name="villaNumber" type="text" placeholder="إجابتك" required>
+        <label class="main-label" for="contactNumber">رقم تواصل (مقاول & استشاري & مالك) <span class="req">*</span></label>
+        <input id="contactNumber" name="contactNumber" type="text" placeholder="إجابتك" required>
       </div>
 
       <div class="field">
@@ -325,18 +284,17 @@
         <input id="commission" name="commission" type="text" placeholder="إجابتك">
       </div>
 
-      <div class="field full">
-        <label class="main-label" for="requestedBrands">البرندات المطلوبة</label>
-        <select id="requestedBrands" name="requestedBrands"></select>
+      <div class="field">
+        <label class="main-label" for="brand">البراند</label>
+        <select id="brand" name="brand"></select>
       </div>
 
       <div class="field full">
         <div class="main-label">نوع التكييف</div>
         <div class="choices">
           <div class="choice"><input id="ac1" name="acType" type="checkbox" value="داكت"><label for="ac1">داكت</label></div>
-          <div class="choice"><input id="ac2" name="acType" type="checkbox" value="اسبيلت"><label for="ac2">اسبيلت</label></div>
-          <div class="choice"><input id="ac3" name="acType" type="checkbox" value="داكت + اسبيلت"><label for="ac3">داكت + اسبيلت</label></div>
-          <div class="choice"><input id="ac4" name="acType" type="checkbox" value="خدمات"><label for="ac4">خدمات</label></div>
+          <div class="choice"><input id="ac2" name="acType" type="checkbox" value="اسبليت"><label for="ac2">اسبليت</label></div>
+          <div class="choice"><input id="ac3" name="acType" type="checkbox" value="داكت + اسبليت خدمات"><label for="ac3">داكت + اسبليت خدمات</label></div>
         </div>
       </div>
 
@@ -345,7 +303,6 @@
         <div class="choices">
           <div class="choice"><input id="planYes" name="planReviewed" type="radio" value="نعم"><label for="planYes">نعم</label></div>
           <div class="choice"><input id="planNo" name="planReviewed" type="radio" value="لا"><label for="planNo">لا</label></div>
-          <div class="choice"><input id="planOther" name="planReviewed" type="radio" value="خيار 3"><label for="planOther">خيار 3</label></div>
         </div>
       </div>
 
@@ -359,30 +316,22 @@
       </div>
 
       <div class="field">
-        <label class="main-label" for="splitType">نوع السبلت</label>
-        <input id="splitType" name="splitType" type="text" placeholder="إجابتك">
+        <label class="main-label" for="pipeType">نوع البايبات</label>
+        <select id="pipeType" name="pipeType">
+          <option value="">اختر النوع</option>
+          <option>MAKSAL</option>
+          <option>MUELLER</option>
+          <option>National</option>
+          <option>Other</option>
+        </select>
       </div>
 
       <div class="field full">
-        <div class="main-label">مطلوب مراوح تهوية</div>
+        <div class="main-label">مطلوب مرواح تهوية</div>
         <div class="choices">
           <div class="choice"><input id="fanYes" name="ventilationFans" type="radio" value="نعم"><label for="fanYes">نعم</label></div>
           <div class="choice"><input id="fanNo" name="ventilationFans" type="radio" value="لا"><label for="fanNo">لا</label></div>
         </div>
-      </div>
-
-      <div class="field">
-        <label class="main-label" for="copper">مواسير النحاس</label>
-        <select id="copper" name="copper">
-          <option value="">اختر النوع</option>
-          <option>MAKSAL</option>
-          <option>MUELLER</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label class="main-label" for="capacity">الحمولة (طن)</label>
-        <input id="capacity" name="capacity" type="number" placeholder="0">
       </div>
 
       <div class="field full">
@@ -392,52 +341,50 @@
 
       <div class="field">
         <label class="main-label" for="representativeName">اسم المندوب</label>
-        <input id="representativeName" name="representativeName" type="text" placeholder="إجابتك">
+        <select id="representativeName" name="representativeName">
+          <option value="">اختر اسم المندوب</option>
+          <option>سيد سمك - Sayed Samak</option>
+          <option>مصطفى ابوطالب - Moustafa AboTaleb</option>
+          <option>احمد صلاح - Ahmed Salah</option>
+<option>شادي عبيه- Shadi Obia</option>
+          <option>امير نبيل - Amir Nabil</option>
+          <option>محمد هاني - Mohamed Hany</option>
+          <option>احمد طه - Ahmad Taha</option>
+          <option>احمد المغازي - Ahmad Al-Maghazi</option>
+          <option>عمر شلش - Omar Shalash</option>
+          <option>محمد السعودي - Mohamed Al-Saoudi</option>
+          <option>ماهر عامر - Maher Amer</option>
+          <option>رؤوف المشير - Raouf Al-Mishir</option>
+          <option>احمد عبدالله - Ahmad Abdullah</option>
+          <option>عبدالهادي الحريري - Abdulhadi Al-Hariri</option>
+          <option>احمد الديناري - Ahmad Al-Dinari</option>
+          <option>محمد جمال - Mohamed Gamal</option>
+          <option>رامي موسى - Rami Moussa</option>
+          <option>يسري فايز - Yousry Fayez</option>
+          <option>مصطفى اسود - Mostafa Aswad</option>
+          <option>حسام راضي - Hossam Radi</option>
+          <option>احمد العطار - Ahmad Al-Attar</option>
+          <option>محمد صقر - Mohamed Saqr</option>
+        </select>
       </div>
 
       <div class="field">
-        <label class="main-label" for="representativePhone">رقم تليفون للمندوب</label>
+        <label class="main-label" for="representativePhone">رقم تليفون المندوب</label>
         <input id="representativePhone" name="representativePhone" type="text" placeholder="إجابتك">
       </div>
 
       <div class="field full">
-        <div class="main-label">محل المخطط</div>
-        <div class="help">يمكنك اختيار الملفات، وسيتم حفظ أسماء الملفات فقط داخل الشيت.</div>
+        <div class="main-label">حمل المخطط</div>
+        <div class="help">سيتم حفظ أسماء الملفات فقط داخل الشيت.</div>
         <div class="file-box">
           <label class="file-btn" for="planFile"><span>📎</span><span>إضافة ملف</span></label>
           <input class="file-input" id="planFile" name="planFile" type="file" multiple>
         </div>
         <div class="file-name" id="fileName">لم يتم اختيار أي ملف</div>
       </div>
-
-      <div class="field">
-        <label class="main-label" for="price">السعر</label>
-        <input id="price" name="price" type="number" placeholder="0">
-      </div>
-
-      <div class="field">
-        <label class="main-label" for="brand">البراند</label>
-        <select id="brand" name="brand"></select>
-      </div>
-
-      <div class="field full">
-        <label class="main-label" for="priceNotes">ملاحظات السعر</label>
-        <textarea id="priceNotes" name="priceNotes" placeholder="مثال: السعر يشمل التركيب ولا يشمل الكهرباء"></textarea>
-      </div>
     </form>
 
-    <div class="priceBox">
-      <h2 class="priceTitle">عرض السعر</h2>
-      <div class="priceItem">
-        <div class="priceLabel">السعر النهائي</div>
-        <div id="priceView" class="priceValue">0</div>
-        <div id="brandView" class="brandValue">-</div>
-        <div id="priceNotesView" class="notesValue">-</div>
-      </div>
-    </div>
-
     <div class="actions">
-      <button type="button" class="btn-primary" onclick="updatePriceCard()">تحديث السعر</button>
       <button type="submit" form="rfqForm" class="btn-secondary" id="submitBtn">إرسال</button>
       <button type="reset" form="rfqForm" class="btn-reset">محو النموذج</button>
     </div>
@@ -446,8 +393,7 @@
   </div>
 
   <script>
-    // ضع هنا رابط Google Apps Script بعد النشر
-    const SCRIPT_URL = "PUT_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyJ5jdySGMkbc50dP8AIFWcxwMitXKK9X2TuIhD3LWO-YuXMY_83aTtFy7wha_jzcdK/exec";
 
     const brands = `
       <option value="">اختر البراند</option>
@@ -469,9 +415,7 @@
       <option>Akai (أكاي)</option>
     `;
 
-    ['requestedBrands','brand'].forEach(id => {
-      document.getElementById(id).innerHTML = brands;
-    });
+    document.getElementById('brand').innerHTML = brands;
 
     const form = document.getElementById('rfqForm');
     const successBox = document.getElementById('successBox');
@@ -488,17 +432,6 @@
       fileName.textContent = Array.from(fileInput.files).map(f => f.name).join(' ، ');
     });
 
-    function updatePriceCard(){
-      document.getElementById('priceView').innerText =
-        document.getElementById('price').value || 0;
-
-      document.getElementById('brandView').innerText =
-        document.getElementById('brand').value || '-';
-
-      document.getElementById('priceNotesView').innerText =
-        document.getElementById('priceNotes').value || '-';
-    }
-
     form.addEventListener('submit', async function(e){
       e.preventDefault();
 
@@ -510,34 +443,23 @@
         return;
       }
 
-      if (!SCRIPT_URL || SCRIPT_URL.includes('PUT_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE')) {
-        errorBox.textContent = 'ضع رابط Google Apps Script داخل المتغير SCRIPT_URL أولاً.';
-        errorBox.style.display = 'block';
-        return;
-      }
-
       const data = {
         ownerName: document.getElementById('ownerName').value.trim(),
         consultant: document.getElementById('consultant').value.trim(),
         contractor: document.getElementById('contractor').value.trim(),
-        contactNumber: document.getElementById('contactNumber').value.trim(),
-        villaNumber: document.getElementById('villaNumber').value.trim(),
+        plateNumber: document.getElementById('plateNumber').value.trim(),
         commission: document.getElementById('commission').value.trim(),
-        requestedBrands: document.getElementById('requestedBrands').value,
+        brand: document.getElementById('brand').value,
         acType: Array.from(document.querySelectorAll('input[name="acType"]:checked')).map(el => el.value).join(', '),
         planReviewed: document.querySelector('input[name="planReviewed"]:checked')?.value || '',
         ductType: document.getElementById('ductType').value,
-        splitType: document.getElementById('splitType').value.trim(),
+        pipeType: document.getElementById('pipeType').value,
         ventilationFans: document.querySelector('input[name="ventilationFans"]:checked')?.value || '',
-        copperType: document.getElementById('copper').value,
-        capacity: document.getElementById('capacity').value,
         specialRequirements: document.getElementById('specialRequirements').value.trim(),
-        representativeName: document.getElementById('representativeName').value.trim(),
+        representativeName: document.getElementById('representativeName').value,
         representativePhone: document.getElementById('representativePhone').value.trim(),
-        files: Array.from(fileInput.files).map(f => f.name).join(', '),
-        price: document.getElementById('price').value,
-        brand: document.getElementById('brand').value,
-        priceNotes: document.getElementById('priceNotes').value.trim()
+        planFile: Array.from(fileInput.files).map(f => f.name).join(', '),
+        contactNumber: document.getElementById('contactNumber').value.trim()
       };
 
       try {
@@ -555,7 +477,6 @@
         const result = await response.json();
 
         if (result.status === 'success') {
-          updatePriceCard();
           successBox.style.display = 'block';
           form.reset();
           fileName.textContent = 'لم يتم اختيار أي ملف';
@@ -578,9 +499,6 @@
         fileName.textContent = 'لم يتم اختيار أي ملف';
         successBox.style.display = 'none';
         errorBox.style.display = 'none';
-        document.getElementById('priceView').innerText = '0';
-        document.getElementById('brandView').innerText = '-';
-        document.getElementById('priceNotesView').innerText = '-';
       }, 50);
     });
   </script>
