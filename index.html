@@ -89,6 +89,7 @@
       background:#3a1717;
       color:#ffc4c4;
       border:1px solid #7a2f2f;
+      white-space:pre-line;
     }
 
     .grid{
@@ -444,7 +445,7 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "ضع_هنا_رابط_النشر_النهائي_لـ_Apps_Script";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyJ5jdySGMkbc50dP8AIFWcxwMitXKK9X2TuIhD3LWO-YuXMY_83aTtFy7wha_jzcdK/exec";
 
     const form = document.getElementById('rfqForm');
     const successBox = document.getElementById('successBox');
@@ -476,6 +477,31 @@
         reader.onerror = () => reject(new Error(`فشل قراءة الملف: ${file.name}`));
         reader.readAsDataURL(file);
       });
+    }
+
+    async function sendData(data) {
+      const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        }
+      });
+
+      const rawText = await response.text();
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}\n${rawText}`);
+      }
+
+      let result;
+      try {
+        result = JSON.parse(rawText);
+      } catch (e) {
+        throw new Error('الرد القادم من Apps Script ليس JSON صحيح:\n' + rawText);
+      }
+
+      return result;
     }
 
     form.addEventListener('submit', async function(e){
@@ -523,15 +549,7 @@
           files: filesData
         };
 
-        const response = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify(data),
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          }
-        });
-
-        const result = await response.json();
+        const result = await sendData(data);
 
         if (result.status === 'success') {
           successBox.style.display = 'block';
@@ -543,8 +561,9 @@
         }
 
       } catch (err) {
-        errorBox.textContent = 'حدث خطأ أثناء الإرسال: ' + err.message;
+        errorBox.textContent = 'حدث خطأ أثناء الإرسال:\n' + err.message;
         errorBox.style.display = 'block';
+        console.error('Submit Error:', err);
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'إرسال';
