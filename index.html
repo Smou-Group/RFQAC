@@ -4,8 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RFQSC | طلب عرض سعر مكيفات - SMOU GROUP</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <style>
     :root{
       --bg:#071320;
@@ -419,7 +421,8 @@
 
       <div class="field full">
         <div class="main-label">حمل المخطط</div>
-        <div class="help">يمكنك رفع أكثر من ملف وسيتم رفعهم إلى Google Drive وحفظ روابطهم في الشيت.</div>
+        <div class="help">يمكنك رفع أكثر من ملف، وسيتم رفعهم إلى Google Drive ثم حفظ روابطهم في Google Sheet.</div>
+
         <div class="file-box">
           <label class="file-btn" for="planFile">
             <span>📎</span>
@@ -427,6 +430,7 @@
           </label>
           <input class="file-input" id="planFile" name="planFile" type="file" multiple>
         </div>
+
         <div class="file-name" id="fileName">لم يتم اختيار أي ملف</div>
       </div>
     </form>
@@ -440,7 +444,7 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyJ5jdySGMkbc50dP8AIFWcxwMitXKK9X2TuIhD3LWO-YuXMY_83aTtFy7wha_jzcdK/exec";
+    const SCRIPT_URL = "ضع_هنا_رابط_النشر_النهائي_لـ_Apps_Script";
 
     const form = document.getElementById('rfqForm');
     const successBox = document.getElementById('successBox');
