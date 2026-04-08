@@ -6,7 +6,6 @@
   <title>RFQSC | طلب عرض سعر مكيفات - SMOU GROUP</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://script.google.com/macros/s/AKfycbyJ5jdySGMkbc50dP8AIFWcxwMitXKK9X2TuIhD3LWO-YuXMY_83aTtFy7wha_jzcdK/exec">
   <style>
     :root{
       --bg:#071320;
@@ -204,6 +203,7 @@
       color:var(--muted);
       font-size:13px;
       word-break:break-word;
+      white-space:pre-line;
     }
 
     .actions{
@@ -256,7 +256,7 @@
       <div class="required-note">* يشير إلى سؤال مطلوب</div>
     </div>
 
-    <div class="success" id="successBox">تم إرسال البيانات ورفع الملف بنجاح.</div>
+    <div class="success" id="successBox">تم إرسال البيانات ورفع الملفات بنجاح.</div>
     <div class="error" id="errorBox">حدث خطأ أثناء الإرسال.</div>
 
     <form id="rfqForm" class="grid">
@@ -419,13 +419,13 @@
 
       <div class="field full">
         <div class="main-label">حمل المخطط</div>
-        <div class="help">سيتم رفع الملف إلى Google Drive وحفظ رابطه في الشيت.</div>
+        <div class="help">يمكنك رفع أكثر من ملف وسيتم رفعهم إلى Google Drive وحفظ روابطهم في الشيت.</div>
         <div class="file-box">
           <label class="file-btn" for="planFile">
             <span>📎</span>
-            <span>إضافة ملف</span>
+            <span>إضافة ملفات</span>
           </label>
-          <input class="file-input" id="planFile" name="planFile" type="file">
+          <input class="file-input" id="planFile" name="planFile" type="file" multiple>
         </div>
         <div class="file-name" id="fileName">لم يتم اختيار أي ملف</div>
       </div>
@@ -454,18 +454,22 @@
         fileName.textContent = 'لم يتم اختيار أي ملف';
         return;
       }
-      fileName.textContent = fileInput.files[0].name;
+
+      const names = Array.from(fileInput.files).map((file, index) => `${index + 1}- ${file.name}`);
+      fileName.textContent = names.join('\n');
     });
 
     function readFileAsBase64(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
+
         reader.onload = () => {
-          const result = reader.result;
-          const base64 = result.split(',')[1];
+          const result = reader.result || '';
+          const base64 = String(result).split(',')[1] || '';
           resolve(base64);
         };
-        reader.onerror = reject;
+
+        reader.onerror = () => reject(new Error(`فشل قراءة الملف: ${file.name}`));
         reader.readAsDataURL(file);
       });
     }
@@ -476,7 +480,7 @@
       successBox.style.display = 'none';
       errorBox.style.display = 'none';
 
-      if(!form.checkValidity()){
+      if (!form.checkValidity()) {
         form.reportValidity();
         return;
       }
@@ -486,23 +490,22 @@
         submitBtn.textContent = 'جاري الإرسال...';
         form.classList.add('loading');
 
-        const selectedFile = fileInput.files[0] || null;
+        const selectedFiles = Array.from(fileInput.files);
 
-        let fileBase64 = '';
-        let uploadFileName = '';
-        let mimeType = '';
-
-        if (selectedFile) {
-          fileBase64 = await readFileAsBase64(selectedFile);
-          uploadFileName = selectedFile.name;
-          mimeType = selectedFile.type || 'application/octet-stream';
-        }
+        const filesData = await Promise.all(
+          selectedFiles.map(async (file) => ({
+            fileName: file.name,
+            mimeType: file.type || 'application/octet-stream',
+            content: await readFileAsBase64(file)
+          }))
+        );
 
         const data = {
           ownerName: document.getElementById('ownerName').value.trim(),
           consultant: document.getElementById('consultant').value.trim(),
           contractor: document.getElementById('contractor').value.trim(),
           plateNumber: document.getElementById('plateNumber').value.trim(),
+          contactNumber: document.getElementById('contactNumber').value.trim(),
           commission: document.getElementById('commission').value.trim(),
           brand: document.getElementById('brand').value,
           acType: Array.from(document.querySelectorAll('input[name="acType"]:checked')).map(el => el.value).join(', '),
@@ -513,10 +516,7 @@
           specialRequirements: document.getElementById('specialRequirements').value.trim(),
           representativeName: document.getElementById('representativeName').value,
           representativePhone: document.getElementById('representativePhone').value.trim(),
-          contactNumber: document.getElementById('contactNumber').value.trim(),
-          file: fileBase64,
-          fileName: uploadFileName,
-          mimeType: mimeType
+          files: filesData
         };
 
         const response = await fetch(SCRIPT_URL, {
@@ -537,6 +537,7 @@
         } else {
           throw new Error(result.message || 'فشل الحفظ');
         }
+
       } catch (err) {
         errorBox.textContent = 'حدث خطأ أثناء الإرسال: ' + err.message;
         errorBox.style.display = 'block';
