@@ -1,212 +1,1261 @@
-const SHEET_NAME = 'RFQ';
-const HEADERS = [
-  'Date',
-  'Sales Representative',
-  'Lift Type',
-  'Stage',
-  'Client Name',
-  'Phone Number1',
-  'Phone Number2',
-  'Consultant Office',
-  'Consultant Phone',
-  'Consultant Commission',
-  'Contractor Office',
-  'Contractor Phone',
-  'Contractor Commission',
-  'Emirate',
-  'Area',
-  'Plot No',
-  'Lift Data',
-  'Capacity',
-  'Stops',
-  'Doors',
-  'Additional Door Price Italy',
-  'Additional Door Price Fuji',
-  'Cabin Color',
-  'Additional Cabin Price Italy',
-  'Additional Cabin Price Fuji',
-  'Shaft Type',
-  'Shaft Width',
-  'Shaft Depth',
-  'Pit Depth',
-  'Overhead Height',
-  'Italian Price',
-  'Fuji Price',
-  'Discount',
-  'Steel Structure Price',
-  'Final Italian Price',
-  'Final Fuji Price',
-  'Created At'
-];
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>طلب عرض سعر | SMOU GROUP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-function doGet(e) {
-  try {
-    const action = e.parameter.action || '';
+  <style>
+    :root{
+      --navy:#0b1b2b;
+      --glass:rgba(255,255,255,.10);
+      --border:rgba(255,255,255,.18);
+      --text:#ffffff;
+      --muted:rgba(255,255,255,.82);
+      --shadow:0 12px 35px rgba(0,0,0,.28);
+      --bg:#071320;
+      --danger:#ff5c5c;
+      --ok:#17b26a;
+      --disabled-bg:rgba(255,255,255,.04);
+      --disabled-text:rgba(255,255,255,.45);
+    }
 
-    if (action === 'suggestions') {
-      const type = (e.parameter.type || '').toLowerCase();
-      const suggestions = getSuggestions_(type);
-      return jsonOutput_({
-        success: true,
-        suggestions: suggestions
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      font-family:"Tajawal",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    body{min-height:100vh}
+
+    .hero{
+      min-height:100vh;
+      position:relative;
+      overflow:hidden;
+      padding:28px 16px 40px;
+      background:linear-gradient(180deg, rgba(8,24,40,.70), rgba(5,15,26,.88));
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at top center, rgba(28,111,173,.28), transparent 35%),
+        linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.65));
+      z-index:0;
+    }
+
+    .container{position:relative;z-index:1;max-width:1280px;margin:0 auto}
+    .topBox{text-align:center;margin-bottom:20px}
+
+    .logo{
+      width:84px;height:84px;margin:0 auto 16px;border-radius:22px;
+      background:rgba(255,255,255,.12);
+      border:1px solid var(--border);
+      display:flex;align-items:center;justify-content:center;
+      backdrop-filter:blur(10px);
+      box-shadow:var(--shadow)
+    }
+    .logo img{width:84%;height:84%;object-fit:contain}
+
+    h1{
+      margin:0;
+      font-size:clamp(28px,4vw,50px);
+      font-weight:800;
+      line-height:1.25
+    }
+
+    .subtitle{
+      margin:10px 0 0;
+      color:var(--muted);
+      font-size:clamp(15px,2vw,21px);
+      font-weight:500
+    }
+
+    .portalCard{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:28px;
+      padding:22px;
+      backdrop-filter:blur(12px);
+      box-shadow:0 20px 55px rgba(0,0,0,.30);
+    }
+
+    .sectionHeader{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:16px
+    }
+
+    .sectionTitle{font-size:20px;font-weight:800}
+    .divider{
+      flex:1;
+      height:1px;
+      background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.28), rgba(255,255,255,0))
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:8px
+    }
+
+    .field.full{grid-column:1/-1}
+
+    .label{
+      font-size:15px;
+      font-weight:700;
+      color:#fff
+    }
+
+    .label small{
+      opacity:.8;
+      font-weight:500
+    }
+
+    input,select{
+      width:100%;
+      padding:14px 16px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.16);
+      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.08));
+      color:#fff;
+      outline:none;
+      box-shadow:var(--shadow);
+      font-family:inherit;
+      font-size:16px;
+      transition:.2s ease;
+    }
+
+    input::placeholder{color:rgba(255,255,255,.52)}
+    input::-webkit-calendar-picker-indicator{display:none !important}
+    select option, datalist option{color:#000}
+
+    input:disabled,
+    select:disabled{
+      background:var(--disabled-bg)!important;
+      color:var(--disabled-text)!important;
+      cursor:not-allowed;
+      opacity:.75;
+    }
+
+    .disabled-block{
+      opacity:.6;
+      transition:.2s ease;
+    }
+
+    .checkbox-wrap{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      padding:12px 14px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.16);
+      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.08));
+      box-shadow:var(--shadow);
+      transition:.2s ease;
+    }
+
+    .checkbox-item{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
+      min-height:44px;
+    }
+
+    .checkbox-item input{
+      width:auto;
+      margin:0;
+      box-shadow:none;
+      accent-color:#1d70b7;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:20px
+    }
+
+    .btn{
+      border:none;
+      cursor:pointer;
+      min-height:58px;
+      padding:14px 20px;
+      border-radius:18px;
+      color:#fff;
+      font-size:16px;
+      font-weight:800;
+      font-family:inherit;
+      text-decoration:none;
+      background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.10));
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow:var(--shadow);
+      transition:.25s ease
+    }
+
+    .btn:hover{
+      transform:translateY(-3px);
+      background:linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,.12))
+    }
+
+    .btn.success{background:linear-gradient(180deg, #1ca767, #117347)}
+
+    .status{
+      margin-top:12px;
+      font-size:14px;
+      color:var(--muted)
+    }
+
+    .status.ok{color:#8df0ba}
+    .status.error{color:#ff9191}
+
+    .note{
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:18px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color:rgba(255,255,255,.88);
+      line-height:1.8
+    }
+
+    .priceBox{
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.13);
+      border-radius:22px;
+      padding:18px;
+    }
+
+    .priceGrid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .priceItem{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      padding:14px;
+    }
+
+    .priceItem h3{
+      margin:0 0 10px;
+      font-size:16px;
+      font-weight:800;
+    }
+
+    .priceValue{
+      font-size:22px;
+      font-weight:800;
+      color:#fff;
+    }
+
+    .priceSub{
+      margin-top:8px;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.8;
+    }
+
+    .error-field{
+      border-color:var(--danger)!important;
+      box-shadow:0 0 0 2px rgba(255,92,92,.18)!important;
+    }
+
+    .pdf-card{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:794px;
+      height:1123px;
+      overflow:hidden;
+      background:#fff;
+      color:#111;
+      padding:12px;
+      font-family:"Tajawal",sans-serif;
+    }
+
+    .pdf-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:2px solid #12324f;
+      padding-bottom:6px;
+      margin-bottom:6px
+    }
+
+    .pdf-brand{
+      font-size:18px;
+      font-weight:800;
+      color:#12324f
+    }
+
+    .pdf-sub{
+      font-size:10px;
+      color:#4a5568
+    }
+
+    .pdf-title{
+      font-size:14px;
+      font-weight:800;
+      text-align:center;
+      margin:6px 0;
+      color:#0b1b2b
+    }
+
+    .pdf-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:9px;
+      table-layout:fixed;
+    }
+
+    .pdf-table th,.pdf-table td{
+      border:1px solid #cbd5e0;
+      padding:4px 5px;
+      vertical-align:top;
+      word-wrap:break-word;
+      line-height:1.3;
+    }
+
+    .pdf-table th{
+      background:#eff6ff;
+      color:#0b1b2b;
+      text-align:right;
+      width:33%;
+    }
+
+    .pdf-section{
+      background:#dbeafe;
+      font-weight:800;
+      color:#0b1b2b
+    }
+
+    .pdf-footer{
+      margin-top:6px;
+      font-size:9px;
+      color:#64748b;
+      text-align:center
+    }
+
+    @media (max-width:1000px){
+      .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    @media (max-width:768px){
+      .grid,.priceGrid{grid-template-columns:1fr}
+      .portalCard{padding:16px;border-radius:22px}
+      .logo{width:70px;height:70px;border-radius:18px}
+      h1{font-size:34px}
+      .actions{flex-direction:column}
+      .btn{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <div class="container">
+      <div class="topBox">
+        <div class="logo">
+          <img src="logo.png" alt="SMOU GROUP" onerror="this.style.display='none'">
+        </div>
+        <h1>طلب عرض السعر</h1>
+        <h1>RFQ (Request for Quotation)</h1>
+        <p class="subtitle">نموذج سمو الرسمي لتعبئة بيانات طلب عرض السعر</p>
+      </div>
+
+      <div class="portalCard">
+        <div class="sectionHeader">
+          <div class="sectionTitle">Form — النموذج</div>
+          <div class="divider"></div>
+        </div>
+
+        <form id="rfqForm" class="grid" novalidate>
+
+          <div class="field">
+            <label class="label">التاريخ <small>Date</small></label>
+            <input name="requestDate" id="requestDate" readonly>
+          </div>
+
+          <div class="field">
+            <label class="label">مسؤول البيع <small>Sales Representative</small></label>
+            <select name="salesRepresentative" required data-label="مسؤول البيع">
+              <option value="">اختر مسؤول البيع</option>
+              <option>Sayed Samak - سيد سمك</option>
+              <option>Moustafa AboTaleb - مصطفى ابوطالب</option>
+              <option>Ahmed Salah - احمد صلاح</option>
+              <option>Shadi Obia  - شادي عبيه</option>
+              <option>Amir Nabil - امير نبيل</option>
+              <option>Mohamed Hany - محمد هاني</option>
+              <option>Ahmad Taha - احمد طه</option>
+              <option>Ahmad Al-Maghazi - احمد المغازي</option>
+              <option>Omar Shalash - عمر شلش</option>
+              <option>Mohamed Al-Saoudi - محمد السعودي</option>
+              <option>Maher Amer - ماهر عامر</option>
+              <option>Raouf Al-Mishir - رؤوف المشير</option>
+              <option>Ahmad Abdullah - احمد عبدالله</option>
+              <option>Abdulhadi Al-Hariri - عبدالهادي الحريري</option>
+              <option>Ahmad Al-Dinari - احمد الديناري</option>
+              <option>Mohamed Gamal - محمد جمال</option>
+              <option>Rami Moussa - رامي موسى</option>
+              <option>Yousry Fayez - يسري فايز</option>
+              <option>Mostafa Aswad - مصطفى اسود</option>
+              <option>Hossam Radi - حسام راضي</option>
+              <option>Ahmad Al-Attar - احمد العطار</option>
+              <option>Mohamed Saqr - محمد صقر</option>
+              <option>Rami Eissa - رامي عيسى</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="label">المرحلة <small>Stage</small></label>
+            <select name="stage" required data-label="المرحلة">
+              <option value="">اختر المرحلة</option>
+              <option>مخططات</option>
+              <option>أساسات</option>
+              <option>خرسانة</option>
+              <option>تشطيب</option>
+              <option>أخرى</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label class="label">نوع المصعد <small>Lift Type</small></label>
+            <div class="checkbox-wrap" id="liftTypeWrap">
+              <label class="checkbox-item">
+                <input type="checkbox" name="liftType" value="Fuji">
+                <span>Fuji - فوجي</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="liftType" value="Italy">
+                <span>Italy - إيطالي</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">اسم العميل <small>Client Name</small></label>
+            <input name="clientName" placeholder="اسم العميل" required data-label="اسم العميل">
+          </div>
+
+          <div class="field">
+            <label class="label">رقم الهاتف1 <small>Phone Number1</small></label>
+            <input name="phone1" placeholder="رقم الهاتف1" required data-label="رقم الهاتف1">
+          </div>
+
+          <div class="field">
+            <label class="label">رقم الهاتف2 <small>Phone Number2</small></label>
+            <input name="phone2" placeholder="رقم الهاتف2">
+          </div>
+
+          <div class="field">
+            <label class="label">اسم المكتب الاستشاري <small>Consultant Office</small></label>
+            <input
+              name="consultantOfficeName"
+              id="consultantOfficeName"
+              placeholder="اسم المكتب الاستشاري"
+              list="consultantSuggestions"
+              autocomplete="off"
+            >
+            <datalist id="consultantSuggestions"></datalist>
+          </div>
+
+          <div class="field">
+            <label class="label">رقم الهاتف <small>Phone Number</small></label>
+            <input name="consultantPhone" placeholder="رقم هاتف المكتب الاستشاري">
+          </div>
+
+          <div class="field">
+            <label class="label">العمولة <small>Commission</small></label>
+            <input type="number" name="consultantCommission" id="consultantCommission" placeholder="عملة درهم" min="0" step="0.01" value="0">
+          </div>
+
+          <div class="field">
+            <label class="label">اسم مكتب المقاول <small>Contractor Office</small></label>
+            <input
+              name="contractorOfficeName"
+              id="contractorOfficeName"
+              placeholder="اسم مكتب المقاول"
+              list="contractorSuggestions"
+              autocomplete="off"
+            >
+            <datalist id="contractorSuggestions"></datalist>
+          </div>
+
+          <div class="field">
+            <label class="label">رقم الهاتف <small>Phone Number</small></label>
+            <input name="contractorPhone" placeholder="رقم هاتف مكتب المقاول">
+          </div>
+
+          <div class="field">
+            <label class="label">العمولة <small>Commission</small></label>
+            <input type="number" name="contractorCommission" id="contractorCommission" placeholder="عملة درهم" min="0" step="0.01" value="0">
+          </div>
+
+          <div class="field">
+            <label class="label">الإمارة <small>Emirate</small></label>
+            <select name="emirate" required data-label="الإمارة">
+              <option value="">اختر الإمارة</option>
+              <option>أبوظبي</option>
+              <option>العين</option>
+              <option>دبي</option>
+              <option>الشارقة</option>
+              <option>عجمان</option>
+              <option>أم القيوين</option>
+              <option>الفجيرة</option>
+              <option>رأس الخيمة</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="label">المنطقة <small>Area</small></label>
+            <input name="area" placeholder="اسم المنطقة" required data-label="المنطقة">
+          </div>
+
+          <div class="field">
+            <label class="label">Plot No. <small>Plot No.</small></label>
+            <input name="plotNo" placeholder="Plot No." required data-label="Plot No.">
+          </div>
+
+          <div class="field full">
+            <label class="label">تفاصيل الطلب <small>Request Details</small></label>
+          </div>
+
+          <div class="field">
+            <label class="label">بيانات المصعد <small>Lift Data</small></label>
+            <select name="elevatorType" required data-label="بيانات المصعد">
+              <option value="">اختر</option>
+              <option>غرفة محركات</option>
+              <option>بدون غرفة محركات</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="label">الحمولة <small>Capacity</small></label>
+            <select name="capacity" required data-label="الحمولة">
+              <option value="">اختر الحمولة</option>
+              <option>450kg</option>
+              <option>630kg</option>
+              <option>800kg</option>
+              <option>1000kg</option>
+              <option>1150kg</option>
+              <option>1350kg</option>
+              <option>1600kg</option>
+              <option>2000kg</option>
+              <option>أخرى</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="label">الوقفات <small>Stops</small></label>
+            <select name="numberOfStops" required data-label="الوقفات">
+              <option value="">اختر عدد الوقفات</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+              <option>9</option>
+              <option>10</option>
+              <option>11</option>
+              <option>12</option>
+              <option>other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="label">الأبواب <small>Doors</small></label>
+            <select name="doors" required data-label="الأبواب">
+              <option value="">اختر نوع الأبواب</option>
+              <option>فضي</option>
+              <option>ذهبي</option>
+              <option>روزجولد</option>
+              <option>اسود</option>
+              <option>زجاج مع فضي</option>
+              <option>زجاج مع ذهبي</option>
+              <option>زجاج مع روزجولد</option>
+              <option>زجاج مع اسود</option>
+            </select>
+          </div>
+
+          <div class="field brand-italy" id="fieldAdditionalDoorItaly">
+            <label class="label">سعر الأبواب الإضافية - إيطالي <small>Additional Door Price-Italy</small></label>
+            <input type="number" name="additionalDoorPriceItaly" id="additionalDoorPriceItaly" placeholder="عملة درهم" min="0" step="0.01" value="0">
+          </div>
+
+          <div class="field brand-fuji" id="fieldAdditionalDoorFuji">
+            <label class="label">سعر الأبواب الإضافية - فوجي <small>Additional Door Price-Fuji</small></label>
+            <input type="number" name="additionalDoorPriceFuji" id="additionalDoorPriceFuji" placeholder="عملة درهم" min="0" step="0.01" value="0">
+          </div>
+
+          <div class="field">
+            <label class="label">لون الكابينة <small>Cabin Color</small></label>
+            <select name="cabin" required data-label="لون الكابينة">
+              <option value="">اختر لون الكابينة</option>
+              <option>فضي</option>
+              <option>ذهبي</option>
+              <option>روزجولد</option>
+              <option>اسود</option>
+              <option>خشبي</option>
+              <option>زجاجي</option>
+            </select>
+          </div>
+
+          <div class="field brand-italy" id="fieldAdditionalCabinItaly">
+            <label class="label">سعر الكابينة الإضافية - إيطالي <small>Additional Cabin Price-Italy</small></label>
+            <input type="number" name="additionalCabinPriceItaly" id="additionalCabinPriceItaly" placeholder="عملة درهم" min="0" step="0.01" value="0">
+          </div>
+
+          <div class="field brand-fuji" id="fieldAdditionalCabinFuji">
+            <label class="label">سعر الكابينة الإضافية - فوجي <small>Additional Cabin Price-Fuji</small></label>
+            <input type="number" name="additionalCabinPriceFuji" id="additionalCabinPriceFuji" placeholder="عملة درهم" min="0" step="0.01" value="0">
+          </div>
+
+          <div class="field full">
+            <label class="label">نوع البئر <small>Shaft Type</small></label>
+            <select name="shaftType" required data-label="نوع البئر">
+              <option value="">اختر نوع البئر</option>
+              <option>خرسانة بالكامل</option>
+              <option>خرسانة بالجانبين</option>
+              <option>4 أعمدة خرسانة بينهم طابوق متروس</option>
+              <option>4 أعمدة خرسانة بينهم طابوق مفرغ</option>
+              <option>بانوراما برج حديد</option>
+              <option>أخرى</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label class="label">مقاسات البئر <small>Shaft Dimensions</small></label>
+          </div>
+
+          <div class="field">
+            <label class="label">عرض <small>Width</small></label>
+            <input name="shaftWidth" placeholder="نص سم" required data-label="عرض">
+          </div>
+
+          <div class="field">
+            <label class="label">عمق <small>Depth</small></label>
+            <input name="shaftDepth" placeholder="نص سم" required data-label="عمق">
+          </div>
+
+          <div class="field">
+            <label class="label">عمق الحفرة <small>Pit Depth</small></label>
+            <input name="pitDepth" placeholder="نص سم" required data-label="عمق الحفرة">
+          </div>
+
+          <div class="field">
+            <label class="label">ارتفاع آخر وقفة <small>Overhead Height</small></label>
+            <input name="topFloorHeight" placeholder="نص سم" required data-label="ارتفاع آخر وقفة">
+          </div>
+
+          <div class="field brand-italy" id="fieldItalianPrice">
+            <label class="label">سعر المصعد الإيطالي <small>Italian Price</small></label>
+            <input type="number" name="italianPrice" id="italianPrice" placeholder="عملة درهم" min="0" step="0.01" value="0">
+          </div>
+
+          <div class="field brand-fuji" id="fieldFujiPrice">
+            <label class="label">سعر المصعد الفوجي <small>Fuji Price</small></label>
+            <input type="number" name="fujiPrice" id="fujiPrice" placeholder="عملة درهم" min="0" step="0.01" value="0">
+          </div>
+
+          <div class="field">
+            <label class="label">الخصم <small>Discount</small></label>
+            <input type="number" name="discount" id="discount" placeholder="عملة درهم" min="0" step="0.01" value="0">
+          </div>
+
+          <div class="field">
+            <label class="label">سعر برج الحديد <small>Steel structure price</small></label>
+            <input type="number" name="steelStructure" id="steelStructure" placeholder="عملة درهم" min="0" step="0.01" value="0">
+          </div>
+
+          <div class="field full">
+            <div class="priceBox">
+              <div class="sectionHeader" style="margin-bottom:14px">
+                <div class="sectionTitle">التسعير التلقائي — Auto Pricing</div>
+                <div class="divider"></div>
+              </div>
+
+              <div class="priceGrid">
+                <div class="priceItem" id="italyPriceCard">
+                  <h3>السعر النهائي الإيطالي</h3>
+                  <div class="priceValue" id="finalItalianPriceDisplay">0.00 AED</div>
+                  <input type="hidden" name="finalItalianPrice" id="finalItalianPrice">
+                  <div class="priceSub" id="finalItalianPriceBreakdown">-</div>
+                </div>
+
+                <div class="priceItem" id="fujiPriceCard">
+                  <h3>السعر النهائي الفوجي</h3>
+                  <div class="priceValue" id="finalFujiPriceDisplay">0.00 AED</div>
+                  <input type="hidden" name="finalFujiPrice" id="finalFujiPrice">
+                  <div class="priceSub" id="finalFujiPriceBreakdown">-</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+
+        <div class="actions">
+          <button class="btn success" type="button" id="autoSendBtn">إنشاء PDF وإرسال واتساب</button>
+          <button class="btn success" type="button" id="pdfOnlyBtn">إنشاء PDF فقط</button>
+        </div>
+
+        <div class="status" id="statusText">جاهز لتعبئة نموذج طلب عرض السعر.</div>
+
+        <div class="note">
+          <strong>آلية الحساب:</strong><br>
+          إذا تم اختيار فوجي فقط، يتم احتساب الفوجي فقط.<br>
+          إذا تم اختيار إيطالي فقط، يتم احتساب الإيطالي فقط.<br>
+          إذا تم اختيار الاثنين، يتم احتساب الاثنين معًا.<br>
+          وعند الضغط على إنشاء PDF أو واتساب يتم حفظ البيانات في Google Sheet أولًا.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="pdfTemplate" class="pdf-card">
+    <div class="pdf-header">
+      <div>
+        <div class="pdf-brand">SMOU GROUP</div>
+        <div class="pdf-sub">RFQ Report</div>
+      </div>
+      <div style="text-align:left">
+        <div class="pdf-sub">طلب عرض سعر</div>
+        <div class="pdf-sub" id="pdfDate"></div>
+      </div>
+    </div>
+
+    <div class="pdf-title">طلب عرض السعر - Request for Quotation</div>
+
+    <table class="pdf-table">
+      <tr><th colspan="2" class="pdf-section">General Information — البيانات العامة</th></tr>
+      <tr><th>التاريخ / Date</th><td id="v_requestDate"></td></tr>
+      <tr><th>مسؤول البيع / Sales Representative</th><td id="v_salesRepresentative"></td></tr>
+      <tr><th>نوع المصعد / Lift Type</th><td id="v_liftType"></td></tr>
+      <tr><th>المرحلة / Stage</th><td id="v_stage"></td></tr>
+      <tr><th>اسم العميل / Client Name</th><td id="v_clientName"></td></tr>
+      <tr><th>رقم الهاتف1 / Phone Number1</th><td id="v_phone1"></td></tr>
+      <tr><th>رقم الهاتف2 / Phone Number2</th><td id="v_phone2"></td></tr>
+      <tr><th>اسم المكتب الاستشاري / Consultant Office</th><td id="v_consultantOfficeName"></td></tr>
+      <tr><th>رقم الهاتف / Phone Number</th><td id="v_consultantPhone"></td></tr>
+      <tr><th>العمولة / Commission</th><td id="v_consultantCommission"></td></tr>
+      <tr><th>اسم مكتب المقاول / Contractor Office</th><td id="v_contractorOfficeName"></td></tr>
+      <tr><th>رقم الهاتف / Phone Number</th><td id="v_contractorPhone"></td></tr>
+      <tr><th>العمولة / Commission</th><td id="v_contractorCommission"></td></tr>
+      <tr><th>الإمارة / Emirate</th><td id="v_emirate"></td></tr>
+      <tr><th>المنطقة / Area</th><td id="v_area"></td></tr>
+      <tr><th>Plot No.</th><td id="v_plotNo"></td></tr>
+
+      <tr><th colspan="2" class="pdf-section">Request Details — تفاصيل الطلب</th></tr>
+      <tr><th>بيانات المصعد / Lift Data</th><td id="v_elevatorType"></td></tr>
+      <tr><th>الحمولة / Capacity</th><td id="v_capacity"></td></tr>
+      <tr><th>الوقفات / Stops</th><td id="v_numberOfStops"></td></tr>
+      <tr><th>الأبواب / Doors</th><td id="v_doors"></td></tr>
+      <tr><th>سعر الأبواب الإضافية - إيطالي</th><td id="v_additionalDoorPriceItaly"></td></tr>
+      <tr><th>سعر الأبواب الإضافية - فوجي</th><td id="v_additionalDoorPriceFuji"></td></tr>
+      <tr><th>لون الكابينة / Cabin Color</th><td id="v_cabin"></td></tr>
+      <tr><th>سعر الكابينة الإضافية - إيطالي</th><td id="v_additionalCabinPriceItaly"></td></tr>
+      <tr><th>سعر الكابينة الإضافية - فوجي</th><td id="v_additionalCabinPriceFuji"></td></tr>
+      <tr><th>نوع البئر / Shaft Type</th><td id="v_shaftType"></td></tr>
+      <tr><th>عرض / Width</th><td id="v_shaftWidth"></td></tr>
+      <tr><th>عمق / Depth</th><td id="v_shaftDepth"></td></tr>
+      <tr><th>عمق الحفرة / Pit Depth</th><td id="v_pitDepth"></td></tr>
+      <tr><th>ارتفاع آخر وقفة / Overhead Height</th><td id="v_topFloorHeight"></td></tr>
+
+      <tr><th colspan="2" class="pdf-section">Price Offer — عرض السعر</th></tr>
+      <tr><th>سعر المصعد الإيطالي / Italian Price</th><td id="v_italianPrice"></td></tr>
+      <tr><th>سعر المصعد الفوجي / Fuji Price</th><td id="v_fujiPrice"></td></tr>
+      <tr><th>الخصم / Discount</th><td id="v_discount"></td></tr>
+      <tr><th>سعر برج الحديد / Steel structure price</th><td id="v_steelStructure"></td></tr>
+      <tr><th>السعر النهائي الإيطالي / Final Italian Price</th><td id="v_finalItalianPrice"></td></tr>
+      <tr><th>السعر النهائي الفوجي / Final Fuji Price</th><td id="v_finalFujiPrice"></td></tr>
+    </table>
+
+    <div class="pdf-footer">SMOU GROUP © RFQ Report</div>
+  </div>
+
+  <script>
+    const SHEETS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxAVsMHlYlLu4vi-ddo4JT10cM223LyAY7uaZIPaOAmVQhiqyJovZKAW2DhRbFkvr_PLg/exec';
+    const form = document.getElementById('rfqForm');
+    const statusText = document.getElementById('statusText');
+    const pdfTemplate = document.getElementById('pdfTemplate');
+    const liftTypeWrap = document.getElementById('liftTypeWrap');
+
+    const italyFields = ['additionalDoorPriceItaly','additionalCabinPriceItaly','italianPrice'];
+    const fujiFields = ['additionalDoorPriceFuji','additionalCabinPriceFuji','fujiPrice'];
+
+    const fields = [
+      'requestDate','salesRepresentative','liftType','stage','clientName','phone1','phone2',
+      'consultantOfficeName','consultantPhone','consultantCommission',
+      'contractorOfficeName','contractorPhone','contractorCommission',
+      'emirate','area','plotNo',
+      'elevatorType','capacity','numberOfStops','doors','additionalDoorPriceItaly',
+      'additionalDoorPriceFuji','cabin','additionalCabinPriceItaly','additionalCabinPriceFuji',
+      'shaftType','shaftWidth','shaftDepth','pitDepth','topFloorHeight',
+      'italianPrice','fujiPrice','discount','steelStructure','finalItalianPrice','finalFujiPrice'
+    ];
+
+    function setTodayDate(){
+      document.getElementById('requestDate').value = new Date().toLocaleString('en-GB');
+    }
+
+    function toNumber(value){
+      const num = parseFloat(value);
+      return isNaN(num) ? 0 : num;
+    }
+
+    function formatMoney(value){
+      return `${toNumber(value).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })} AED`;
+    }
+
+    function getLiftSelections(){
+      return {
+        fuji: document.querySelector('input[name="liftType"][value="Fuji"]').checked,
+        italy: document.querySelector('input[name="liftType"][value="Italy"]').checked
+      };
+    }
+
+    function getLiftTypes(){
+      return [...document.querySelectorAll('input[name="liftType"]:checked')]
+        .map(el => el.value)
+        .join(' / ');
+    }
+
+    function setFieldGroupState(fieldNames, enabled){
+      fieldNames.forEach(name => {
+        const el = form.elements[name];
+        if(!el) return;
+        el.disabled = !enabled;
+        if(!enabled){
+          el.value = '0';
+          el.classList.remove('error-field');
+        } else if(el.value === '') {
+          el.value = '0';
+        }
       });
     }
 
-    return jsonOutput_({
-      success: true,
-      message: 'Web App is running'
-    });
-  } catch (error) {
-    return jsonOutput_({
-      success: false,
-      message: error.message
-    });
-  }
-}
-
-function doPost(e) {
-  try {
-    if (!e.postData || !e.postData.contents) {
-      throw new Error('No post data received');
+    function toggleVisualBlocks(selector, enabled){
+      document.querySelectorAll(selector).forEach(block => {
+        block.classList.toggle('disabled-block', !enabled);
+      });
     }
 
-    const data = JSON.parse(e.postData.contents);
-    const sheet = getOrCreateSheet_();
-    ensureHeaders_(sheet);
+    function updateLiftTypeBehavior(){
+      const { fuji, italy } = getLiftSelections();
+      setFieldGroupState(italyFields, italy);
+      setFieldGroupState(fujiFields, fuji);
+      toggleVisualBlocks('.brand-italy', italy);
+      toggleVisualBlocks('.brand-fuji', fuji);
+      document.getElementById('italyPriceCard').style.display = italy ? '' : 'none';
+      document.getElementById('fujiPriceCard').style.display = fuji ? '' : 'none';
+      calculateFinalPrices();
+    }
 
-    const row = [
-      valueOrEmpty_(data.requestDate),
-      valueOrEmpty_(data.salesRepresentative),
-      valueOrEmpty_(data.liftType),
-      valueOrEmpty_(data.stage),
-      valueOrEmpty_(data.clientName),
-      valueOrEmpty_(data.phone1),
-      valueOrEmpty_(data.phone2),
-      valueOrEmpty_(data.consultantOfficeName),
-      valueOrEmpty_(data.consultantPhone),
-      numberOrZero_(data.consultantCommission),
-      valueOrEmpty_(data.contractorOfficeName),
-      valueOrEmpty_(data.contractorPhone),
-      numberOrZero_(data.contractorCommission),
-      valueOrEmpty_(data.emirate),
-      valueOrEmpty_(data.area),
-      valueOrEmpty_(data.plotNo),
-      valueOrEmpty_(data.elevatorType),
-      valueOrEmpty_(data.capacity),
-      valueOrEmpty_(data.numberOfStops),
-      valueOrEmpty_(data.doors),
-      numberOrZero_(data.additionalDoorPriceItaly),
-      numberOrZero_(data.additionalDoorPriceFuji),
-      valueOrEmpty_(data.cabin),
-      numberOrZero_(data.additionalCabinPriceItaly),
-      numberOrZero_(data.additionalCabinPriceFuji),
-      valueOrEmpty_(data.shaftType),
-      valueOrEmpty_(data.shaftWidth),
-      valueOrEmpty_(data.shaftDepth),
-      valueOrEmpty_(data.pitDepth),
-      valueOrEmpty_(data.topFloorHeight),
-      numberOrZero_(data.italianPrice),
-      numberOrZero_(data.fujiPrice),
-      numberOrZero_(data.discount),
-      numberOrZero_(data.steelStructure),
-      numberOrZero_(data.finalItalianPrice),
-      numberOrZero_(data.finalFujiPrice),
-      new Date()
-    ];
+    function getCommissionTotal(){
+      return toNumber(form.elements['consultantCommission'].value) +
+             toNumber(form.elements['contractorCommission'].value);
+    }
 
-    sheet.appendRow(row);
+    function calculateFinalPrices(){
+      const { fuji, italy } = getLiftSelections();
 
-    return jsonOutput_({
-      success: true,
-      message: 'Data saved successfully'
-    });
+      const italianPrice = italy ? toNumber(form.elements['italianPrice'].value) : 0;
+      const fujiPrice = fuji ? toNumber(form.elements['fujiPrice'].value) : 0;
+      const additionalDoorPriceItaly = italy ? toNumber(form.elements['additionalDoorPriceItaly'].value) : 0;
+      const additionalDoorPriceFuji = fuji ? toNumber(form.elements['additionalDoorPriceFuji'].value) : 0;
+      const additionalCabinPriceItaly = italy ? toNumber(form.elements['additionalCabinPriceItaly'].value) : 0;
+      const additionalCabinPriceFuji = fuji ? toNumber(form.elements['additionalCabinPriceFuji'].value) : 0;
+      const steelStructure = toNumber(form.elements['steelStructure'].value);
+      const discount = toNumber(form.elements['discount'].value);
+      const commissionTotal = getCommissionTotal();
 
-  } catch (error) {
-    return jsonOutput_({
-      success: false,
-      message: error.message
-    });
-  }
-}
+      const finalItalian = italy
+        ? italianPrice + additionalDoorPriceItaly + additionalCabinPriceItaly + commissionTotal + steelStructure - discount
+        : 0;
 
-function getOrCreateSheet_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(SHEET_NAME);
+      const finalFuji = fuji
+        ? fujiPrice + additionalDoorPriceFuji + additionalCabinPriceFuji + commissionTotal + steelStructure - discount
+        : 0;
 
-  if (!sheet) {
-    sheet = ss.insertSheet(SHEET_NAME);
-  }
+      document.getElementById('finalItalianPrice').value = finalItalian.toFixed(2);
+      document.getElementById('finalFujiPrice').value = finalFuji.toFixed(2);
 
-  return sheet;
-}
+      document.getElementById('finalItalianPriceDisplay').textContent = italy ? formatMoney(finalItalian) : 'غير مفعل';
+      document.getElementById('finalFujiPriceDisplay').textContent = fuji ? formatMoney(finalFuji) : 'غير مفعل';
 
-function ensureHeaders_(sheet) {
-  const lastColumn = sheet.getLastColumn();
-  const existingHeaders = lastColumn > 0
-    ? sheet.getRange(1, 1, 1, lastColumn).getValues()[0]
-    : [];
+      document.getElementById('finalItalianPriceBreakdown').innerHTML = italy
+        ? `سعر المصعد الإيطالي ${formatMoney(italianPrice)} + الأبواب الإضافية - إيطالي ${formatMoney(additionalDoorPriceItaly)} + الكابينة الإضافية - إيطالي ${formatMoney(additionalCabinPriceItaly)} + العمولة ${formatMoney(commissionTotal)} + برج الحديد ${formatMoney(steelStructure)} - الخصم ${formatMoney(discount)}`
+        : 'تم إلغاء احتساب الإيطالي حسب نوع المصعد المختار';
 
-  const isEmpty = existingHeaders.join('').trim() === '';
+      document.getElementById('finalFujiPriceBreakdown').innerHTML = fuji
+        ? `سعر المصعد الفوجي ${formatMoney(fujiPrice)} + الأبواب الإضافية - فوجي ${formatMoney(additionalDoorPriceFuji)} + الكابينة الإضافية - فوجي ${formatMoney(additionalCabinPriceFuji)} + العمولة ${formatMoney(commissionTotal)} + برج الحديد ${formatMoney(steelStructure)} - الخصم ${formatMoney(discount)}`
+        : 'تم إلغاء احتساب الفوجي حسب نوع المصعد المختار';
+    }
 
-  if (isEmpty) {
-    sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
-    sheet.setFrozenRows(1);
-    return;
-  }
+    function getFormData(){
+      calculateFinalPrices();
+      return {
+        requestDate: document.getElementById('requestDate').value,
+        salesRepresentative: form.elements['salesRepresentative'].value,
+        liftType: getLiftTypes(),
+        stage: form.elements['stage'].value,
+        clientName: form.elements['clientName'].value,
+        phone1: form.elements['phone1'].value,
+        phone2: form.elements['phone2'].value,
+        consultantOfficeName: form.elements['consultantOfficeName'].value,
+        consultantPhone: form.elements['consultantPhone'].value,
+        consultantCommission: form.elements['consultantCommission'].value,
+        contractorOfficeName: form.elements['contractorOfficeName'].value,
+        contractorPhone: form.elements['contractorPhone'].value,
+        contractorCommission: form.elements['contractorCommission'].value,
+        emirate: form.elements['emirate'].value,
+        area: form.elements['area'].value,
+        plotNo: form.elements['plotNo'].value,
+        elevatorType: form.elements['elevatorType'].value,
+        capacity: form.elements['capacity'].value,
+        numberOfStops: form.elements['numberOfStops'].value,
+        doors: form.elements['doors'].value,
+        additionalDoorPriceItaly: form.elements['additionalDoorPriceItaly'].disabled ? '0' : form.elements['additionalDoorPriceItaly'].value,
+        additionalDoorPriceFuji: form.elements['additionalDoorPriceFuji'].disabled ? '0' : form.elements['additionalDoorPriceFuji'].value,
+        cabin: form.elements['cabin'].value,
+        additionalCabinPriceItaly: form.elements['additionalCabinPriceItaly'].disabled ? '0' : form.elements['additionalCabinPriceItaly'].value,
+        additionalCabinPriceFuji: form.elements['additionalCabinPriceFuji'].disabled ? '0' : form.elements['additionalCabinPriceFuji'].value,
+        shaftType: form.elements['shaftType'].value,
+        shaftWidth: form.elements['shaftWidth'].value,
+        shaftDepth: form.elements['shaftDepth'].value,
+        pitDepth: form.elements['pitDepth'].value,
+        topFloorHeight: form.elements['topFloorHeight'].value,
+        italianPrice: form.elements['italianPrice'].disabled ? '0' : form.elements['italianPrice'].value,
+        fujiPrice: form.elements['fujiPrice'].disabled ? '0' : form.elements['fujiPrice'].value,
+        discount: form.elements['discount'].value,
+        steelStructure: form.elements['steelStructure'].value,
+        finalItalianPrice: document.getElementById('finalItalianPrice').value,
+        finalFujiPrice: document.getElementById('finalFujiPrice').value
+      };
+    }
 
-  const existingJoined = existingHeaders.slice(0, HEADERS.length).join('|');
-  const requiredJoined = HEADERS.join('|');
+    function clearErrors(){
+      document.querySelectorAll('.error-field').forEach(el => el.classList.remove('error-field'));
+      liftTypeWrap.classList.remove('error-field');
+    }
 
-  if (existingJoined !== requiredJoined) {
-    sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
-    sheet.setFrozenRows(1);
-  }
-}
+    function validateForm(){
+      let valid = true;
+      let firstInvalid = null;
 
-function getSuggestions_(type) {
-  const sheet = getOrCreateSheet_();
-  ensureHeaders_(sheet);
+      form.querySelectorAll('[required]').forEach(el => {
+        if(!el.value){
+          el.classList.add('error-field');
+          valid = false;
+          if(!firstInvalid) firstInvalid = el;
+        }
+      });
 
-  const data = sheet.getDataRange().getValues();
-  if (data.length < 2) return [];
+      if(!document.querySelector('input[name="liftType"]:checked')){
+        liftTypeWrap.classList.add('error-field');
+        valid = false;
+        if(!firstInvalid) firstInvalid = liftTypeWrap;
+      }
 
-  const headers = data[0];
-  let columnName = '';
+      if(!valid && firstInvalid){
+        firstInvalid.scrollIntoView({ behavior:'smooth', block:'center' });
+      }
 
-  if (type === 'consultant') {
-    columnName = 'Consultant Office';
-  } else if (type === 'contractor') {
-    columnName = 'Contractor Office';
-  } else {
-    return [];
-  }
+      return valid;
+    }
 
-  const colIndex = headers.indexOf(columnName);
-  if (colIndex === -1) return [];
+    async function saveToGoogleSheet() {
+      const data = getFormData();
 
-  const values = data
-    .slice(1)
-    .map(row => row[colIndex])
-    .filter(v => v !== null && v !== undefined && String(v).trim() !== '')
-    .map(v => String(v).trim());
+      try {
+        const response = await fetch(SHEETS_WEBAPP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(data)
+        });
 
-  const unique = [...new Set(values)];
-  unique.sort((a, b) => a.localeCompare(b, 'ar'));
+        let result;
+        try {
+          result = await response.json();
+        } catch (e) {
+          throw new Error('تعذر قراءة رد Google Sheet');
+        }
 
-  return unique.slice(0, 200);
-}
+        if (!result.success) {
+          throw new Error(result.message || 'فشل في حفظ البيانات');
+        }
 
-function valueOrEmpty_(value) {
-  return value === undefined || value === null ? '' : String(value).trim();
-}
+        return result;
 
-function numberOrZero_(value) {
-  const num = parseFloat(value);
-  return isNaN(num) ? 0 : num;
-}
+      } catch (error) {
+        throw new Error('خطأ في الاتصال: ' + error.message);
+      }
+    }
 
-function jsonOutput_(obj) {
-  return ContentService
-    .createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
-}
+    async function loadSuggestions(type, datalistId) {
+      try {
+        const url = `${SHEETS_WEBAPP_URL}?action=suggestions&type=${encodeURIComponent(type)}`;
+        const response = await fetch(url);
+        const result = await response.json();
+
+        if (!result.success || !Array.isArray(result.suggestions)) return;
+
+        const datalist = document.getElementById(datalistId);
+        if (!datalist) return;
+
+        datalist.innerHTML = result.suggestions
+          .map(item => `<option value="${String(item).replace(/"/g, '&quot;')}"></option>`)
+          .join('');
+      } catch (error) {
+        console.error(`Failed to load ${type} suggestions:`, error);
+      }
+    }
+
+    function fillPdfTemplate(){
+      const data = getFormData();
+      const { fuji, italy } = getLiftSelections();
+
+      fields.forEach(key => {
+        const el = document.getElementById(`v_${key}`);
+        if (!el) return;
+
+        const italyOnly = ['additionalDoorPriceItaly', 'additionalCabinPriceItaly', 'italianPrice', 'finalItalianPrice'];
+        const fujiOnly = ['additionalDoorPriceFuji', 'additionalCabinPriceFuji', 'fujiPrice', 'finalFujiPrice'];
+
+        if (italyOnly.includes(key) && !italy) {
+          el.textContent = 'غير مفعل';
+          return;
+        }
+
+        if (fujiOnly.includes(key) && !fuji) {
+          el.textContent = 'غير مفعل';
+          return;
+        }
+
+        if ([
+          'consultantCommission','contractorCommission','additionalDoorPriceItaly','additionalDoorPriceFuji',
+          'additionalCabinPriceItaly','additionalCabinPriceFuji','italianPrice','fujiPrice','discount',
+          'steelStructure','finalItalianPrice','finalFujiPrice'
+        ].includes(key)) {
+          el.textContent = data[key] !== '' ? formatMoney(data[key]) : '-';
+        } else {
+          el.textContent = data[key] || '-';
+        }
+      });
+
+      document.getElementById('pdfDate').textContent = new Date().toLocaleString('en-GB');
+      return data;
+    }
+
+    function makeSummaryMessage(data){
+      const { fuji, italy } = getLiftSelections();
+
+      return [
+        'طلب عرض سعر - RFQ',
+        `التاريخ: ${data.requestDate || '-'}`,
+        `مسؤول البيع: ${data.salesRepresentative || '-'}`,
+        `نوع المصعد: ${data.liftType || '-'}`,
+        `المرحلة: ${data.stage || '-'}`,
+        `اسم العميل: ${data.clientName || '-'}`,
+        `رقم الهاتف1: ${data.phone1 || '-'}`,
+        `رقم الهاتف2: ${data.phone2 || '-'}`,
+        `اسم المكتب الاستشاري: ${data.consultantOfficeName || '-'}`,
+        `رقم الهاتف الاستشاري: ${data.consultantPhone || '-'}`,
+        `عمولة المكتب الاستشاري: ${formatMoney(data.consultantCommission || 0)}`,
+        `اسم مكتب المقاول: ${data.contractorOfficeName || '-'}`,
+        `رقم هاتف المقاول: ${data.contractorPhone || '-'}`,
+        `عمولة مكتب المقاول: ${formatMoney(data.contractorCommission || 0)}`,
+        `الإمارة: ${data.emirate || '-'}`,
+        `المنطقة: ${data.area || '-'}`,
+        `Plot No.: ${data.plotNo || '-'}`,
+        `بيانات المصعد: ${data.elevatorType || '-'}`,
+        `الحمولة: ${data.capacity || '-'}`,
+        `الوقفات: ${data.numberOfStops || '-'}`,
+        `الأبواب: ${data.doors || '-'}`,
+        `سعر الأبواب الإضافية - إيطالي: ${italy ? formatMoney(data.additionalDoorPriceItaly || 0) : 'غير مفعل'}`,
+        `سعر الأبواب الإضافية - فوجي: ${fuji ? formatMoney(data.additionalDoorPriceFuji || 0) : 'غير مفعل'}`,
+        `لون الكابينة: ${data.cabin || '-'}`,
+        `سعر الكابينة الإضافية - إيطالي: ${italy ? formatMoney(data.additionalCabinPriceItaly || 0) : 'غير مفعل'}`,
+        `سعر الكابينة الإضافية - فوجي: ${fuji ? formatMoney(data.additionalCabinPriceFuji || 0) : 'غير مفعل'}`,
+        `نوع البئر: ${data.shaftType || '-'}`,
+        `العرض: ${data.shaftWidth || '-'}`,
+        `العمق: ${data.shaftDepth || '-'}`,
+        `عمق الحفرة: ${data.pitDepth || '-'}`,
+        `ارتفاع آخر وقفة: ${data.topFloorHeight || '-'}`,
+        `سعر المصعد الإيطالي: ${italy ? formatMoney(data.italianPrice || 0) : 'غير مفعل'}`,
+        `سعر المصعد الفوجي: ${fuji ? formatMoney(data.fujiPrice || 0) : 'غير مفعل'}`,
+        `الخصم: ${formatMoney(data.discount || 0)}`,
+        `سعر برج الحديد: ${formatMoney(data.steelStructure || 0)}`,
+        `السعر النهائي الإيطالي: ${italy ? formatMoney(data.finalItalianPrice || 0) : 'غير مفعل'}`,
+        `السعر النهائي الفوجي: ${fuji ? formatMoney(data.finalFujiPrice || 0) : 'غير مفعل'}`
+      ].join('\n');
+    }
+
+    async function buildPdf(){
+      fillPdfTemplate();
+
+      const canvas = await html2canvas(pdfTemplate, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.92);
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('p', 'mm', 'a4');
+
+      pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+
+      const data = getFormData();
+      const safeClientName = (data.clientName || 'Client')
+        .replace(/[^\p{L}\p{N}\s-]/gu, '')
+        .replace(/\s+/g, '-');
+
+      const fileName = `SMOU-RFQ-${safeClientName}.pdf`;
+
+      return { pdf, fileName, data };
+    }
+
+    async function handlePdfOnly(){
+      clearErrors();
+      calculateFinalPrices();
+
+      if(!validateForm()){
+        statusText.textContent = 'يرجى تعبئة الحقول المطلوبة.';
+        statusText.className = 'status error';
+        return;
+      }
+
+      try{
+        statusText.textContent = 'جارٍ حفظ البيانات في Google Sheet.';
+        statusText.className = 'status';
+
+        await saveToGoogleSheet();
+
+        statusText.textContent = 'تم حفظ البيانات، جارٍ إنشاء ملف PDF.';
+
+        const { pdf, fileName } = await buildPdf();
+        pdf.save(fileName);
+
+        statusText.textContent = `تم حفظ البيانات وإنشاء ملف PDF بنجاح: ${fileName}`;
+        statusText.className = 'status ok';
+      } catch (err){
+        console.error(err);
+        statusText.textContent = `حدث خطأ: ${err.message}`;
+        statusText.className = 'status error';
+      }
+    }
+
+    async function handleSubmit(){
+      clearErrors();
+      calculateFinalPrices();
+
+      if(!validateForm()){
+        statusText.textContent = 'يرجى تعبئة الحقول المطلوبة.';
+        statusText.className = 'status error';
+        return;
+      }
+
+      try{
+        statusText.textContent = 'جارٍ حفظ البيانات في Google Sheet.';
+        statusText.className = 'status';
+
+        await saveToGoogleSheet();
+
+        statusText.textContent = 'تم حفظ البيانات، جارٍ إنشاء ملف PDF.';
+
+        const { pdf, fileName, data } = await buildPdf();
+        pdf.save(fileName);
+
+        const blob = pdf.output('blob');
+        const file = new File([blob], fileName, { type: 'application/pdf' });
+        const text = makeSummaryMessage(data);
+
+        if (navigator.canShare && navigator.share && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: 'SMOU RFQ Report',
+            text,
+            files: [file]
+          });
+          statusText.textContent = 'تم حفظ البيانات وإنشاء PDF وفتح المشاركة المباشرة.';
+          statusText.className = 'status ok';
+          return;
+        }
+
+        const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+        window.open(url, '_blank');
+
+        statusText.textContent = 'تم حفظ البيانات وإنشاء PDF وفتح واتساب. إذا لم يتم إرفاق الملف تلقائيًا، أرفقه يدويًا من التنزيلات.';
+        statusText.className = 'status ok';
+
+      } catch (err){
+        console.error(err);
+        statusText.textContent = `حدث خطأ: ${err.message}`;
+        statusText.className = 'status error';
+      }
+    }
+
+    function bindCalculationEvents(){
+      [
+        'consultantCommission','contractorCommission','additionalDoorPriceItaly','additionalDoorPriceFuji',
+        'additionalCabinPriceItaly','additionalCabinPriceFuji','italianPrice','fujiPrice','discount','steelStructure'
+      ].forEach(name => {
+        const el = form.elements[name];
+        if(el){
+          el.addEventListener('input', calculateFinalPrices);
+          el.addEventListener('change', calculateFinalPrices);
+          el.addEventListener('input', () => el.classList.remove('error-field'));
+        }
+      });
+
+      form.querySelectorAll('input, select').forEach(el => {
+        el.addEventListener('input', () => el.classList.remove('error-field'));
+        el.addEventListener('change', () => el.classList.remove('error-field'));
+      });
+
+      document.querySelectorAll('input[name="liftType"]').forEach(el => {
+        el.addEventListener('change', () => {
+          liftTypeWrap.classList.remove('error-field');
+          updateLiftTypeBehavior();
+        });
+      });
+    }
+
+    document.getElementById('autoSendBtn').addEventListener('click', handleSubmit);
+    document.getElementById('pdfOnlyBtn').addEventListener('click', handlePdfOnly);
+
+    setTodayDate();
+    bindCalculationEvents();
+    updateLiftTypeBehavior();
+    loadSuggestions('consultant', 'consultantSuggestions');
+    loadSuggestions('contractor', 'contractorSuggestions');
+  </script>
+</body>
+</html>
