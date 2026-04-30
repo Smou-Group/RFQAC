@@ -1,74 +1,543 @@
-const SHEET_NAME = "Maintenance Reports";
-const START_REPORT_NO = 20265550001;
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-function doGet(e) {
-  if (e.parameter.action === "nextReportNo") {
-    const no = getNextReportNo();
-    const callback = e.parameter.callback;
-    return ContentService
-      .createTextOutput(`${callback}(${JSON.stringify({ reportNo: no })})`)
-      .setMimeType(ContentService.MimeType.JAVASCRIPT);
-  }
+<title>SMOU Maintenance Report</title>
 
-  return ContentService.createTextOutput("SMOU Maintenance API is running");
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  font-family:Tahoma, Arial, sans-serif;
+  background:linear-gradient(135deg,#eaf3ff,#ffffff);
+  color:#12325c;
 }
 
-function doPost(e) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(SHEET_NAME);
-
-  if (!sheet) {
-    sheet = ss.insertSheet(SHEET_NAME);
-    sheet.appendRow([
-      "Timestamp",
-      "Report No",
-      "Date",
-      "Start Time",
-      "Client Name",
-      "Phone",
-      "Contract No",
-      "Address",
-      "Visit Reason",
-      "Action Taken",
-      "Recommendations",
-      "Amount",
-      "Technician"
-    ]);
-  }
-
-  const data = e.parameter;
-
-  sheet.appendRow([
-    new Date(),
-    data.reportNo || "",
-    data.date || "",
-    data.time || "",
-    data.clientName || "",
-    data.phone || "",
-    data.contractNo || "",
-    data.address || "",
-    data.visitReason || "",
-    data.actionTaken || "",
-    data.recommendations || "",
-    data.amount || "",
-    data.technician || ""
-  ]);
-
-  return ContentService.createTextOutput("success");
+.container{
+  max-width:980px;
+  margin:25px auto;
+  background:#ffffff;
+  padding:25px;
+  border-radius:22px;
+  box-shadow:0 20px 45px rgba(0,64,128,.15);
+  border:1px solid #d9e8ff;
 }
 
-function getNextReportNo() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(SHEET_NAME);
+.header{
+  text-align:center;
+  padding:20px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#0b5ed7,#003f91);
+  color:white;
+  margin-bottom:25px;
+}
 
-  if (!sheet || sheet.getLastRow() < 2) {
-    return START_REPORT_NO;
+.logo{
+  width:110px;
+  background:white;
+  padding:10px;
+  border-radius:16px;
+  margin-bottom:10px;
+}
+
+.header h1{margin:8px 0 4px;font-size:28px;}
+.header h2{margin:5px 0 0;font-size:20px;font-weight:normal;}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.full{grid-column:1/-1;}
+
+.field{
+  display:flex;
+  flex-direction:column;
+}
+
+label{
+  font-weight:bold;
+  margin-bottom:6px;
+  color:#06428f;
+}
+
+input, textarea, select{
+  width:100%;
+  padding:13px;
+  border:1px solid #bdd3ef;
+  border-radius:12px;
+  font-size:15px;
+  font-family:Tahoma, Arial;
+  background:#f8fbff;
+}
+
+input:focus, textarea:focus, select:focus{
+  outline:none;
+  border-color:#0b5ed7;
+  box-shadow:0 0 0 3px rgba(11,94,215,.12);
+  background:#fff;
+}
+
+input[readonly]{
+  background:#eef5ff;
+  font-weight:bold;
+  color:#003f91;
+}
+
+textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-top:22px;
+}
+
+button{
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  color:white;
+}
+
+.save{background:#0b5ed7;}
+.pdf{background:#087f5b;}
+.print{background:#4c6ef5;}
+.whatsapp{background:#25D366;color:#053b1d;}
+
+#msg{
+  margin-top:15px;
+  text-align:center;
+  font-weight:bold;
+  color:#087f5b;
+}
+
+.report{
+  background:white;
+  padding:35px;
+  margin-top:25px;
+  border-radius:18px;
+  border:1px solid #d9e8ff;
+}
+
+.report-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:4px solid #0b5ed7;
+  padding-bottom:15px;
+  margin-bottom:20px;
+}
+
+.report-logo{
+  width:95px;
+  background:white;
+}
+
+.report-title{
+  text-align:center;
+  color:#0b5ed7;
+}
+
+.report-title h2{
+  margin:0;
+  font-size:24px;
+}
+
+.report-title p{
+  margin:5px 0 0;
+  color:#555;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+  font-size:14px;
+}
+
+th{
+  width:30%;
+  background:#eaf3ff;
+  color:#06428f;
+  text-align:right;
+}
+
+td,th{
+  border:1px solid #c9dcf5;
+  padding:11px;
+  vertical-align:top;
+}
+
+.signature{
+  display:flex;
+  justify-content:space-between;
+  margin-top:35px;
+}
+
+.sign-box{
+  width:45%;
+  text-align:center;
+  border-top:1px solid #333;
+  padding-top:10px;
+  font-weight:bold;
+}
+
+.footer-note{
+  margin-top:25px;
+  text-align:center;
+  font-size:12px;
+  color:#666;
+}
+
+@media(max-width:750px){
+  .container{margin:10px;padding:16px;}
+  .grid{grid-template-columns:1fr;}
+  .actions{grid-template-columns:1fr;}
+  .report{padding:18px;}
+  .report-head{flex-direction:column;gap:10px;text-align:center;}
+  .signature{flex-direction:column;gap:30px;}
+  .sign-box{width:100%;}
+}
+
+@media print{
+  body{background:white;}
+  .container > .header,
+  .container > .grid,
+  .container > .actions,
+  #msg{display:none;}
+
+  .container{
+    box-shadow:none;
+    border:none;
+    margin:0;
+    padding:0;
   }
 
-  const values = sheet.getRange(2, 2, sheet.getLastRow() - 1, 1).getValues().flat();
-  const nums = values.filter(v => v && !isNaN(v)).map(Number);
-
-  if (nums.length === 0) return START_REPORT_NO;
-
-  return Math.max(...nums) + 1;
+  .report{
+    border:none;
+    margin:0;
+  }
 }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <img src="logo.png" class="logo" alt="SMOU GROUP Logo">
+    <h1>مجموعة سمو للمصاعد والتكييفات</h1>
+    <h2>SMOU GROUP - Maintenance Fault Report</h2>
+  </div>
+
+  <div class="grid">
+
+    <div class="field">
+      <label>رقم التقرير / Report No</label>
+      <input id="reportNo" readonly>
+    </div>
+
+    <div class="field">
+      <label>التاريخ / Date</label>
+      <input type="date" id="date" readonly>
+    </div>
+
+    <div class="field">
+      <label>وقت بداية الصيانة / Maintenance Start Time</label>
+      <input type="time" id="time" readonly>
+    </div>
+
+    <div class="field">
+      <label>اسم العميل / Client Name</label>
+      <input id="clientName" placeholder="اسم العميل">
+    </div>
+
+    <div class="field">
+      <label>رقم العميل / Customer Phone</label>
+      <input id="phone" placeholder="9715XXXXXXXX">
+    </div>
+
+    <div class="field">
+      <label>رقم العقد / Contract No</label>
+      <input id="contractNo" placeholder="رقم العقد">
+    </div>
+
+    <div class="field full">
+      <label>العنوان / Address</label>
+      <input id="address" placeholder="العنوان">
+    </div>
+
+    <div class="field full">
+      <label>سبب الزيارة / Visit Reason</label>
+      <textarea id="visitReason" placeholder="اكتب سبب الزيارة أو العطل"></textarea>
+    </div>
+
+    <div class="field full">
+      <label>الإجراء المتبع / Action Taken</label>
+      <textarea id="actionTaken" placeholder="اكتب الإجراء الفني الذي تم تنفيذه"></textarea>
+    </div>
+
+    <div class="field full">
+      <label>التوصيات الفنية / Technical Recommendations</label>
+      <textarea id="recommendations" placeholder="اكتب التوصيات الفنية"></textarea>
+    </div>
+
+    <div class="field">
+      <label>المبلغ المطلوب / Amount</label>
+      <input id="amount" placeholder="AED">
+    </div>
+
+    <div class="field">
+      <label>اسم الفني / Technician Name</label>
+      <select id="technician">
+        <option value="">اختر الفني / Select Technician</option>
+        <option>Ahmed</option>
+        <option>Sayed</option>
+        <option>Essam</option>
+        <option>Mohamed</option>
+        <option>Ali</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="actions">
+    <button class="save" onclick="saveData()">حفظ في الشيت</button>
+    <button class="pdf" onclick="downloadPDF()">تحميل PDF</button>
+    <button class="print" onclick="printReport()">طباعة</button>
+    <button class="whatsapp" onclick="sendWhatsApp()">إرسال واتساب</button>
+  </div>
+
+  <div id="msg"></div>
+
+  <div id="report" class="report">
+
+    <div class="report-head">
+      <img src="logo.png" class="report-logo" alt="SMOU GROUP Logo">
+
+      <div class="report-title">
+        <h2>تقرير صيانة أعطال</h2>
+        <p>Maintenance Fault Report</p>
+      </div>
+
+      <div style="text-align:left;font-weight:bold;color:#06428f;">
+        SMOU GROUP<br>
+        Elevators & Air Conditioning
+      </div>
+    </div>
+
+    <table>
+      <tr><th>رقم التقرير / Report No</th><td id="r1"></td></tr>
+      <tr><th>التاريخ / Date</th><td id="r2"></td></tr>
+      <tr><th>وقت بداية الصيانة / Start Time</th><td id="r3"></td></tr>
+      <tr><th>اسم العميل / Client Name</th><td id="r4"></td></tr>
+      <tr><th>رقم العميل / Phone</th><td id="r5"></td></tr>
+      <tr><th>رقم العقد / Contract No</th><td id="r6"></td></tr>
+      <tr><th>العنوان / Address</th><td id="r7"></td></tr>
+      <tr><th>سبب الزيارة / Visit Reason</th><td id="r8"></td></tr>
+      <tr><th>الإجراء المتبع / Action Taken</th><td id="r9"></td></tr>
+      <tr><th>التوصيات الفنية / Recommendations</th><td id="r10"></td></tr>
+      <tr><th>المبلغ / Amount</th><td id="r11"></td></tr>
+      <tr><th>اسم الفني / Technician</th><td id="r12"></td></tr>
+    </table>
+
+    <div class="signature">
+      <div class="sign-box">توقيع الفني<br>Technician Signature</div>
+      <div class="sign-box">توقيع العميل<br>Customer Signature</div>
+    </div>
+
+    <div class="footer-note">
+      This report was generated electronically by SMOU GROUP Maintenance System.
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/library/d/1QVxhJsjGMezrIICT3EjN7Omh5Fs0R69Oos7h3GfpQo-toPwnH4ewj9o7/1";
+
+function setAutoDateTime(){
+  const now = new Date();
+
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+
+  const hh = String(now.getHours()).padStart(2, "0");
+  const min = String(now.getMinutes()).padStart(2, "0");
+
+  document.getElementById("date").value = `${yyyy}-${mm}-${dd}`;
+  document.getElementById("time").value = `${hh}:${min}`;
+}
+
+function loadNextReportNo(){
+  const callbackName = "setReportNoCallback_" + Date.now();
+
+  window[callbackName] = function(response){
+    document.getElementById("reportNo").value = response.reportNo;
+    fillReport();
+    delete window[callbackName];
+  };
+
+  const script = document.createElement("script");
+  script.src = `${SCRIPT_URL}?action=nextReportNo&callback=${callbackName}`;
+  document.body.appendChild(script);
+}
+
+function getData(){
+  return {
+    reportNo: document.getElementById("reportNo").value,
+    date: document.getElementById("date").value,
+    time: document.getElementById("time").value,
+    clientName: document.getElementById("clientName").value,
+    phone: document.getElementById("phone").value,
+    contractNo: document.getElementById("contractNo").value,
+    address: document.getElementById("address").value,
+    visitReason: document.getElementById("visitReason").value,
+    actionTaken: document.getElementById("actionTaken").value,
+    recommendations: document.getElementById("recommendations").value,
+    amount: document.getElementById("amount").value,
+    technician: document.getElementById("technician").value
+  };
+}
+
+function fillReport(){
+  const d = getData();
+
+  document.getElementById("r1").innerText = d.reportNo;
+  document.getElementById("r2").innerText = d.date;
+  document.getElementById("r3").innerText = d.time;
+  document.getElementById("r4").innerText = d.clientName;
+  document.getElementById("r5").innerText = d.phone;
+  document.getElementById("r6").innerText = d.contractNo;
+  document.getElementById("r7").innerText = d.address;
+  document.getElementById("r8").innerText = d.visitReason;
+  document.getElementById("r9").innerText = d.actionTaken;
+  document.getElementById("r10").innerText = d.recommendations;
+  document.getElementById("r11").innerText = d.amount ? d.amount + " AED" : "";
+  document.getElementById("r12").innerText = d.technician;
+}
+
+document.querySelectorAll("input, textarea, select").forEach(el=>{
+  el.addEventListener("input", fillReport);
+  el.addEventListener("change", fillReport);
+});
+
+async function saveData(){
+  fillReport();
+
+  const d = getData();
+
+  if(!d.reportNo || !d.date || !d.time || !d.clientName || !d.technician){
+    document.getElementById("msg").innerText = "يرجى إدخال اسم العميل واختيار الفني";
+    return;
+  }
+
+  document.getElementById("msg").innerText = "جاري الحفظ...";
+
+  try{
+    await fetch(SCRIPT_URL,{
+      method:"POST",
+      mode:"no-cors",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify(d)
+    });
+
+    document.getElementById("msg").innerText = "تم الحفظ في Google Sheet بنجاح";
+
+    setTimeout(()=>{
+      location.reload();
+    },1200);
+
+  }catch(e){
+    document.getElementById("msg").innerText = "حدث خطأ أثناء الحفظ";
+  }
+}
+
+async function downloadPDF(){
+  fillReport();
+
+  const { jsPDF } = window.jspdf;
+  const report = document.getElementById("report");
+
+  const canvas = await html2canvas(report,{
+    scale:2,
+    useCORS:true
+  });
+
+  const imgData = canvas.toDataURL("image/png");
+
+  const pdf = new jsPDF("p","mm","a4");
+  const pageWidth = 210;
+  const imgHeight = canvas.height * pageWidth / canvas.width;
+
+  pdf.addImage(imgData,"PNG",0,0,pageWidth,imgHeight);
+
+  const fileName = "SMOU-Maintenance-Report-" + 
+    (document.getElementById("reportNo").value || "New") + ".pdf";
+
+  pdf.save(fileName);
+}
+
+function printReport(){
+  fillReport();
+  window.print();
+}
+
+function sendWhatsApp(){
+  const d = getData();
+
+  const text =
+`*SMOU GROUP - Maintenance Fault Report*
+
+رقم التقرير / Report No: ${d.reportNo}
+التاريخ / Date: ${d.date}
+وقت بداية الصيانة / Start Time: ${d.time}
+
+اسم العميل / Client: ${d.clientName}
+رقم العقد / Contract No: ${d.contractNo}
+
+سبب الزيارة / Visit Reason:
+${d.visitReason}
+
+الإجراء المتبع / Action Taken:
+${d.actionTaken}
+
+التوصيات الفنية / Recommendations:
+${d.recommendations}
+
+المبلغ / Amount: ${d.amount ? d.amount + " AED" : ""}
+الفني / Technician: ${d.technician}`;
+
+  const phone = d.phone.replace(/\D/g,"");
+
+  const url = phone
+    ? "https://wa.me/" + phone + "?text=" + encodeURIComponent(text)
+    : "https://wa.me/?text=" + encodeURIComponent(text);
+
+  window.open(url,"_blank");
+}
+
+setAutoDateTime();
+loadNextReportNo();
+fillReport();
+</script>
+
+</body>
+</html>
