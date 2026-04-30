@@ -10,9 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box;}
 
 body{
   margin:0;
@@ -42,23 +40,14 @@ body{
 
 .logo{
   width:110px;
-  height:auto;
   background:white;
   padding:10px;
   border-radius:16px;
   margin-bottom:10px;
 }
 
-.header h1{
-  margin:8px 0 4px;
-  font-size:28px;
-}
-
-.header h2{
-  margin:5px 0 0;
-  font-size:20px;
-  font-weight:normal;
-}
+.header h1{margin:8px 0 4px;font-size:28px;}
+.header h2{margin:5px 0 0;font-size:20px;font-weight:normal;}
 
 .grid{
   display:grid;
@@ -66,9 +55,7 @@ body{
   gap:15px;
 }
 
-.full{
-  grid-column:1/-1;
-}
+.full{grid-column:1/-1;}
 
 .field{
   display:flex;
@@ -81,7 +68,7 @@ label{
   color:#06428f;
 }
 
-input, textarea{
+input, textarea, select{
   width:100%;
   padding:13px;
   border:1px solid #bdd3ef;
@@ -91,11 +78,17 @@ input, textarea{
   background:#f8fbff;
 }
 
-input:focus, textarea:focus{
+input:focus, textarea:focus, select:focus{
   outline:none;
   border-color:#0b5ed7;
   box-shadow:0 0 0 3px rgba(11,94,215,.12);
   background:#fff;
+}
+
+input[readonly]{
+  background:#eef5ff;
+  font-weight:bold;
+  color:#003f91;
 }
 
 textarea{
@@ -118,12 +111,6 @@ button{
   font-weight:bold;
   cursor:pointer;
   color:white;
-  transition:.25s;
-}
-
-button:hover{
-  transform:translateY(-2px);
-  box-shadow:0 10px 20px rgba(0,0,0,.15);
 }
 
 .save{background:#0b5ed7;}
@@ -138,7 +125,6 @@ button:hover{
   color:#087f5b;
 }
 
-/* PDF Report */
 .report{
   background:white;
   padding:35px;
@@ -218,50 +204,21 @@ td,th{
 }
 
 @media(max-width:750px){
-  .container{
-    margin:10px;
-    padding:16px;
-  }
-
-  .grid{
-    grid-template-columns:1fr;
-  }
-
-  .actions{
-    grid-template-columns:1fr;
-  }
-
-  .report{
-    padding:18px;
-  }
-
-  .report-head{
-    flex-direction:column;
-    gap:10px;
-    text-align:center;
-  }
-
-  .signature{
-    flex-direction:column;
-    gap:30px;
-  }
-
-  .sign-box{
-    width:100%;
-  }
+  .container{margin:10px;padding:16px;}
+  .grid{grid-template-columns:1fr;}
+  .actions{grid-template-columns:1fr;}
+  .report{padding:18px;}
+  .report-head{flex-direction:column;gap:10px;text-align:center;}
+  .signature{flex-direction:column;gap:30px;}
+  .sign-box{width:100%;}
 }
 
 @media print{
-  body{
-    background:white;
-  }
-
+  body{background:white;}
   .container > .header,
   .container > .grid,
   .container > .actions,
-  #msg{
-    display:none;
-  }
+  #msg{display:none;}
 
   .container{
     box-shadow:none;
@@ -292,17 +249,17 @@ td,th{
 
     <div class="field">
       <label>رقم التقرير / Report No</label>
-      <input id="reportNo" placeholder="مثال: 1001">
+      <input id="reportNo" readonly>
     </div>
 
     <div class="field">
       <label>التاريخ / Date</label>
-      <input type="date" id="date">
+      <input type="date" id="date" readonly>
     </div>
 
     <div class="field">
-      <label>الوقت / Time</label>
-      <input type="time" id="time">
+      <label>وقت بداية الصيانة / Maintenance Start Time</label>
+      <input type="time" id="time" readonly>
     </div>
 
     <div class="field">
@@ -347,7 +304,14 @@ td,th{
 
     <div class="field">
       <label>اسم الفني / Technician Name</label>
-      <input id="technician" placeholder="اسم الفني">
+      <select id="technician">
+        <option value="">اختر الفني / Select Technician</option>
+        <option>Ahmed</option>
+        <option>Sayed</option>
+        <option>Essam</option>
+        <option>Mohamed</option>
+        <option>Ali</option>
+      </select>
     </div>
 
   </div>
@@ -380,7 +344,7 @@ td,th{
     <table>
       <tr><th>رقم التقرير / Report No</th><td id="r1"></td></tr>
       <tr><th>التاريخ / Date</th><td id="r2"></td></tr>
-      <tr><th>الوقت / Time</th><td id="r3"></td></tr>
+      <tr><th>وقت بداية الصيانة / Start Time</th><td id="r3"></td></tr>
       <tr><th>اسم العميل / Client Name</th><td id="r4"></td></tr>
       <tr><th>رقم العميل / Phone</th><td id="r5"></td></tr>
       <tr><th>رقم العقد / Contract No</th><td id="r6"></td></tr>
@@ -406,9 +370,35 @@ td,th{
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx4CPN5fBNXxBo6nppf_28pyoUnchMsbsVY1Fl-RRxVROG1EYsVymkDxhVSDTKNI6T8bw/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwEMfI57WKzNOG2zNQx9W_YcHSsQCkhkqHRNk-vilthHpVsmM4LHtmIXl2n0NKCKeoHw/exec";
 
-document.getElementById("date").valueAsDate = new Date();
+function setAutoDateTime(){
+  const now = new Date();
+
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+
+  const hh = String(now.getHours()).padStart(2, "0");
+  const min = String(now.getMinutes()).padStart(2, "0");
+
+  document.getElementById("date").value = `${yyyy}-${mm}-${dd}`;
+  document.getElementById("time").value = `${hh}:${min}`;
+}
+
+function loadNextReportNo(){
+  const callbackName = "setReportNoCallback_" + Date.now();
+
+  window[callbackName] = function(response){
+    document.getElementById("reportNo").value = response.reportNo;
+    fillReport();
+    delete window[callbackName];
+  };
+
+  const script = document.createElement("script");
+  script.src = `${SCRIPT_URL}?action=nextReportNo&callback=${callbackName}`;
+  document.body.appendChild(script);
+}
 
 function getData(){
   return {
@@ -444,12 +434,20 @@ function fillReport(){
   document.getElementById("r12").innerText = d.technician;
 }
 
-document.querySelectorAll("input, textarea").forEach(el=>{
+document.querySelectorAll("input, textarea, select").forEach(el=>{
   el.addEventListener("input", fillReport);
+  el.addEventListener("change", fillReport);
 });
 
 async function saveData(){
   fillReport();
+
+  const d = getData();
+
+  if(!d.reportNo || !d.date || !d.time || !d.clientName || !d.technician){
+    document.getElementById("msg").innerText = "يرجى إدخال اسم العميل واختيار الفني";
+    return;
+  }
 
   document.getElementById("msg").innerText = "جاري الحفظ...";
 
@@ -457,13 +455,16 @@ async function saveData(){
     await fetch(SCRIPT_URL,{
       method:"POST",
       mode:"no-cors",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify(getData())
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify(d)
     });
 
     document.getElementById("msg").innerText = "تم الحفظ في Google Sheet بنجاح";
+
+    setTimeout(()=>{
+      location.reload();
+    },1200);
+
   }catch(e){
     document.getElementById("msg").innerText = "حدث خطأ أثناء الحفظ";
   }
@@ -507,7 +508,7 @@ function sendWhatsApp(){
 
 رقم التقرير / Report No: ${d.reportNo}
 التاريخ / Date: ${d.date}
-الوقت / Time: ${d.time}
+وقت بداية الصيانة / Start Time: ${d.time}
 
 اسم العميل / Client: ${d.clientName}
 رقم العقد / Contract No: ${d.contractNo}
@@ -533,6 +534,8 @@ ${d.recommendations}
   window.open(url,"_blank");
 }
 
+setAutoDateTime();
+loadNextReportNo();
 fillReport();
 </script>
 
