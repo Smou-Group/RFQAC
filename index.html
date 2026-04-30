@@ -370,7 +370,7 @@ td,th{
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/library/d/1QVxhJsjGMezrIICT3EjN7Omh5Fs0R69Oos7h3GfpQo-toPwnH4ewj9o7/1";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSs1wbgTY6GjTEXul_vOIOShlcFe6WEzFDbsDsVA3JP7XkXDZi3pJHkhcxwSPxeA8hZQ/exec";
 
 function setAutoDateTime(){
   const now = new Date();
@@ -390,7 +390,7 @@ function loadNextReportNo(){
   const callbackName = "setReportNoCallback_" + Date.now();
 
   window[callbackName] = function(response){
-    document.getElementById("reportNo").value = response.reportNo;
+    document.getElementById("reportNo").value = response.reportNo || "";
     fillReport();
     delete window[callbackName];
   };
@@ -451,22 +451,27 @@ async function saveData(){
 
   document.getElementById("msg").innerText = "جاري الحفظ...";
 
+  const formData = new URLSearchParams();
+  Object.keys(d).forEach(key => formData.append(key, d[key]));
+
   try{
     await fetch(SCRIPT_URL,{
       method:"POST",
       mode:"no-cors",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify(d)
+      headers:{
+        "Content-Type":"application/x-www-form-urlencoded"
+      },
+      body:formData.toString()
     });
 
-    document.getElementById("msg").innerText = "تم الحفظ في Google Sheet بنجاح";
+    document.getElementById("msg").innerText = "✅ تم الحفظ في MSM بنجاح";
 
     setTimeout(()=>{
       location.reload();
     },1200);
 
   }catch(e){
-    document.getElementById("msg").innerText = "حدث خطأ أثناء الحفظ";
+    document.getElementById("msg").innerText = "❌ حدث خطأ أثناء الحفظ";
   }
 }
 
