@@ -1,105 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMOU Maintenance Report</title>
+
+<style>
+body{font-family:Tahoma;background:#f4f8ff;margin:0;padding:20px}
+.container{max-width:900px;margin:auto;background:#fff;padding:25px;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,.1)}
+h2{text-align:center;color:#0b5ed7}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input,textarea,select{padding:10px;border:1px solid #ccc;border-radius:8px;width:100%}
+button{padding:12px;border:none;border-radius:10px;background:#0b5ed7;color:#fff;font-weight:bold;cursor:pointer}
+.full{grid-column:1/-1}
+#msg{text-align:center;margin-top:10px;font-weight:bold}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>تقرير صيانة - SMOU GROUP</h2>
+
+<div class="grid">
+
+<input id="reportNo" readonly placeholder="Report No">
+<input id="date" readonly>
+
+<input id="time" readonly>
+<input id="clientName" placeholder="اسم العميل">
+
+<input id="phone" placeholder="رقم الهاتف">
+<input id="contractNo" placeholder="رقم العقد">
+
+<input id="address" class="full" placeholder="العنوان">
+
+<textarea id="visitReason" class="full" placeholder="سبب الزيارة"></textarea>
+<textarea id="actionTaken" class="full" placeholder="الإجراء"></textarea>
+<textarea id="recommendations" class="full" placeholder="التوصيات"></textarea>
+
+<input id="amount" placeholder="المبلغ">
+<select id="technician">
+<option value="">اختر الفني</option>
+<option>Ahmed</option>
+<option>Ali</option>
+<option>Mohamed</option>
+</select>
+
+</div>
+
+<br>
+<button onclick="saveData()">💾 حفظ في Google Sheet</button>
+
+<div id="msg"></div>
+
+</div>
+
 <script>
 const SCRIPT_URL = "PUT_YOUR_SCRIPT_URL_HERE";
 
-/* توليد رقم التقرير */
+/* تشغيل الصفحة */
+window.onload = function(){
+  generateReportNo();
+  setAutoDateTime();
+};
+
+/* رقم التقرير */
 function generateReportNo(){
   let last = localStorage.getItem("reportNo") || 0;
   last++;
   localStorage.setItem("reportNo", last);
 
   const year = new Date().getFullYear();
-  document.getElementById("reportNo").value = year + "-" + String(last).padStart(4,"0");
+  document.getElementById("reportNo").value =
+    year + "-" + String(last).padStart(4,"0");
 }
 
 /* التاريخ والوقت */
 function setAutoDateTime(){
   const now = new Date();
-
   document.getElementById("date").value = now.toISOString().split("T")[0];
   document.getElementById("time").value =
-    String(now.getHours()).padStart(2,"0") + ":" +
-    String(now.getMinutes()).padStart(2,"0");
+    now.getHours().toString().padStart(2,"0") + ":" +
+    now.getMinutes().toString().padStart(2,"0");
 }
 
-/* تجميع البيانات */
-function getData(){
-  return {
-    reportNo: document.getElementById("reportNo").value,
-    date: document.getElementById("date").value,
-    time: document.getElementById("time").value,
-    clientName: document.getElementById("clientName").value,
-    phone: document.getElementById("phone").value,
-    contractNo: document.getElementById("contractNo").value,
-    address: document.getElementById("address").value,
-    visitReason: document.getElementById("visitReason").value,
-    actionTaken: document.getElementById("actionTaken").value,
-    recommendations: document.getElementById("recommendations").value,
-    amount: document.getElementById("amount").value,
-    technician: document.getElementById("technician").value
-  };
-}
-
-/* تعبئة التقرير */
-function fillReport(){
-  const d = getData();
-
-  document.getElementById("r1").innerText = d.reportNo;
-  document.getElementById("r2").innerText = d.date;
-  document.getElementById("r3").innerText = d.time;
-  document.getElementById("r4").innerText = d.clientName;
-  document.getElementById("r5").innerText = d.phone;
-  document.getElementById("r6").innerText = d.contractNo;
-  document.getElementById("r7").innerText = d.address;
-  document.getElementById("r8").innerText = d.visitReason;
-  document.getElementById("r9").innerText = d.actionTaken;
-  document.getElementById("r10").innerText = d.recommendations;
-  document.getElementById("r11").innerText = d.amount ? d.amount + " AED" : "";
-  document.getElementById("r12").innerText = d.technician;
-}
-
-/* حفظ في الشيت */
+/* حفظ */
 async function saveData(){
-  fillReport();
-  const d = getData();
 
-  if(!d.clientName || !d.technician){
-    document.getElementById("msg").innerText = "يرجى إدخال اسم العميل واختيار الفني";
+  const data = {
+    reportNo: reportNo.value,
+    date: date.value,
+    time: time.value,
+    clientName: clientName.value,
+    phone: phone.value,
+    contractNo: contractNo.value,
+    address: address.value,
+    visitReason: visitReason.value,
+    actionTaken: actionTaken.value,
+    recommendations: recommendations.value,
+    amount: amount.value,
+    technician: technician.value
+  };
+
+  if(!data.clientName || !data.technician){
+    msg.innerText = "❗ ادخل اسم العميل والفني";
     return;
   }
 
-  document.getElementById("msg").innerText = "جاري الحفظ...";
+  msg.innerText = "جاري الحفظ...";
 
   try{
-    const res = await fetch(SCRIPT_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(d)
+    const res = await fetch(SCRIPT_URL,{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify(data)
     });
 
     const result = await res.json();
 
     if(result.status === "success"){
-      document.getElementById("msg").innerText = "✅ تم الحفظ بنجاح";
-
-      setTimeout(()=> location.reload(), 1200);
-    } else {
-      document.getElementById("msg").innerText = "❌ فشل الحفظ";
+      msg.innerText = "✅ تم الحفظ بنجاح";
+      setTimeout(()=>location.reload(),1000);
+    }else{
+      msg.innerText = "❌ فشل الحفظ";
     }
 
   }catch(e){
-    document.getElementById("msg").innerText = "❌ خطأ في الاتصال";
+    msg.innerText = "❌ خطأ في الاتصال";
   }
 }
-
-/* تحديث تلقائي */
-document.querySelectorAll("input, textarea, select").forEach(el=>{
-  el.addEventListener("input", fillReport);
-});
-
-/* تشغيل عند فتح الصفحة */
-generateReportNo();
-setAutoDateTime();
-fillReport();
 </script>
+
+</body>
+</html>
