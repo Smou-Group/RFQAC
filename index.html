@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SMOU Maintenance Report</title>
 
+<!-- PDF Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <style>
 body{
   font-family:Tahoma;
@@ -13,7 +16,6 @@ body{
   padding:20px;
 }
 
-/* الكارت الرئيسي */
 .container{
   max-width:900px;
   margin:auto;
@@ -24,47 +26,37 @@ body{
   border:1px solid #e3ecff;
 }
 
-/* العنوان */
 h2{
   text-align:center;
   color:#0b5ed7;
   margin-bottom:20px;
-  font-size:24px;
-  letter-spacing:1px;
 }
 
-/* الجريد */
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:12px;
 }
 
-/* الحقول */
 input,textarea,select{
   padding:12px;
   border:1px solid #d6e2ff;
   border-radius:10px;
   width:100%;
-  font-size:14px;
   background:#f9fbff;
-  transition:0.3s;
 }
 
-/* عند التركيز */
 input:focus,textarea:focus,select:focus{
   outline:none;
   border-color:#0b5ed7;
   box-shadow:0 0 0 3px rgba(11,94,215,0.1);
-  background:#ffffff;
+  background:#fff;
 }
 
-/* full width */
 .full{
   grid-column:1/-1;
 }
 
-/* زر الحفظ */
 button{
   padding:14px;
   border:none;
@@ -72,31 +64,20 @@ button{
   background:linear-gradient(135deg,#0b5ed7,#3a8bff);
   color:#fff;
   font-weight:bold;
-  font-size:15px;
   cursor:pointer;
-  transition:0.3s;
+  margin:5px;
   box-shadow:0 8px 20px rgba(11,94,215,0.3);
+  transition:.3s;
 }
 
-/* hover */
 button:hover{
   transform:translateY(-2px);
-  box-shadow:0 12px 25px rgba(11,94,215,0.4);
 }
 
-/* رسالة */
 #msg{
   text-align:center;
   margin-top:15px;
   font-weight:bold;
-  font-size:14px;
-}
-
-/* ريسبونسيف */
-@media(max-width:600px){
-  .grid{
-    grid-template-columns:1fr;
-  }
 }
 </style>
 </head>
@@ -105,9 +86,8 @@ button:hover{
 
 <div class="container">
 
-<!-- اللوجو -->
 <div style="text-align:center;margin-bottom:15px">
-  <img src="logo.png" style="height:70px;object-fit:contain">
+  <img src="logo.png" style="height:70px">
 </div>
 
 <h2>تقرير صيانة - SMOU GROUP</h2>
@@ -130,6 +110,7 @@ button:hover{
 <textarea id="recommendations" class="full" placeholder="التوصيات"></textarea>
 
 <input id="amount" placeholder="المبلغ">
+
 <select id="technician">
 <option value="">اختر الفني</option>
 <option>Ahmed</option>
@@ -140,14 +121,17 @@ button:hover{
 </div>
 
 <br>
+
 <button onclick="saveData()">💾 حفظ في Google Sheet</button>
+<button onclick="downloadPDF()">📄 تصدير PDF</button>
+<button onclick="sendWhatsApp()">📲 إرسال واتساب</button>
 
 <div id="msg"></div>
 
 </div>
 
 <script>
-const SCRIPT_URL = "PUT_YOUR_SCRIPT_URL_HERE";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyeXm1yoSuHAuPciH52osmQHeHZ7j54eCsJw3cyVznG1hx67LImqOJqauLs8nfnUlbKlw/exec";
 
 /* تشغيل الصفحة */
 window.onload = function(){
@@ -162,20 +146,19 @@ function generateReportNo(){
   localStorage.setItem("reportNo", last);
 
   const year = new Date().getFullYear();
-  document.getElementById("reportNo").value =
-    year + "-" + String(last).padStart(4,"0");
+  reportNo.value = year + "-" + String(last).padStart(4,"0");
 }
 
 /* التاريخ والوقت */
 function setAutoDateTime(){
   const now = new Date();
-  document.getElementById("date").value = now.toISOString().split("T")[0];
-  document.getElementById("time").value =
+  date.value = now.toISOString().split("T")[0];
+  time.value =
     now.getHours().toString().padStart(2,"0") + ":" +
     now.getMinutes().toString().padStart(2,"0");
 }
 
-/* حفظ */
+/* حفظ البيانات */
 async function saveData(){
 
   const data = {
@@ -198,27 +181,77 @@ async function saveData(){
     return;
   }
 
-  msg.innerText = "جاري الحفظ...";
+  msg.innerText = "⏳ جاري الحفظ...";
 
   try{
     const res = await fetch(SCRIPT_URL,{
       method:"POST",
-      headers:{ "Content-Type":"application/json" },
+      headers:{
+        "Content-Type":"application/json"
+      },
       body: JSON.stringify(data)
     });
 
     const result = await res.json();
 
     if(result.status === "success"){
-      msg.innerText = "✅ تم الحفظ بنجاح";
+      msg.innerText = "✅ تم الحفظ في Google Sheet";
       setTimeout(()=>location.reload(),1000);
     }else{
       msg.innerText = "❌ فشل الحفظ";
     }
 
   }catch(e){
+    console.error(e);
     msg.innerText = "❌ خطأ في الاتصال";
-  }  
+  }
+}
+
+/* تصدير PDF */
+function downloadPDF(){
+  const element = document.querySelector(".container");
+
+  const opt = {
+    margin:0.5,
+    filename:'SMOU_Report_'+reportNo.value+'.pdf',
+    image:{type:'jpeg',quality:1},
+    html2canvas:{scale:2},
+    jsPDF:{unit:'in',format:'a4',orientation:'portrait'}
+  };
+
+  html2pdf().set(opt).from(element).save();
+}
+
+/* واتساب */
+function sendWhatsApp(){
+  let text = `
+📋 تقرير صيانة - SMOU GROUP
+
+رقم التقرير: ${reportNo.value}
+التاريخ: ${date.value}
+الوقت: ${time.value}
+
+العميل: ${clientName.value}
+الهاتف: ${phone.value}
+العقد: ${contractNo.value}
+
+العنوان:
+${address.value}
+
+سبب الزيارة:
+${visitReason.value}
+
+الإجراء:
+${actionTaken.value}
+
+التوصيات:
+${recommendations.value}
+
+المبلغ: ${amount.value}
+الفني: ${technician.value}
+`;
+
+  window.open("https://wa.me/?text=" + encodeURIComponent(text));
 }
 </script>
 
