@@ -5,79 +5,102 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SMOU Maintenance Report</title>
 
-<!-- PDF Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
 body{
-  font-family:Tahoma;
-  background:linear-gradient(135deg,#eaf2ff,#f8fbff);
   margin:0;
-  padding:20px;
+  font-family:'Segoe UI',Tahoma;
+  background:linear-gradient(135deg,#0b5ed7,#0a2e73);
 }
 
+/* Container */
 .container{
-  max-width:900px;
-  margin:auto;
+  max-width:1000px;
+  margin:40px auto;
   background:#ffffff;
-  padding:30px;
   border-radius:20px;
-  box-shadow:0 15px 40px rgba(11,94,215,0.15);
-  border:1px solid #e3ecff;
+  padding:30px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.25);
 }
 
-h2{
-  text-align:center;
+/* Header */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+
+.header img{
+  height:60px;
+}
+
+.title{
+  font-size:22px;
+  font-weight:bold;
   color:#0b5ed7;
-  margin-bottom:20px;
 }
 
+/* Grid */
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:12px;
+  gap:15px;
 }
 
 input,textarea,select{
-  padding:12px;
-  border:1px solid #d6e2ff;
-  border-radius:10px;
-  width:100%;
-  background:#f9fbff;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid #d0dbff;
+  background:#f8fbff;
+  font-size:14px;
+  transition:0.3s;
 }
 
-input:focus,textarea:focus,select:focus{
-  outline:none;
+input:focus,textarea:focus{
   border-color:#0b5ed7;
-  box-shadow:0 0 0 3px rgba(11,94,215,0.1);
   background:#fff;
+  box-shadow:0 0 0 3px rgba(11,94,215,0.1);
 }
 
 .full{
   grid-column:1/-1;
 }
 
+/* Buttons */
+.buttons{
+  text-align:center;
+  margin-top:20px;
+}
+
 button{
-  padding:14px;
+  padding:14px 22px;
   border:none;
-  border-radius:12px;
-  background:linear-gradient(135deg,#0b5ed7,#3a8bff);
-  color:#fff;
+  border-radius:30px;
+  margin:6px;
   font-weight:bold;
   cursor:pointer;
-  margin:5px;
-  box-shadow:0 8px 20px rgba(11,94,215,0.3);
-  transition:.3s;
+  background:linear-gradient(135deg,#0b5ed7,#3a8bff);
+  color:#fff;
+  box-shadow:0 10px 25px rgba(11,94,215,0.4);
+  transition:0.3s;
 }
 
 button:hover{
   transform:translateY(-2px);
 }
 
+/* Message */
 #msg{
   text-align:center;
   margin-top:15px;
   font-weight:bold;
+}
+
+/* Responsive */
+@media(max-width:700px){
+  .grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -86,11 +109,10 @@ button:hover{
 
 <div class="container">
 
-<div style="text-align:center;margin-bottom:15px">
-  <img src="logo.png" style="height:70px">
+<div class="header">
+  <div class="title">تقرير صيانة - SMOU GROUP</div>
+  <img src="logo.png">
 </div>
-
-<h2>تقرير صيانة - SMOU GROUP</h2>
 
 <div class="grid">
 
@@ -120,11 +142,11 @@ button:hover{
 
 </div>
 
-<br>
-
-<button onclick="saveData()">💾 حفظ في Google Sheet</button>
+<div class="buttons">
+<button onclick="saveData()">💾 حفظ</button>
 <button onclick="downloadPDF()">📄 تصدير PDF</button>
 <button onclick="sendWhatsApp()">📲 إرسال واتساب</button>
+</div>
 
 <div id="msg"></div>
 
@@ -135,48 +157,21 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyeXm1yoSuHAuPciH52o
 
 /* تشغيل الصفحة */
 window.onload = function(){
-  generateReportNo();
-  setAutoDateTime();
-};
-
-/* رقم التقرير */
-function generateReportNo(){
   let last = localStorage.getItem("reportNo") || 0;
   last++;
   localStorage.setItem("reportNo", last);
 
-  const year = new Date().getFullYear();
-  reportNo.value = year + "-" + String(last).padStart(4,"0");
-}
+  reportNo.value = new Date().getFullYear()+"-"+String(last).padStart(4,"0");
 
-/* التاريخ والوقت */
-function setAutoDateTime(){
   const now = new Date();
   date.value = now.toISOString().split("T")[0];
-  time.value =
-    now.getHours().toString().padStart(2,"0") + ":" +
-    now.getMinutes().toString().padStart(2,"0");
-}
+  time.value = now.getHours().toString().padStart(2,"0")+":"+now.getMinutes().toString().padStart(2,"0");
+};
 
-/* حفظ البيانات */
+/* حفظ */
 async function saveData(){
 
-  const data = {
-    reportNo: reportNo.value,
-    date: date.value,
-    time: time.value,
-    clientName: clientName.value,
-    phone: phone.value,
-    contractNo: contractNo.value,
-    address: address.value,
-    visitReason: visitReason.value,
-    actionTaken: actionTaken.value,
-    recommendations: recommendations.value,
-    amount: amount.value,
-    technician: technician.value
-  };
-
-  if(!data.clientName || !data.technician){
+  if(!clientName.value || !technician.value){
     msg.innerText = "❗ ادخل اسم العميل والفني";
     return;
   }
@@ -184,45 +179,50 @@ async function saveData(){
   msg.innerText = "⏳ جاري الحفظ...";
 
   try{
-    const res = await fetch(SCRIPT_URL,{
+    await fetch(SCRIPT_URL,{
       method:"POST",
+      mode:"no-cors",
       headers:{
         "Content-Type":"application/json"
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify({
+        reportNo:reportNo.value,
+        date:date.value,
+        time:time.value,
+        clientName:clientName.value,
+        phone:phone.value,
+        contractNo:contractNo.value,
+        address:address.value,
+        visitReason:visitReason.value,
+        actionTaken:actionTaken.value,
+        recommendations:recommendations.value,
+        amount:amount.value,
+        technician:technician.value
+      })
     });
 
-    const result = await res.json();
-
-    if(result.status === "success"){
-      msg.innerText = "✅ تم الحفظ في Google Sheet";
-      setTimeout(()=>location.reload(),1000);
-    }else{
-      msg.innerText = "❌ فشل الحفظ";
-    }
-
+    msg.innerText = "✅ تم الحفظ بنجاح";
   }catch(e){
-    console.error(e);
     msg.innerText = "❌ خطأ في الاتصال";
   }
 }
 
-/* تصدير PDF */
+/* PDF */
 function downloadPDF(){
   const element = document.querySelector(".container");
 
   const opt = {
     margin:0.5,
-    filename:'SMOU_Report_'+reportNo.value+'.pdf',
+    filename:"SMOU_Report_"+reportNo.value+".pdf",
     image:{type:'jpeg',quality:1},
     html2canvas:{scale:2},
-    jsPDF:{unit:'in',format:'a4',orientation:'portrait'}
+    jsPDF:{unit:'in',format:'a4'}
   };
 
   html2pdf().set(opt).from(element).save();
 }
 
-/* واتساب */
+/* WhatsApp */
 function sendWhatsApp(){
   let text = `
 📋 تقرير صيانة - SMOU GROUP
@@ -238,20 +238,14 @@ function sendWhatsApp(){
 العنوان:
 ${address.value}
 
-سبب الزيارة:
-${visitReason.value}
-
 الإجراء:
 ${actionTaken.value}
-
-التوصيات:
-${recommendations.value}
 
 المبلغ: ${amount.value}
 الفني: ${technician.value}
 `;
 
-  window.open("https://wa.me/?text=" + encodeURIComponent(text));
+  window.open("https://wa.me/?text="+encodeURIComponent(text));
 }
 </script>
 
