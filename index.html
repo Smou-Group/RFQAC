@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>SMOU Maintenance Report</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -14,7 +15,6 @@ body{
   background:linear-gradient(135deg,#0b5ed7,#0a2e73);
 }
 
-/* Container */
 .container{
   max-width:1000px;
   margin:40px auto;
@@ -24,7 +24,6 @@ body{
   box-shadow:0 20px 60px rgba(0,0,0,0.25);
 }
 
-/* Header */
 .header{
   display:flex;
   justify-content:space-between;
@@ -32,9 +31,7 @@ body{
   margin-bottom:25px;
 }
 
-.header img{
-  height:60px;
-}
+.header img{height:60px;}
 
 .title{
   font-size:22px;
@@ -42,7 +39,6 @@ body{
   color:#0b5ed7;
 }
 
-/* Grid */
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -54,23 +50,9 @@ input,textarea,select{
   border-radius:12px;
   border:1px solid #d0dbff;
   background:#f8fbff;
-  font-size:14px;
 }
 
-input:focus,textarea:focus{
-  border-color:#0b5ed7;
-  background:#fff;
-}
-
-.full{
-  grid-column:1/-1;
-}
-
-/* Buttons */
-.buttons{
-  text-align:center;
-  margin-top:20px;
-}
+.full{grid-column:1/-1;}
 
 button{
   padding:14px 22px;
@@ -78,16 +60,12 @@ button{
   border-radius:30px;
   margin:6px;
   font-weight:bold;
-  cursor:pointer;
-  background:linear-gradient(135deg,#0b5ed7,#3a8bff);
+  background:#0b5ed7;
   color:#fff;
+  cursor:pointer;
 }
 
-#msg{
-  text-align:center;
-  margin-top:15px;
-  font-weight:bold;
-}
+#msg{text-align:center;margin-top:15px;font-weight:bold;}
 </style>
 </head>
 
@@ -128,7 +106,7 @@ button{
 
 </div>
 
-<div class="buttons">
+<div style="text-align:center">
 <button onclick="saveData()">💾 حفظ</button>
 <button onclick="downloadPDF()">📄 PDF</button>
 <button onclick="sendWhatsApp()">📲 واتساب</button>
@@ -139,49 +117,36 @@ button{
 </div>
 
 <!-- PDF Template -->
-<div id="pdfTemplate" style="display:none;direction:rtl;font-family:Tajawal">
+<div id="pdfTemplate" style="position:absolute;top:-9999px;right:-9999px;direction:rtl">
 
-  <div style="padding:30px">
+<div style="width:800px;padding:30px">
 
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <img src="logo.png" style="height:60px">
-      <h2 style="color:#0b5ed7">تقرير صيانة</h2>
-    </div>
-
-    <hr>
-
-    <h3>بيانات التقرير</h3>
-    <p><b>رقم التقرير:</b> <span id="p_report"></span></p>
-    <p><b>التاريخ:</b> <span id="p_date"></span></p>
-    <p><b>الوقت:</b> <span id="p_time"></span></p>
-
-    <h3>بيانات العميل</h3>
-    <p><b>الاسم:</b> <span id="p_name"></span></p>
-    <p><b>الهاتف:</b> <span id="p_phone"></span></p>
-
-    <h3>تفاصيل العمل</h3>
-    <p><b>سبب الزيارة:</b><br><span id="p_reason"></span></p>
-    <p><b>الإجراء:</b><br><span id="p_action"></span></p>
-    <p><b>التوصيات:</b><br><span id="p_rec"></span></p>
-
-    <h3>البيانات المالية</h3>
-    <p><b>المبلغ:</b> <span id="p_amount"></span></p>
-
-    <br><br>
-
-    <div style="display:flex;justify-content:space-between">
-      <div>توقيع الفني: __________</div>
-      <div>توقيع العميل: __________</div>
-    </div>
-
+  <div style="display:flex;justify-content:space-between;border-bottom:2px solid #0b5ed7">
+    <img src="logo.png" style="height:60px">
+    <h2>تقرير صيانة</h2>
   </div>
 
+  <p>رقم التقرير: <span id="p_report"></span></p>
+  <p>التاريخ: <span id="p_date"></span></p>
+  <p>الوقت: <span id="p_time"></span></p>
+
+  <p>العميل: <span id="p_name"></span></p>
+  <p>الهاتف: <span id="p_phone"></span></p>
+
+  <p>سبب الزيارة: <span id="p_reason"></span></p>
+  <p>الإجراء: <span id="p_action"></span></p>
+  <p>التوصيات: <span id="p_rec"></span></p>
+
+  <p>المبلغ: <span id="p_amount"></span></p>
+
+</div>
 </div>
 
 <script>
+
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwAiyuBL2nEcXishWBMfIKaDy5QJbjD-4kxSAja2AH8BBTO3lxjcDrNLu-SldP6Pc_1Rg/exec";
 
-/* تشغيل الصفحة */
+/* تحميل */
 window.onload = function(){
   let last = localStorage.getItem("reportNo") || 0;
   last++;
@@ -197,17 +162,12 @@ window.onload = function(){
 /* حفظ */
 async function saveData(){
 
-  if(!clientName.value || !technician.value){
-    msg.innerText = "❗ ادخل اسم العميل والفني";
-    return;
-  }
-
-  msg.innerText = "⏳ جاري الحفظ...";
+  msg.innerText="جاري الحفظ...";
 
   try{
-    const res = await fetch(SCRIPT_URL,{
+    await fetch(SCRIPT_URL,{
       method:"POST",
-      headers:{ "Content-Type":"application/json" },
+      mode:"no-cors",
       body: JSON.stringify({
         reportNo:reportNo.value,
         date:date.value,
@@ -224,58 +184,34 @@ async function saveData(){
       })
     });
 
-    const result = await res.json();
-
-    if(result.status === "success"){
-      msg.innerText = "✅ تم الحفظ في Google Sheet";
-    }else{
-      msg.innerText = "❌ فشل الحفظ";
-    }
-
+    msg.innerText="✅ تم الإرسال (راجع الشيت)";
   }catch(e){
-    msg.innerText = "❌ خطأ في الاتصال";
+    msg.innerText="❌ فشل الاتصال";
   }
 }
 
-/* PDF احترافي */
+/* PDF */
 function downloadPDF(){
 
-  document.getElementById("p_report").innerText = reportNo.value;
-  document.getElementById("p_date").innerText = date.value;
-  document.getElementById("p_time").innerText = time.value;
-  document.getElementById("p_name").innerText = clientName.value;
-  document.getElementById("p_phone").innerText = phone.value;
-  document.getElementById("p_reason").innerText = visitReason.value;
-  document.getElementById("p_action").innerText = actionTaken.value;
-  document.getElementById("p_rec").innerText = recommendations.value;
-  document.getElementById("p_amount").innerText = amount.value;
+  p_report.innerText=reportNo.value;
+  p_date.innerText=date.value;
+  p_time.innerText=time.value;
+  p_name.innerText=clientName.value;
+  p_phone.innerText=phone.value;
+  p_reason.innerText=visitReason.value;
+  p_action.innerText=actionTaken.value;
+  p_rec.innerText=recommendations.value;
+  p_amount.innerText=amount.value;
 
-  html2pdf().set({
-    margin:0.5,
-    filename:"SMOU_Report_"+reportNo.value+".pdf",
-    html2canvas:{scale:2},
-    jsPDF:{unit:'in',format:'a4'}
-  }).from(document.getElementById("pdfTemplate")).save();
+  html2pdf().from(pdfTemplate).save("report.pdf");
 }
 
-/* واتساب */
+/* WhatsApp */
 function sendWhatsApp(){
-  let text = `
-📋 تقرير صيانة - SMOU GROUP
-
-رقم التقرير: ${reportNo.value}
-العميل: ${clientName.value}
-الهاتف: ${phone.value}
-
-الإجراء:
-${actionTaken.value}
-
-المبلغ: ${amount.value}
-الفني: ${technician.value}
-`;
-
+  let text=`تقرير صيانة\n${clientName.value}\n${actionTaken.value}`;
   window.open("https://wa.me/?text="+encodeURIComponent(text));
 }
+
 </script>
 
 </body>
