@@ -1,27 +1,57 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>SMOU Maintenance Report</title>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbxQ4TAXA6gOIdkj2-S92n9hCKIrimKFtXLZy6dgNIzTzU7ZTGZ65Y0zjF2EPxAZCpjvwQ/exec";"></script>
 
 <style>
+
+*{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
   font-family:'Segoe UI',Tahoma;
-  background:linear-gradient(135deg,#0b5ed7,#0a2e73);
+  background:
+  radial-gradient(circle at top,#1c75ff,#081c4f);
+  min-height:100vh;
+  padding:15px;
 }
 
 .container{
   max-width:1000px;
-  margin:40px auto;
-  background:#fff;
-  border-radius:20px;
-  padding:30px;
-  box-shadow:0 20px 60px rgba(0,0,0,0.25);
+  margin:auto;
+  background:rgba(255,255,255,0.96);
+  border-radius:28px;
+  padding:25px;
+  backdrop-filter:blur(10px);
+
+  box-shadow:
+  0 20px 60px rgba(0,0,0,.25);
+
+  animation:fadeUp .6s ease;
+}
+
+@keyframes fadeUp{
+
+  from{
+    opacity:0;
+    transform:translateY(20px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+
 }
 
 .header{
@@ -29,44 +59,183 @@ body{
   justify-content:space-between;
   align-items:center;
   margin-bottom:25px;
+  gap:10px;
 }
 
-.header img{height:60px;}
+.header img{
+  height:65px;
+}
 
 .title{
-  font-size:22px;
-  font-weight:bold;
+  font-size:28px;
+  font-weight:800;
   color:#0b5ed7;
 }
 
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:15px;
+  gap:16px;
 }
 
-input,textarea,select{
-  padding:14px;
-  border-radius:12px;
-  border:1px solid #d0dbff;
+input,
+textarea,
+select{
+
+  width:100%;
+  padding:16px;
+  border-radius:16px;
+  border:1px solid #d8e2ff;
   background:#f8fbff;
+
+  font-size:15px;
+
+  transition:.3s;
+
+  outline:none;
 }
 
-.full{grid-column:1/-1;}
+input:focus,
+textarea:focus,
+select:focus{
+
+  border-color:#0b5ed7;
+
+  background:#fff;
+
+  transform:scale(1.01);
+
+  box-shadow:0 0 0 5px rgba(11,94,215,.1);
+
+}
+
+textarea{
+  min-height:120px;
+  resize:vertical;
+}
+
+.full{
+  grid-column:1/-1;
+}
+
+.actions{
+
+  margin-top:25px;
+
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+
+  gap:12px;
+}
 
 button{
-  padding:14px 22px;
+
+  padding:15px 26px;
+
   border:none;
-  border-radius:30px;
-  margin:6px;
-  font-weight:bold;
-  background:#0b5ed7;
+
+  border-radius:50px;
+
+  font-weight:700;
+
+  font-size:15px;
+
+  background:
+  linear-gradient(135deg,#0b5ed7,#084298);
+
   color:#fff;
+
   cursor:pointer;
+
+  transition:.3s;
+
+  box-shadow:
+  0 10px 20px rgba(11,94,215,.25);
+
 }
 
-#msg{text-align:center;margin-top:15px;font-weight:bold;}
+button:hover{
+
+  transform:translateY(-3px);
+
+  box-shadow:
+  0 15px 30px rgba(11,94,215,.35);
+
+}
+
+button:active{
+  transform:scale(.96);
+}
+
+#msg{
+
+  text-align:center;
+
+  margin-top:18px;
+
+  font-weight:bold;
+
+  font-size:18px;
+}
+
+.loader{
+
+  width:50px;
+  height:50px;
+
+  border:4px solid #ddd;
+  border-top:4px solid #0b5ed7;
+
+  border-radius:50%;
+
+  animation:spin 1s linear infinite;
+
+  display:none;
+
+  margin:20px auto;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+  .container{
+    padding:18px;
+    border-radius:22px;
+  }
+
+  .header{
+    flex-direction:column;
+    text-align:center;
+  }
+
+  .title{
+    font-size:22px;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .full{
+    grid-column:auto;
+  }
+
+  button{
+    width:100%;
+  }
+
+}
+
 </style>
+
 </head>
 
 <body>
@@ -74,8 +243,13 @@ button{
 <div class="container">
 
 <div class="header">
-  <div class="title">تقرير صيانة - SMOU GROUP</div>
-  <img src="logo.png">
+
+<div class="title">
+تقرير صيانة - SMOU GROUP
+</div>
+
+<img src="logo.png">
+
 </div>
 
 <div class="grid">
@@ -92,124 +266,252 @@ button{
 <input id="address" class="full" placeholder="العنوان">
 
 <textarea id="visitReason" class="full" placeholder="سبب الزيارة"></textarea>
+
 <textarea id="actionTaken" class="full" placeholder="الإجراء"></textarea>
+
 <textarea id="recommendations" class="full" placeholder="التوصيات"></textarea>
 
 <input id="amount" placeholder="المبلغ">
 
 <select id="technician">
+
 <option value="">اختر الفني</option>
+
 <option>Ahmed</option>
 <option>Ali</option>
 <option>Mohamed</option>
+
 </select>
 
 </div>
 
-<div style="text-align:center">
-<button onclick="saveData()">💾 حفظ</button>
-<button onclick="downloadPDF()">📄 PDF</button>
-<button onclick="sendWhatsApp()">📲 واتساب</button>
+<div class="actions">
+
+<button onclick="saveData()">
+💾 حفظ
+</button>
+
+<button onclick="downloadPDF()">
+📄 PDF
+</button>
+
+<button onclick="sendWhatsApp()">
+📲 واتساب
+</button>
+
 </div>
+
+<div class="loader" id="loader"></div>
 
 <div id="msg"></div>
 
 </div>
 
-<!-- PDF Template -->
-<div id="pdfTemplate" style="position:absolute;top:-9999px;right:-9999px;direction:rtl">
+<!-- PDF -->
+
+<div id="pdfTemplate"
+style="
+position:absolute;
+top:-9999px;
+right:-9999px;
+direction:rtl;
+">
 
 <div style="width:800px;padding:30px">
 
-  <div style="display:flex;justify-content:space-between;border-bottom:2px solid #0b5ed7">
-    <img src="logo.png" style="height:60px">
-    <h2>تقرير صيانة</h2>
-  </div>
+<div style="
+display:flex;
+justify-content:space-between;
+border-bottom:2px solid #0b5ed7;
+">
 
-  <p>رقم التقرير: <span id="p_report"></span></p>
-  <p>التاريخ: <span id="p_date"></span></p>
-  <p>الوقت: <span id="p_time"></span></p>
+<img src="logo.png" style="height:60px">
 
-  <p>العميل: <span id="p_name"></span></p>
-  <p>الهاتف: <span id="p_phone"></span></p>
-
-  <p>سبب الزيارة: <span id="p_reason"></span></p>
-  <p>الإجراء: <span id="p_action"></span></p>
-  <p>التوصيات: <span id="p_rec"></span></p>
-
-  <p>المبلغ: <span id="p_amount"></span></p>
+<h2>تقرير صيانة</h2>
 
 </div>
+
+<p>رقم التقرير: <span id="p_report"></span></p>
+
+<p>التاريخ: <span id="p_date"></span></p>
+
+<p>الوقت: <span id="p_time"></span></p>
+
+<p>العميل: <span id="p_name"></span></p>
+
+<p>الهاتف: <span id="p_phone"></span></p>
+
+<p>سبب الزيارة: <span id="p_reason"></span></p>
+
+<p>الإجراء: <span id="p_action"></span></p>
+
+<p>التوصيات: <span id="p_rec"></span></p>
+
+<p>المبلغ: <span id="p_amount"></span></p>
+
+</div>
+
 </div>
 
 <script>
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwAiyuBL2nEcXishWBMfIKaDy5QJbjD-4kxSAja2AH8BBTO3lxjcDrNLu-SldP6Pc_1Rg/exec";
+const SCRIPT_URL =
+"ضع هنا رابط Google Script";
 
-/* تحميل */
+/* تشغيل */
+
 window.onload = function(){
-  let last = localStorage.getItem("reportNo") || 0;
-  last++;
-  localStorage.setItem("reportNo", last);
 
-  reportNo.value = new Date().getFullYear()+"-"+String(last).padStart(4,"0");
+  let last =
+  localStorage.getItem("reportNo") || 0;
+
+  last++;
+
+  localStorage.setItem("reportNo",last);
+
+  reportNo.value =
+  new Date().getFullYear()
+  + "-"
+  + String(last).padStart(4,"0");
 
   const now = new Date();
-  date.value = now.toISOString().split("T")[0];
-  time.value = now.getHours()+":"+now.getMinutes();
+
+  date.value =
+  now.toISOString().split("T")[0];
+
+  time.value =
+  now.getHours()
+  + ":"
+  + String(now.getMinutes()).padStart(2,"0");
+
 };
 
 /* حفظ */
+
 async function saveData(){
 
-  msg.innerText="جاري الحفظ...";
+  loader.style.display="block";
+
+  msg.innerText="⏳ جاري الحفظ...";
+
+  const data = {
+
+    reportNo:reportNo.value,
+
+    date:date.value,
+
+    time:time.value,
+
+    clientName:clientName.value,
+
+    phone:phone.value,
+
+    contractNo:contractNo.value,
+
+    address:address.value,
+
+    visitReason:visitReason.value,
+
+    actionTaken:actionTaken.value,
+
+    recommendations:recommendations.value,
+
+    amount:amount.value,
+
+    technician:technician.value
+
+  };
 
   try{
+
+    const response =
     await fetch(SCRIPT_URL,{
+
       method:"POST",
-      mode:"no-cors",
-      body: JSON.stringify({
-        reportNo:reportNo.value,
-        date:date.value,
-        time:time.value,
-        clientName:clientName.value,
-        phone:phone.value,
-        contractNo:contractNo.value,
-        address:address.value,
-        visitReason:visitReason.value,
-        actionTaken:actionTaken.value,
-        recommendations:recommendations.value,
-        amount:amount.value,
-        technician:technician.value
-      })
+
+      headers:{
+        "Content-Type":"application/json"
+      },
+
+      body:JSON.stringify(data)
+
     });
 
-    msg.innerText="✅ تم الإرسال (راجع الشيت)";
-  }catch(e){
-    msg.innerText="❌ فشل الاتصال";
+    const result =
+    await response.json();
+
+    loader.style.display="none";
+
+    if(result.status==="success"){
+
+      msg.innerText=
+      "✅ تم الحفظ والإرسال بنجاح";
+
+    }else{
+
+      msg.innerText=
+      "❌ فشل الإرسال";
+
+    }
+
+  }catch(error){
+
+    loader.style.display="none";
+
+    msg.innerText=
+    "❌ خطأ في الاتصال";
+
+    console.log(error);
+
   }
+
 }
 
 /* PDF */
+
 function downloadPDF(){
 
   p_report.innerText=reportNo.value;
   p_date.innerText=date.value;
   p_time.innerText=time.value;
+
   p_name.innerText=clientName.value;
   p_phone.innerText=phone.value;
+
   p_reason.innerText=visitReason.value;
+
   p_action.innerText=actionTaken.value;
+
   p_rec.innerText=recommendations.value;
+
   p_amount.innerText=amount.value;
 
-  html2pdf().from(pdfTemplate).save("report.pdf");
+  html2pdf()
+  .from(pdfTemplate)
+  .save("report.pdf");
+
 }
 
-/* WhatsApp */
+/* واتساب */
+
 function sendWhatsApp(){
-  let text=`تقرير صيانة\n${clientName.value}\n${actionTaken.value}`;
-  window.open("https://wa.me/?text="+encodeURIComponent(text));
+
+  let text =
+
+`تقرير صيانة
+العميل: ${clientName.value}
+
+الإجراء:
+${actionTaken.value}
+
+الفني:
+${technician.value}`;
+
+  window.open(
+  "https://wa.me/?text="
+  + encodeURIComponent(text)
+  );
+
 }
 
 </script>
