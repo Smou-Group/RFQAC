@@ -364,10 +364,10 @@ color:#000;
 
 <script>
 
-/* Google Script URL */
+/* رابط Google Script */
 
 const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbwaxrEOS2siKAnUjf_qby_dIpukdCg6Qf4u3BuSrSHq8AVcFtXNb3Z00_KEyeHsK09auA/exec";
+"https://script.google.com/macros/s/AKfycbz9c_0TfJDXF_FjzM2tECQ29HokI_GQjzjkxCGEh_EBhf0ZVLci3t6knDH8p04R36ogSQ/exec";
 
 /* تشغيل الصفحة */
 
@@ -410,50 +410,32 @@ async function saveData(){
   const data = {
 
     reportNo:reportNo.value,
-
     date:date.value,
-
     time:time.value,
-
     clientName:clientName.value,
-
     phone:phone.value,
-
     contractNo:contractNo.value,
-
     emirate:emirate.value,
-
     address:address.value,
-
     visitReason:visitReason.value,
-
     actionTaken:actionTaken.value,
-
     recommendations:recommendations.value,
-
     amount:amount.value,
-
     technician:technician.value
 
   };
 
   try{
 
-    const response =
     await fetch(SCRIPT_URL,{
 
       method:"POST",
 
-      headers:{
-        "Content-Type":"text/plain;charset=utf-8"
-      },
+      mode:"no-cors",
 
       body:JSON.stringify(data)
 
     });
-
-    const result =
-    await response.text();
 
     loader.style.display="none";
 
@@ -461,8 +443,6 @@ async function saveData(){
 
     msg.innerText=
     "✅ تم الحفظ بنجاح";
-
-    console.log(result);
 
   }
 
