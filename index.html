@@ -8,8 +8,8 @@
 
 <title>SMOU Maintenance Report</title>
 
-<script src="const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbyLggAlbYJUp32vebJjHv6QgT10zduAfAngQX9ZdizpaO7hQd6VfRGM0PD2o7ytcow37w/exec";"></script>
+<!-- html2pdf -->
+<script src="https://script.google.com/macros/s/AKfycbzRUQD30h8js4WsNRCN3LAUiNOabu94OP63dIKQLD-GTCdNgpRj2xNUwturkYFnQ0J_GA/exec"></script>
 
 <style>
 
@@ -202,8 +202,6 @@ button:active{
   }
 }
 
-/* MOBILE */
-
 @media(max-width:768px){
 
   .container{
@@ -258,28 +256,48 @@ button:active{
 <input id="date" readonly>
 
 <input id="time" readonly>
+
 <input id="clientName" placeholder="اسم العميل">
 
 <input id="phone" placeholder="رقم الهاتف">
+
 <input id="contractNo" placeholder="رقم العقد">
+
+<input id="emirate" placeholder="الإمارة">
+
+<input id="amount" placeholder="المبلغ">
 
 <input id="address" class="full" placeholder="العنوان">
 
 <textarea id="visitReason" class="full" placeholder="سبب الزيارة"></textarea>
 
-<textarea id="actionTaken" class="full" placeholder="الإجراء"></textarea>
+<textarea id="actionTaken" class="full" placeholder="الإجراء المتبع"></textarea>
 
-<textarea id="recommendations" class="full" placeholder="التوصيات"></textarea>
-
-<input id="amount" placeholder="المبلغ">
+<textarea id="recommendations" class="full" placeholder="التوصيات الفنية"></textarea>
 
 <select id="technician">
 
 <option value="">اختر الفني</option>
 
-<option>Ahmed</option>
-<option>Ali</option>
-<option>Mohamed</option>
+<option value="Hassan Taher">
+حسن طاهر - Hassan Taher
+</option>
+
+<option value="Anwer Ali">
+انور علي - Anwer Ali
+</option>
+
+<option value="Abdulaziz AlAlfi">
+عبدالعزيز الألفي - Abdulaziz AlAlfi
+</option>
+
+<option value="Elsayed Mahmoud">
+السيد محمود - Elsayed Mahmoud
+</option>
+
+<option value="Sadeeq Yousif">
+صديق يوسف - Sadeeq Yousif
+</option>
 
 </select>
 
@@ -307,7 +325,7 @@ button:active{
 
 </div>
 
-<!-- PDF -->
+<!-- PDF TEMPLATE -->
 
 <div id="pdfTemplate"
 style="
@@ -315,6 +333,7 @@ position:absolute;
 top:-9999px;
 right:-9999px;
 direction:rtl;
+background:#fff;
 ">
 
 <div style="width:800px;padding:30px">
@@ -322,32 +341,45 @@ direction:rtl;
 <div style="
 display:flex;
 justify-content:space-between;
+align-items:center;
 border-bottom:2px solid #0b5ed7;
+padding-bottom:15px;
+margin-bottom:20px;
 ">
 
 <img src="logo.png" style="height:60px">
 
-<h2>تقرير صيانة</h2>
+<h2 style="color:#0b5ed7;">
+تقرير صيانة
+</h2>
 
 </div>
 
-<p>رقم التقرير: <span id="p_report"></span></p>
+<p><b>رقم التقرير:</b> <span id="p_report"></span></p>
 
-<p>التاريخ: <span id="p_date"></span></p>
+<p><b>التاريخ:</b> <span id="p_date"></span></p>
 
-<p>الوقت: <span id="p_time"></span></p>
+<p><b>الوقت:</b> <span id="p_time"></span></p>
 
-<p>العميل: <span id="p_name"></span></p>
+<p><b>اسم العميل:</b> <span id="p_name"></span></p>
 
-<p>الهاتف: <span id="p_phone"></span></p>
+<p><b>رقم الهاتف:</b> <span id="p_phone"></span></p>
 
-<p>سبب الزيارة: <span id="p_reason"></span></p>
+<p><b>رقم العقد:</b> <span id="p_contract"></span></p>
 
-<p>الإجراء: <span id="p_action"></span></p>
+<p><b>الإمارة:</b> <span id="p_emirate"></span></p>
 
-<p>التوصيات: <span id="p_rec"></span></p>
+<p><b>العنوان:</b> <span id="p_address"></span></p>
 
-<p>المبلغ: <span id="p_amount"></span></p>
+<p><b>سبب الزيارة:</b> <span id="p_reason"></span></p>
+
+<p><b>الإجراء المتبع:</b> <span id="p_action"></span></p>
+
+<p><b>التوصيات الفنية:</b> <span id="p_rec"></span></p>
+
+<p><b>المبلغ:</b> <span id="p_amount"></span></p>
+
+<p><b>اسم الفني:</b> <span id="p_tech"></span></p>
 
 </div>
 
@@ -355,10 +387,12 @@ border-bottom:2px solid #0b5ed7;
 
 <script>
 
-const SCRIPT_URL =
-"ضع هنا رابط Google Script";
+/* رابط Google Script */
 
-/* تشغيل */
+const SCRIPT_URL =
+"https://script.google.com/macros/s/PUT-YOUR-LINK-HERE/exec";
+
+/* تشغيل الصفحة */
 
 window.onload = function(){
 
@@ -386,11 +420,13 @@ window.onload = function(){
 
 };
 
-/* حفظ */
+/* حفظ البيانات */
 
 async function saveData(){
 
   loader.style.display="block";
+
+  msg.style.color="#000";
 
   msg.innerText="⏳ جاري الحفظ...";
 
@@ -407,6 +443,8 @@ async function saveData(){
     phone:phone.value,
 
     contractNo:contractNo.value,
+
+    emirate:emirate.value,
 
     address:address.value,
 
@@ -444,10 +482,14 @@ async function saveData(){
 
     if(result.status==="success"){
 
+      msg.style.color="green";
+
       msg.innerText=
       "✅ تم الحفظ والإرسال بنجاح";
 
     }else{
+
+      msg.style.color="red";
 
       msg.innerText=
       "❌ فشل الإرسال";
@@ -458,6 +500,8 @@ async function saveData(){
 
     loader.style.display="none";
 
+    msg.style.color="red";
+
     msg.innerText=
     "❌ خطأ في الاتصال";
 
@@ -467,7 +511,7 @@ async function saveData(){
 
 }
 
-/* PDF */
+/* تحميل PDF */
 
 function downloadPDF(){
 
@@ -478,6 +522,12 @@ function downloadPDF(){
   p_name.innerText=clientName.value;
   p_phone.innerText=phone.value;
 
+  p_contract.innerText=contractNo.value;
+
+  p_emirate.innerText=emirate.value;
+
+  p_address.innerText=address.value;
+
   p_reason.innerText=visitReason.value;
 
   p_action.innerText=actionTaken.value;
@@ -486,9 +536,36 @@ function downloadPDF(){
 
   p_amount.innerText=amount.value;
 
+  p_tech.innerText=technician.value;
+
   html2pdf()
+  .set({
+
+    margin:0.5,
+
+    filename:
+    "SMOU-Report-"+reportNo.value+".pdf",
+
+    image:{
+      type:'jpeg',
+      quality:1
+    },
+
+    html2canvas:{
+      scale:2
+    },
+
+    jsPDF:{
+      unit:'in',
+      format:'a4',
+      orientation:'portrait'
+    }
+
+  })
+
   .from(pdfTemplate)
-  .save("report.pdf");
+
+  .save();
 
 }
 
@@ -498,18 +575,38 @@ function sendWhatsApp(){
 
   let text =
 
-`تقرير صيانة
-العميل: ${clientName.value}
+`📋 تقرير صيانة
 
-الإجراء:
+رقم التقرير:
+${reportNo.value}
+
+العميل:
+${clientName.value}
+
+الإمارة:
+${emirate.value}
+
+سبب الزيارة:
+${visitReason.value}
+
+الإجراء المتبع:
 ${actionTaken.value}
 
-الفني:
-${technician.value}`;
+التوصيات:
+${recommendations.value}
+
+اسم الفني:
+${technician.value}
+
+SMOU GROUP`;
 
   window.open(
+
   "https://wa.me/?text="
-  + encodeURIComponent(text)
+  + encodeURIComponent(text),
+
+  "_blank"
+
   );
 
 }
