@@ -2,16 +2,13 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<title>SMOU GROUP - Maintenance Report</title>
 
-<title>SMOU Maintenance Report</title>
-
-<!-- PDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
 
@@ -20,199 +17,133 @@ content="width=device-width, initial-scale=1.0">
 }
 
 body{
-
   margin:0;
-
-  font-family:'Segoe UI',Tahoma,sans-serif;
-
-  background:
-  radial-gradient(circle at top,#1c75ff,#081c4f);
-
-  min-height:100vh;
-
+  font-family:Tahoma,Arial;
+  background:#0b1f44;
   padding:15px;
-
 }
 
 .container{
-
-  max-width:1000px;
-
+  max-width:900px;
   margin:auto;
-
-  background:#fff;
-
-  border-radius:25px;
-
-  padding:25px;
-
-  box-shadow:
-  0 20px 60px rgba(0,0,0,.2);
-
+  background:white;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,.3);
 }
 
 .header{
-
-  display:flex;
-
-  justify-content:space-between;
-
-  align-items:center;
-
-  margin-bottom:25px;
-
-  gap:15px;
-
+  background:#0b3b82;
+  color:white;
+  padding:20px;
+  text-align:center;
 }
 
-.header img{
-  height:65px;
+.header h1{
+  margin:0;
+  font-size:28px;
+}
+
+.header p{
+  margin-top:5px;
+  font-size:14px;
 }
 
 .title{
+  padding:15px;
+  text-align:center;
+  background:#f1f5f9;
+  font-size:22px;
+  font-weight:bold;
+  color:#0b3b82;
+}
 
-  font-size:28px;
-
-  font-weight:800;
-
-  color:#0b5ed7;
-
+form{
+  padding:20px;
 }
 
 .grid{
-
   display:grid;
-
-  grid-template-columns:1fr 1fr;
-
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
   gap:15px;
+}
 
+.field label{
+  display:block;
+  margin-bottom:5px;
+  font-weight:bold;
+  color:#334155;
 }
 
 input,
 textarea,
 select{
-
   width:100%;
-
-  padding:15px;
-
-  border-radius:15px;
-
-  border:1px solid #dce6ff;
-
-  background:#f8fbff;
-
+  padding:12px;
+  border:1px solid #cbd5e1;
+  border-radius:12px;
   font-size:15px;
-
-  outline:none;
-
+  background:#f8fafc;
 }
 
 textarea{
-
-  min-height:120px;
-
-  resize:vertical;
-
+  resize:none;
+  min-height:100px;
 }
 
-.full{
-  grid-column:1/-1;
-}
-
-.actions{
-
-  margin-top:25px;
-
-  display:flex;
-
-  justify-content:center;
-
-  gap:12px;
-
-  flex-wrap:wrap;
-
+.buttons{
+  margin-top:20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:10px;
 }
 
 button{
-
-  padding:14px 24px;
-
   border:none;
-
-  border-radius:50px;
-
-  background:
-  linear-gradient(135deg,#0b5ed7,#084298);
-
-  color:#fff;
-
-  font-size:15px;
-
+  padding:15px;
+  border-radius:12px;
+  font-size:16px;
   font-weight:bold;
-
+  color:white;
   cursor:pointer;
+}
 
+.save-btn{
+  background:#15803d;
+}
+
+.pdf-btn{
+  background:#0b3b82;
+}
+
+.close-btn{
+  background:#dc2626;
 }
 
 #msg{
-
+  margin-top:15px;
   text-align:center;
-
-  margin-top:20px;
-
-  font-size:18px;
-
   font-weight:bold;
-
+  color:#0b3b82;
 }
 
-.loader{
-
-  width:50px;
-
-  height:50px;
-
-  border:4px solid #ddd;
-
-  border-top:4px solid #0b5ed7;
-
-  border-radius:50%;
-
-  animation:spin 1s linear infinite;
-
-  display:none;
-
-  margin:20px auto;
-
+table{
+  width:100%;
+  border-collapse:collapse;
 }
 
-@keyframes spin{
-  to{
-    transform:rotate(360deg);
-  }
+table th,
+table td{
+  border:1px solid #000;
+  padding:10px;
+  font-size:14px;
 }
 
-@media(max-width:768px){
-
-  .grid{
-    grid-template-columns:1fr;
-  }
-
-  .header{
-    flex-direction:column;
-    text-align:center;
-  }
-
-  button{
-    width:100%;
-  }
-
+table th{
+  background:#e2e8f0;
 }
 
 </style>
-
 </head>
 
 <body>
@@ -220,494 +151,407 @@ button{
 <div class="container">
 
 <div class="header">
+<h1>SMOU GROUP</h1>
+<p>Maintenance Report System</p>
+</div>
 
 <div class="title">
-تقرير صيانة - SMOU GROUP
+تقرير صيانة المصاعد | Elevator Maintenance Report
 </div>
 
-<img src="logo.png">
-
-</div>
+<form id="form">
 
 <div class="grid">
 
-<input id="reportNo" readonly>
+<div class="field">
+<label>رقم التقرير | Report No</label>
+<input type="text" name="reportNo" id="reportNo" readonly>
+</div>
 
-<input id="date" readonly>
+<div class="field">
+<label>التاريخ | Date</label>
+<input type="text" name="date" id="date" readonly>
+</div>
 
-<input id="time" readonly>
+<div class="field">
+<label>الساعة | Time</label>
+<input type="text" name="time" id="time" readonly>
+</div>
 
-<input id="clientName"
-placeholder="اسم العميل">
+<div class="field">
+<label>اسم العميل | Customer Name</label>
+<input type="text" name="customerName">
+</div>
 
-<input id="phone"
-placeholder="رقم الهاتف">
+<div class="field">
+<label>رقم العقد | Contract No</label>
+<input type="text" name="contractNo">
+</div>
 
-<input id="contractNo"
-placeholder="رقم العقد">
+<div class="field">
+<label>الإمارة | Emirate</label>
 
-<input id="emirate"
-placeholder="الإمارة">
+<select name="emirate">
 
-<input id="amount"
-placeholder="المبلغ">
+<option value="">اختر الإمارة</option>
 
-<input id="address"
-class="full"
-placeholder="العنوان">
-
-<textarea id="visitReason"
-class="full"
-placeholder="سبب الزيارة"></textarea>
-
-<textarea id="actionTaken"
-class="full"
-placeholder="الإجراء المتبع"></textarea>
-
-<textarea id="recommendations"
-class="full"
-placeholder="التوصيات الفنية"></textarea>
-
-<select id="technician">
-
-<option value="">
-اختر الفني
-</option>
-
-<option value="Hassan Taher">
-حسن طاهر - Hassan Taher
-</option>
-
-<option value="Anwer Ali">
-انور علي - Anwer Ali
-</option>
-
-<option value="Abdulaziz AlAlfi">
-عبدالعزيز الألفي - Abdulaziz AlAlfi
-</option>
-
-<option value="Elsayed Mahmoud">
-السيد محمود - Elsayed Mahmoud
-</option>
-
-<option value="Sadeeq Yousif">
-صديق يوسف - Sadeeq Yousif
-</option>
+<option>ابوظبي - Abu Dhabi</option>
+<option>العين - Al Ain</option>
+<option>دبي - Dubai</option>
+<option>الشارقة - Sharjah</option>
+<option>عجمان - Ajman</option>
+<option>راس الخيمة - RAK</option>
+<option>ام القوين - UMQ</option>
+<option>الفجيرة - Fujairah</option>
+<option>الغربية - Alghrbia</option>
 
 </select>
 
 </div>
 
-<div class="actions">
+<div class="field">
+<label>المنطقة | Area</label>
+<input type="text" name="area">
+</div>
 
-<button onclick="saveData()">
-💾 حفظ
-</button>
+<div class="field">
+<label>سبب الزيارة | Reason of Visit</label>
+<textarea name="visitReason"></textarea>
+</div>
 
-<button onclick="downloadPDF()">
-📄 PDF
-</button>
+<div class="field">
+<label>الإجراء المتبع | Action Taken</label>
+<textarea name="actionTaken"></textarea>
+</div>
 
-<button onclick="sendWhatsApp()">
-📲 واتساب
-</button>
+<div class="field">
+<label>التوصيات الفنية | Technical Recommendations</label>
+<textarea name="recommendation"></textarea>
+</div>
+
+<div class="field">
+<label>مبلغ مطلوب | Required Amount</label>
+<input type="text" name="requiredAmount">
+</div>
+
+<div class="field">
+<label>اسم الفني | Technician</label>
+
+<select name="technician">
+
+<option value="">اختر الفني</option>
+
+<option>Hassan Taher - حسن طاهر</option>
+<option>Anwar Ali - أنور علي</option>
+<option>Abdulaziz Alalfi - عبدالعزيز الألفي</option>
+<option>Sayed Mahmoud - السيد محمود</option>
+<option>Sadiq Yousif - صديق يوسف</option>
+
+</select>
 
 </div>
 
-<div class="loader"
-id="loader"></div>
+</div>
+
+<div class="buttons">
+
+<button type="button" class="save-btn" onclick="saveAndSharePDF()">
+حفظ البيانات + PDF
+</button>
+
+<button type="button" class="pdf-btn" onclick="downloadPDFOnly()">
+تحميل PDF فقط
+</button>
+
+<button type="button" class="close-btn" onclick="window.close()">
+إغلاق
+</button>
+
+</div>
 
 <div id="msg"></div>
 
-</div>
-
-<!-- PDF -->
-
-<div id="pdfTemplate"
-
-style="
-display:none;
-background:#fff;
-padding:40px;
-direction:rtl;
-font-family:Arial;
-color:#222;
-width:800px;
-">
-
-<div style="
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:30px;
-border-bottom:3px solid #0b5ed7;
-padding-bottom:15px;
-">
-
-<div>
-
-<h1 style="
-margin:0;
-color:#0b5ed7;
-font-size:32px;
-">
-
-تقرير صيانة
-
-</h1>
-
-<p style="
-margin-top:8px;
-font-size:14px;
-color:#777;
-">
-
-SMOU GROUP
-
-</p>
-
-</div>
-
-<img src="logo.png"
-style="height:70px;">
-
-</div>
-
-<table style="
-width:100%;
-border-collapse:collapse;
-font-size:18px;
-">
-
-<tr>
-<td style="padding:12px;border:1px solid #ddd;">
-رقم التقرير
-</td>
-<td style="padding:12px;border:1px solid #ddd;">
-<span id="p_report"></span>
-</td>
-</tr>
-
-<tr>
-<td style="padding:12px;border:1px solid #ddd;">
-التاريخ
-</td>
-<td style="padding:12px;border:1px solid #ddd;">
-<span id="p_date"></span>
-</td>
-</tr>
-
-<tr>
-<td style="padding:12px;border:1px solid #ddd;">
-الوقت
-</td>
-<td style="padding:12px;border:1px solid #ddd;">
-<span id="p_time"></span>
-</td>
-</tr>
-
-<tr>
-<td style="padding:12px;border:1px solid #ddd;">
-اسم العميل
-</td>
-<td style="padding:12px;border:1px solid #ddd;">
-<span id="p_name"></span>
-</td>
-</tr>
-
-<tr>
-<td style="padding:12px;border:1px solid #ddd;">
-رقم الهاتف
-</td>
-<td style="padding:12px;border:1px solid #ddd;">
-<span id="p_phone"></span>
-</td>
-</tr>
-
-<tr>
-<td style="padding:12px;border:1px solid #ddd;">
-رقم العقد
-</td>
-<td style="padding:12px;border:1px solid #ddd;">
-<span id="p_contract"></span>
-</td>
-</tr>
-
-<tr>
-<td style="padding:12px;border:1px solid #ddd;">
-الإمارة
-</td>
-<td style="padding:12px;border:1px solid #ddd;">
-<span id="p_emirate"></span>
-</td>
-</tr>
-
-<tr>
-<td style="padding:12px;border:1px solid #ddd;">
-العنوان
-</td>
-<td style="padding:12px;border:1px solid #ddd;">
-<span id="p_address"></span>
-</td>
-</tr>
-
-<tr>
-<td style="padding:12px;border:1px solid #ddd;">
-سبب الزيارة
-</td>
-<td style="padding:12px;border:1px solid #ddd;">
-<span id="p_reason"></span>
-</td>
-</tr>
-
-<tr>
-<td style="padding:12px;border:1px solid #ddd;">
-الإجراء المتبع
-</td>
-<td style="padding:12px;border:1px solid #ddd;">
-<span id="p_action"></span>
-</td>
-</tr>
-
-<tr>
-<td style="padding:12px;border:1px solid #ddd;">
-التوصيات الفنية
-</td>
-<td style="padding:12px;border:1px solid #ddd;">
-<span id="p_rec"></span>
-</td>
-</tr>
-
-<tr>
-<td style="padding:12px;border:1px solid #ddd;">
-المبلغ
-</td>
-<td style="padding:12px;border:1px solid #ddd;">
-<span id="p_amount"></span>
-</td>
-</tr>
-
-<tr>
-<td style="padding:12px;border:1px solid #ddd;">
-الفني
-</td>
-<td style="padding:12px;border:1px solid #ddd;">
-<span id="p_tech"></span>
-</td>
-</tr>
-
-</table>
+</form>
 
 </div>
 
 <script>
 
-/* Google Script URL */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnKQ9UKIRjULomlmJEv8R6rQvF75ZH0HMBdnxww_5ggxntGtluDcsIoI6KP_qziCQZ_g/exec";
 
-const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbzzfHFci-Ev_zhHU7eBoUEExUGchwLnYs4rBPG2lJo8xOZeoBA2qJSv8wZS13hYC0JMYA/exec";
-
-/* تشغيل الصفحة */
-
-window.onload = function(){
-
-  let last =
-  localStorage.getItem("reportNo") || 0;
-
-  last++;
-
-  localStorage.setItem("reportNo",last);
-
-  reportNo.value =
-  new Date().getFullYear()
-  + "-"
-  + String(last).padStart(4,"0");
+function init(){
 
   const now = new Date();
 
-  date.value =
-  now.toISOString().split("T")[0];
+  document.getElementById("date").value =
+  now.toLocaleDateString("en-CA");
 
-  time.value =
-  now.getHours()
-  + ":"
-  + String(now.getMinutes()).padStart(2,"0");
+  document.getElementById("time").value =
+  now.toLocaleTimeString("en-US");
 
-};
+  let lastNo =
+  localStorage.getItem("SMOU_REPORT_NO") || 1000;
 
-/* حفظ البيانات */
+  lastNo++;
 
-async function saveData(){
+  document.getElementById("reportNo").value = lastNo;
 
-  loader.style.display = "block";
+  localStorage.setItem("SMOU_REPORT_NO", lastNo);
 
-  msg.style.color = "#000";
+}
 
-  msg.innerText =
-  "⏳ جاري الحفظ...";
+init();
 
-  const data = {
+function collectData(){
 
-    reportNo: reportNo.value,
-    date: date.value,
-    time: time.value,
-    clientName: clientName.value,
-    phone: phone.value,
-    contractNo: contractNo.value,
-    emirate: emirate.value,
-    address: address.value,
-    visitReason: visitReason.value,
-    actionTaken: actionTaken.value,
-    recommendations: recommendations.value,
-    amount: amount.value,
-    technician: technician.value
+  const form = document.getElementById("form");
 
-  };
+  return new FormData(form);
+
+}
+
+async function saveToSheet(formData){
 
   try{
 
     await fetch(SCRIPT_URL,{
 
       method:"POST",
-
       mode:"no-cors",
-
-      headers:{
-        "Content-Type":"text/plain"
-      },
-
-      body:JSON.stringify(data)
+      body:formData
 
     });
 
-    loader.style.display = "none";
+    return true;
 
-    msg.style.color = "green";
+  }catch(error){
 
-    msg.innerText =
-    "✅ تم الحفظ بنجاح";
+    console.error(error);
 
-  }
-
-  catch(error){
-
-    loader.style.display = "none";
-
-    msg.style.color = "red";
-
-    msg.innerText =
-    "❌ خطأ بالاتصال";
-
-    console.log(error);
+    return false;
 
   }
 
 }
 
-/* PDF */
+async function saveAndSharePDF(){
 
-function downloadPDF(){
+  const msg = document.getElementById("msg");
 
-  document.getElementById("pdfTemplate")
-  .style.display="block";
+  msg.innerHTML = "جاري الحفظ وإنشاء PDF...";
 
-  p_report.innerText=reportNo.value;
-  p_date.innerText=date.value;
-  p_time.innerText=time.value;
+  const formData = collectData();
 
-  p_name.innerText=clientName.value;
-  p_phone.innerText=phone.value;
+  await saveToSheet(formData);
 
-  p_contract.innerText=contractNo.value;
+  const data = Object.fromEntries(formData.entries());
 
-  p_emirate.innerText=emirate.value;
+  await createPDF(data,"share");
 
-  p_address.innerText=address.value;
+  msg.innerHTML = "✔ تم الحفظ بنجاح";
 
-  p_reason.innerText=visitReason.value;
+}
 
-  p_action.innerText=actionTaken.value;
+async function downloadPDFOnly(){
 
-  p_rec.innerText=recommendations.value;
+  const msg = document.getElementById("msg");
 
-  p_amount.innerText=amount.value;
+  msg.innerHTML = "جاري إنشاء PDF...";
 
-  p_tech.innerText=technician.value;
+  const formData = collectData();
 
-  html2pdf()
+  const data = Object.fromEntries(formData.entries());
 
-  .set({
+  await createPDF(data,"download");
 
-    margin:0.3,
+  msg.innerHTML = "✔ تم تحميل PDF";
 
-    filename:
-    "SMOU-Maintenance-Report.pdf",
+}
 
-    image:{
-      type:'jpeg',
-      quality:1
-    },
+async function createPDF(data,mode){
 
-    html2canvas:{
-      scale:2
-    },
+  try{
 
-    jsPDF:{
-      unit:'in',
-      format:'a4',
-      orientation:'portrait'
+    const wrapper = document.createElement("div");
+
+    wrapper.style.background = "white";
+    wrapper.style.padding = "30px";
+    wrapper.style.width = "794px";
+
+    wrapper.innerHTML = `
+
+    <div id="pdfPage" style="font-family:Tahoma;direction:rtl;color:#111">
+
+      <h1 style="
+        text-align:center;
+        color:#0b3b82;
+        margin-bottom:30px;
+      ">
+      تقرير صيانة المصاعد
+      <br>
+      Elevator Maintenance Report
+      </h1>
+
+      <table>
+
+      <tr>
+      <th>رقم التقرير</th>
+      <td>${data.reportNo || ""}</td>
+
+      <th>التاريخ</th>
+      <td>${data.date || ""}</td>
+      </tr>
+
+      <tr>
+      <th>الساعة</th>
+      <td>${data.time || ""}</td>
+
+      <th>اسم العميل</th>
+      <td>${data.customerName || ""}</td>
+      </tr>
+
+      <tr>
+      <th>رقم العقد</th>
+      <td>${data.contractNo || ""}</td>
+
+      <th>الإمارة</th>
+      <td>${data.emirate || ""}</td>
+      </tr>
+
+      <tr>
+      <th>المنطقة</th>
+      <td>${data.area || ""}</td>
+
+      <th>اسم الفني</th>
+      <td>${data.technician || ""}</td>
+      </tr>
+
+      <tr>
+      <th>سبب الزيارة</th>
+      <td colspan="3">
+      ${data.visitReason || ""}
+      </td>
+      </tr>
+
+      <tr>
+      <th>الإجراء المتبع</th>
+      <td colspan="3">
+      ${data.actionTaken || ""}
+      </td>
+      </tr>
+
+      <tr>
+      <th>التوصيات الفنية</th>
+      <td colspan="3">
+      ${data.recommendation || ""}
+      </td>
+      </tr>
+
+      <tr>
+      <th>مبلغ مطلوب</th>
+      <td colspan="3">
+      ${data.requiredAmount || ""}
+      </td>
+      </tr>
+
+      </table>
+
+      <div style="
+      margin-top:80px;
+      display:flex;
+      justify-content:space-between;
+      font-size:14px;
+      ">
+
+      <div>
+      توقيع الفني
+      </div>
+
+      <div>
+      توقيع العميل
+      </div>
+
+      </div>
+
+    </div>
+
+    `;
+
+    document.body.appendChild(wrapper);
+
+    const canvas = await html2canvas(wrapper,{
+
+      scale:2,
+      useCORS:true
+
+    });
+
+    const imgData = canvas.toDataURL("image/jpeg",1);
+
+    const { jsPDF } = window.jspdf;
+
+    const pdf = new jsPDF({
+
+      orientation:"portrait",
+      unit:"px",
+      format:[794,1123]
+
+    });
+
+    pdf.addImage(imgData,"JPEG",0,0,794,1123);
+
+    document.body.removeChild(wrapper);
+
+    const fileName =
+    "Maintenance-Report-" + data.reportNo + ".pdf";
+
+    if(mode === "download"){
+
+      pdf.save(fileName);
+
+    }else{
+
+      const pdfBlob = pdf.output("blob");
+
+      const file = new File(
+        [pdfBlob],
+        fileName,
+        {type:"application/pdf"}
+      );
+
+      if(
+        navigator.canShare &&
+        navigator.canShare({files:[file]})
+      ){
+
+        await navigator.share({
+
+          title:"Maintenance Report",
+
+          files:[file]
+
+        });
+
+      }else{
+
+        pdf.save(fileName);
+
+      }
+
     }
 
-  })
+  }catch(error){
 
-  .from(
-    document.getElementById("pdfTemplate")
-  )
+    console.error(error);
 
-  .save()
+    document.getElementById("msg").innerHTML =
+    "❌ حدث خطأ أثناء إنشاء PDF";
 
-  .then(() => {
-
-    document.getElementById("pdfTemplate")
-    .style.display="none";
-
-  });
-
-}
-
-/* واتساب */
-
-function sendWhatsApp(){
-
-  let text =
-
-`📋 تقرير صيانة
-
-رقم التقرير:
-${reportNo.value}
-
-العميل:
-${clientName.value}
-
-الإجراء:
-${actionTaken.value}
-
-الفني:
-${technician.value}
-
-SMOU GROUP`;
-
-  window.open(
-
-    "https://wa.me/?text="
-    + encodeURIComponent(text)
-
-  );
+  }
 
 }
 
 </script>
 
 </body>
-
 </html>
