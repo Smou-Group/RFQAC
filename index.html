@@ -1,555 +1,57 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<title>SMOU GROUP - Maintenance Report</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
-body{
-font-family:Arial,sans-serif;
-background:#081a35;
-padding:10px;
-}
-
-.container{
-width:100%;
-max-width:900px;
-margin:auto;
-background:white;
-border-radius:20px;
-overflow:hidden;
-box-shadow:0 10px 35px rgba(0,0,0,.3);
-}
-
-.header{
-background:linear-gradient(135deg,#05204a,#0b4ea2);
-padding:22px;
-text-align:center;
-color:white;
-}
-
-.logo{
-width:80px;
-height:80px;
-object-fit:contain;
-background:white;
-padding:6px;
-border-radius:18px;
-margin-bottom:8px;
-}
-
-.header h1{
-font-size:28px;
-margin-bottom:5px;
-}
-
-.header p{
-font-size:14px;
-opacity:.9;
-}
-
-.title{
-padding:15px;
-background:#f1f5f9;
-text-align:center;
-font-size:20px;
-font-weight:bold;
-color:#0b3b82;
-}
-
-form{
-padding:16px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:1fr;
-gap:12px;
-}
-
-@media(min-width:700px){
-
-.grid{
-grid-template-columns:1fr 1fr;
-}
-
-.buttons{
-grid-template-columns:1fr 1fr 1fr;
-}
-
-}
-
-.field label{
-display:block;
-margin-bottom:5px;
-font-size:13px;
-font-weight:bold;
-color:#334155;
-}
-
-input,
-textarea,
-select{
-width:100%;
-padding:14px;
-border-radius:12px;
-border:1px solid #dbe3ef;
-background:#f8fafc;
-font-size:15px;
-outline:none;
-font-family:Arial,sans-serif;
-}
-
-textarea{
-resize:none;
-min-height:100px;
-}
-
-.buttons{
-display:grid;
-grid-template-columns:1fr;
-gap:10px;
-margin-top:18px;
-}
-
-button{
-border:none;
-padding:15px;
-font-size:15px;
-font-weight:bold;
-border-radius:14px;
-color:white;
-cursor:pointer;
-}
-
-.save-btn{
-background:#16a34a;
-}
-
-.pdf-btn{
-background:#0b4ea2;
-}
-
-.close-btn{
-background:#dc2626;
-}
-
-#msg{
-margin-top:12px;
-text-align:center;
-font-weight:bold;
-font-size:14px;
-color:#0b3b82;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-<div class="header">
-
-<img src="logo.png" class="logo">
-
-<h1>SMOU GROUP</h1>
-
-<p>Elevators & Air Conditioning</p>
-
-</div>
-
-<div class="title">
-
-تقرير صيانة المصاعد
-<br>
-Elevator Maintenance Report
-
-</div>
-
-<form id="form">
-
-<div class="grid">
-
-<div class="field">
-<label>رقم التقرير | Report No</label>
-<input type="text" id="reportNo" name="reportNo" readonly>
-</div>
-
-<div class="field">
-<label>التاريخ | Date</label>
-<input type="text" id="date" name="date" readonly>
-</div>
-
-<div class="field">
-<label>الوقت | Time</label>
-<input type="text" id="time" name="time" readonly>
-</div>
-
-<div class="field">
-<label>اسم العميل | Customer Name</label>
-<input type="text" name="customerName">
-</div>
-
-<div class="field">
-<label>رقم العقد | Contract No</label>
-<input type="text" name="contractNo">
-</div>
-
-<div class="field">
-<label>الإمارة | Emirate</label>
-
-<select name="emirate">
-
-<option value="">اختر الإمارة</option>
-
-<option>ابوظبي - Abu Dhabi</option>
-<option>العين - Al Ain</option>
-<option>دبي - Dubai</option>
-<option>الشارقة - Sharjah</option>
-<option>عجمان - Ajman</option>
-<option>راس الخيمة - RAK</option>
-<option>ام القوين - UMQ</option>
-<option>الفجيرة - Fujairah</option>
-<option>الغربية - Alghrbia</option>
-
-</select>
-
-</div>
-
-<div class="field">
-<label>المنطقة | Area</label>
-<input type="text" name="area">
-</div>
-
-<div class="field">
-<label>سبب الزيارة | Reason of Visit</label>
-<textarea name="visitReason"></textarea>
-</div>
-
-<div class="field">
-<label>الإجراء المتبع | Action Taken</label>
-<textarea name="actionTaken"></textarea>
-</div>
-
-<div class="field">
-<label>التوصيات الفنية | Technical Recommendation</label>
-<textarea name="recommendation"></textarea>
-</div>
-
-<div class="field">
-<label>مبلغ مطلوب | Required Amount</label>
-<input type="text" name="requiredAmount">
-</div>
-
-<div class="field">
-
-<label>اسم الفني | Technician</label>
-
-<select name="technician">
-
-<option value="">اختر الفني</option>
-
-<option>Hassan Taher - حسن طاهر</option>
-<option>Anwar Ali - أنور علي</option>
-<option>Abdulaziz Alalfi - عبدالعزيز الألفي</option>
-<option>Sayed Mahmoud - السيد محمود</option>
-<option>Sadiq Yousif - صديق يوسف</option>
-
-</select>
-
-</div>
-
-</div>
-
-<div class="buttons">
-
-<button
-type="button"
-class="save-btn"
-onclick="saveAndSharePDF()">
-
-حفظ البيانات + PDF
-
-</button>
-
-<button
-type="button"
-class="pdf-btn"
-onclick="downloadPDFOnly()">
-
-تحميل PDF فقط
-
-</button>
-
-<button
-type="button"
-class="close-btn"
-onclick="window.close()">
-
-إغلاق
-
-</button>
-
-</div>
-
-<div id="msg"></div>
-
-</form>
-
-</div>
-
-<script>
-
-const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbwHKjkD6SguDMOiPlhepYB7dUHK2KZxLVeizmgDkBUc0iSGcUHSaFmms6xFP3ImtiIvGw/exec";
-
-function init(){
-
-const now = new Date();
-
-date.value =
-now.toLocaleDateString("en-CA");
-
-time.value =
-now.toLocaleTimeString("en-US");
-
-let lastNo =
-localStorage.getItem("SMOU_REPORT_NO") || 2605000;
-
-lastNo++;
-
-reportNo.value = lastNo;
-
-localStorage.setItem("SMOU_REPORT_NO",lastNo);
-
-}
-
-init();
-
-function getData(){
-
-const form =
-document.getElementById("form");
-
-const formData =
-new FormData(form);
-
-return Object.fromEntries(formData.entries());
-
-}
-
-async function saveData(data){
-
-try{
-
-await fetch(SCRIPT_URL,{
-
-method:"POST",
-
-mode:"no-cors",
-
-body:JSON.stringify(data)
-
-});
-
-return true;
-
-}catch(error){
-
-console.error(error);
-
-return false;
-
-}
-
-}
-
-async function saveAndSharePDF(){
-
-msg.innerHTML =
-"جاري الحفظ وإنشاء PDF...";
-
-const data =
-getData();
-
-await saveData(data);
-
-await createPDF(data,true);
-
-msg.innerHTML =
-"✔ تم الحفظ بنجاح";
-
-}
-
-async function downloadPDFOnly(){
-
-msg.innerHTML =
-"جاري إنشاء PDF...";
-
-const data =
-getData();
-
-await createPDF(data,false);
-
-msg.innerHTML =
-"✔ تم تحميل PDF";
-
-}
-
-function box(title,value){
-
-return `
-
-<div style="
-border:1px solid #dbe3ef;
-border-radius:8px;
-padding:8px;
-min-height:58px;
-background:#fafafa;
-">
-
-<div style="
-font-size:9px;
-color:#666;
-margin-bottom:4px;
-">
-${title}
-</div>
-
-<div style="
-font-size:13px;
-font-weight:bold;
-line-height:1.4;
-word-break:break-word;
-">
-${value || ""}
-</div>
-
-</div>
-
-`;
-
-}
-
-function section(title,value){
-
-return `
-
-<div style="
-margin-top:10px;
-border:1px solid #dbe3ef;
-border-radius:8px;
-padding:10px;
-min-height:90px;
-background:#fafafa;
-">
-
-<div style="
-font-weight:bold;
-font-size:15px;
-margin-bottom:8px;
-">
-
-${title}
-
-</div>
-
-<div style="
-font-size:13px;
-line-height:1.8;
-word-break:break-word;
-">
-
-${value || ""}
-
-</div>
-
-</div>
-
-`;
-
-}
-
 async function createPDF(data,shareMode){
 
 const page =
 document.createElement("div");
 
-page.style.width = "794px";
-page.style.height = "1123px";
+page.style.width = "559px";
+page.style.height = "794px";
 page.style.background = "#f3f4f6";
-page.style.padding = "40px";
+page.style.padding = "20px";
 page.style.fontFamily = "'Arial',sans-serif";
 page.style.direction = "rtl";
 page.style.display = "flex";
 page.style.justifyContent = "center";
-page.style.alignItems = "flex-start";
 
 page.innerHTML = `
 
 <div style="
-width:690px;
+width:510px;
 background:white;
 border:1px solid #dbe3ef;
-border-radius:16px;
-padding:14px;
+border-radius:14px;
+padding:12px;
 box-shadow:0 2px 8px rgba(0,0,0,.08);
 ">
+
+<!-- HEADER -->
 
 <div style="
 background:#082c63;
 color:white;
-border-radius:12px;
-padding:12px;
+border-radius:10px;
+padding:10px;
 display:flex;
 justify-content:space-between;
 align-items:center;
 ">
 
-<div style="text-align:right;">
-
-<div style="
-font-size:20px;
-font-weight:bold;
+<img src="logo.png"
+style="
+width:42px;
+height:42px;
+background:white;
+border-radius:50%;
+padding:3px;
+object-fit:contain;
 ">
-مجموعة سمو | SMOU Group
-</div>
 
 <div style="
-font-size:10px;
-opacity:.9;
-">
-Elevators & Air Conditioning
-</div>
-
-</div>
-
-<div style="
-text-align:center;
 flex:1;
+text-align:center;
 ">
 
 <div style="
-font-size:22px;
+font-size:18px;
 font-weight:bold;
 line-height:1.2;
 ">
@@ -557,7 +59,7 @@ line-height:1.2;
 </div>
 
 <div style="
-font-size:16px;
+font-size:14px;
 font-weight:bold;
 ">
 Elevator Maintenance Report
@@ -565,32 +67,35 @@ Elevator Maintenance Report
 
 </div>
 
-<img src="logo.png"
-style="
-width:50px;
-height:50px;
-background:white;
-border-radius:50%;
-padding:4px;
-object-fit:contain;
+<div style="
+font-size:16px;
+font-weight:bold;
+text-align:left;
+line-height:1.3;
 ">
+SMOU Group
+</div>
 
 </div>
 
+<!-- INFO -->
+
 <div style="
 display:grid;
-grid-template-columns:1fr 1fr 1fr 1fr;
+grid-template-columns:1fr 1fr;
 gap:6px;
-margin-top:10px;
+margin-top:8px;
 ">
 
 ${box("رقم التقرير | Report No",data.reportNo)}
 ${box("التاريخ | Date",data.date)}
+
 ${box("الساعة | Time",data.time)}
 ${box("اسم العميل | Customer",data.customerName)}
 
 ${box("رقم العقد | Contract No",data.contractNo)}
 ${box("الإمارة | Emirate",data.emirate)}
+
 ${box("المنطقة | Area",data.area)}
 ${box("اسم الفني | Technician",data.technician)}
 
@@ -612,11 +117,11 @@ data.recommendation
 )}
 
 <div style="
-margin-top:10px;
+margin-top:8px;
 border:1px solid #dbe3ef;
 border-radius:8px;
-padding:12px;
-font-size:16px;
+padding:10px;
+font-size:14px;
 font-weight:bold;
 text-align:center;
 ">
@@ -626,37 +131,43 @@ ${data.requiredAmount || "0"}
 
 </div>
 
+<!-- SIGN -->
+
 <div style="
 display:flex;
 justify-content:space-between;
-margin-top:60px;
+margin-top:40px;
 ">
 
 <div style="
-width:200px;
-border-top:1.5px solid #555;
-padding-top:8px;
+width:150px;
+border-top:1px solid #555;
+padding-top:6px;
 text-align:center;
 font-weight:bold;
-font-size:13px;
-line-height:1.6;
+font-size:11px;
+line-height:1.5;
 ">
 
-توقيع العميل | Customer Signature
+توقيع العميل
+<br>
+Customer Signature
 
 </div>
 
 <div style="
-width:200px;
-border-top:1.5px solid #555;
-padding-top:8px;
+width:150px;
+border-top:1px solid #555;
+padding-top:6px;
 text-align:center;
 font-weight:bold;
-font-size:13px;
-line-height:1.6;
+font-size:11px;
+line-height:1.5;
 ">
 
-توقيع الفني | Technician Signature
+توقيع الفني
+<br>
+Technician Signature
 
 </div>
 
@@ -687,7 +198,7 @@ new jsPDF({
 
 orientation:"portrait",
 unit:"px",
-format:"a4"
+format:[559,794]
 
 });
 
@@ -696,8 +207,8 @@ imgData,
 "JPEG",
 0,
 0,
-794,
-1123
+559,
+794
 );
 
 document.body.removeChild(page);
@@ -746,8 +257,76 @@ pdf.save(fileName);
 
 }
 
-</script>
+function box(title,value){
 
-</body>
+return `
 
-</html>
+<div style="
+border:1px solid #dbe3ef;
+border-radius:8px;
+padding:7px;
+background:#fafafa;
+min-height:52px;
+">
+
+<div style="
+font-size:8px;
+color:#666;
+margin-bottom:3px;
+">
+${title}
+</div>
+
+<div style="
+font-size:12px;
+font-weight:bold;
+line-height:1.4;
+word-break:break-word;
+">
+${value || ""}
+</div>
+
+</div>
+
+`;
+
+}
+
+function section(title,value){
+
+return `
+
+<div style="
+margin-top:8px;
+border:1px solid #dbe3ef;
+border-radius:8px;
+padding:8px;
+min-height:70px;
+background:#fafafa;
+">
+
+<div style="
+font-weight:bold;
+font-size:13px;
+margin-bottom:6px;
+">
+
+${title}
+
+</div>
+
+<div style="
+font-size:11px;
+line-height:1.7;
+word-break:break-word;
+">
+
+${value || ""}
+
+</div>
+
+</div>
+
+`;
+
+}
