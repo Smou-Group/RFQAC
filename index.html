@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -190,33 +189,33 @@ Elevator Maintenance Report
 <div class="grid">
 
 <div class="field">
-<label>رقم التقرير</label>
+<label>رقم التقرير | Report No</label>
 <input type="text" id="reportNo" name="reportNo" readonly>
 </div>
 
 <div class="field">
-<label>التاريخ</label>
+<label>التاريخ | Date</label>
 <input type="text" id="date" name="date" readonly>
 </div>
 
 <div class="field">
-<label>الوقت</label>
+<label>الوقت | Time</label>
 <input type="text" id="time" name="time" readonly>
 </div>
 
 <div class="field">
-<label>اسم العميل</label>
+<label>اسم العميل | Customer Name</label>
 <input type="text" name="customerName">
 </div>
 
 <div class="field">
-<label>رقم العقد</label>
+<label>رقم العقد | Contract No</label>
 <input type="text" name="contractNo">
 </div>
 
 <div class="field">
 
-<label>الإمارة</label>
+<label>الإمارة | Emirate</label>
 
 <select name="emirate">
 
@@ -237,33 +236,33 @@ Elevator Maintenance Report
 </div>
 
 <div class="field">
-<label>المنطقة</label>
+<label>المنطقة | Area</label>
 <input type="text" name="area">
 </div>
 
 <div class="field">
-<label>سبب الزيارة</label>
+<label>سبب الزيارة | Reason of Visit</label>
 <textarea name="visitReason"></textarea>
 </div>
 
 <div class="field">
-<label>الإجراء المتبع</label>
+<label>الإجراء المتبع | Action Taken</label>
 <textarea name="actionTaken"></textarea>
 </div>
 
 <div class="field">
-<label>التوصيات الفنية</label>
+<label>التوصيات الفنية | Technical Recommendation</label>
 <textarea name="recommendation"></textarea>
 </div>
 
 <div class="field">
-<label>مبلغ مطلوب</label>
+<label>مبلغ مطلوب | Required Amount</label>
 <input type="text" name="requiredAmount">
 </div>
 
 <div class="field">
 
-<label>اسم الفني</label>
+<label>اسم الفني | Technician</label>
 
 <select name="technician">
 
@@ -419,6 +418,7 @@ msg.innerHTML =
 function box(title,value){
 
 return `
+
 <div style="
 border:1px solid #dbe3ef;
 border-radius:10px;
@@ -435,7 +435,7 @@ ${title}
 </div>
 
 <div style="
-font-size:15px;
+font-size:16px;
 font-weight:bold;
 line-height:1.5;
 ">
@@ -443,51 +443,44 @@ ${value || ""}
 </div>
 
 </div>
+
 `;
 
 }
 
-function item(no,ar,en){
+function section(title,value){
 
 return `
+
 <div style="
+margin-top:12px;
 border:1px solid #dbe3ef;
-border-radius:8px;
-padding:8px;
-display:grid;
-grid-template-columns:80px 1fr 30px;
-gap:8px;
-align-items:center;
-min-height:55px;
+border-radius:10px;
+padding:12px;
+min-height:110px;
 ">
 
 <div style="
-font-size:14px;
 font-weight:bold;
-color:#15803d;
+font-size:18px;
+margin-bottom:10px;
 ">
-Done
+
+${title}
+
 </div>
 
 <div style="
-font-size:10px;
-line-height:1.4;
+font-size:16px;
+line-height:1.8;
 ">
-${ar}
-<br>
-${en}
-</div>
 
-<div style="
-font-size:13px;
-font-weight:bold;
-color:#0b4ea2;
-text-align:center;
-">
-${no}
+${value || ""}
+
 </div>
 
 </div>
+
 `;
 
 }
@@ -524,14 +517,14 @@ align-items:center;
 <div style="text-align:right;">
 
 <div style="
-font-size:26px;
+font-size:24px;
 font-weight:bold;
 ">
 مجموعة سمو | SMOU Group
 </div>
 
 <div style="
-font-size:13px;
+font-size:12px;
 opacity:.9;
 ">
 Elevators & Air Conditioning
@@ -545,7 +538,7 @@ flex:1;
 ">
 
 <div style="
-font-size:28px;
+font-size:26px;
 font-weight:bold;
 line-height:1.2;
 ">
@@ -553,7 +546,7 @@ line-height:1.2;
 </div>
 
 <div style="
-font-size:22px;
+font-size:20px;
 font-weight:bold;
 ">
 Elevator Maintenance Report
@@ -580,150 +573,52 @@ gap:8px;
 margin-top:12px;
 ">
 
-${box("التاريخ | Date",data.date)}
-${box("الوقت | Time",data.time)}
 ${box("رقم التقرير | Report No",data.reportNo)}
-${box("رقم العقد | Contract No",data.contractNo)}
-
+${box("التاريخ | Date",data.date)}
+${box("الساعة | Time",data.time)}
 ${box("اسم العميل | Customer",data.customerName)}
-${box("الموقع | Location",data.area)}
-${box("الفني | Technician",data.technician)}
-${box("نوع التقرير | Type","صيانة دورية | Periodic")}
+
+${box("رقم العقد | Contract No",data.contractNo)}
+${box("الإمارة | Emirate",data.emirate)}
+${box("المنطقة | Area",data.area)}
+${box("اسم الفني | Technician",data.technician)}
 
 </div>
 
+${section(
+"سبب الزيارة | Reason of Visit",
+data.visitReason
+)}
+
+${section(
+"الإجراء المتبع | Action Taken",
+data.actionTaken
+)}
+
+${section(
+"التوصيات الفنية | Technical Recommendation",
+data.recommendation
+)}
+
 <div style="
 margin-top:12px;
-background:#082c63;
-color:white;
-padding:10px;
+border:1px solid #dbe3ef;
 border-radius:10px;
-font-size:18px;
+padding:16px;
+font-size:20px;
 font-weight:bold;
 text-align:center;
 ">
-بنود الفحص والصيانة | Maintenance Checklist
-</div>
 
-<div style="
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:8px;
-margin-top:10px;
-">
-
-${item(1,"التأكد من عمل التكييف وتنظيف الماكينة من الغبار والأتربة","Check AC operation and clean machine dust")}
-${item(2,"التأكد من فتح وغلق الفرامل","Check brake opening and closing")}
-${item(3,"التحقق من منسوب زيت الماكينة","Check machine oil level")}
-${item(4,"التحقق من الواير والانتباه لعلامات التآكل","Check wire and wear signs")}
-${item(5,"التحقق من جودة تشغيل الكنترول","Check controller operation quality")}
-${item(6,"تنظيف الكنترول بواسطة البلاور","Clean controller by blower")}
-${item(7,"تنظيف أعلى الكابينة من الغبار والأتربة","Clean car top from dust")}
-${item(8,"التأكد من عدم ارتخاء الويرات وجودة التثبيت","Check ropes tension and fixing")}
-${item(9,"إضافة زيت إلى المزايت","Adding oil to the lubricator")}
-${item(10,"تزييت سكة النقل","Lubrication of the guide rails")}
-${item(11,"استخدام WD40 للأجزاء المتحركة في الباب","Use WD40 for door moving parts")}
-${item(12,"مراجعة دوائر الأمان وشوك الأبواب","Check safety circuits and door locks")}
-${item(13,"التحقق من سلامة مكونات الكابينة","Check cabin internal components")}
-${item(14,"فحص لوحة المفاتيح","Check COP buttons response")}
-${item(15,"اختبار مفتاح الانذار","Test Alarm button")}
-${item(16,"فحص التسارع والتباطؤ","Checking acceleration and deceleration")}
-${item(17,"التأكد من عمل الأبواب بسلاسة","Check smooth door operation")}
-${item(18,"التأكد من وقوف الكابينة بدقة","Ensuring accurate cabin stop")}
-
-</div>
-
-<div style="
-margin-top:12px;
-border:1px solid #dbe3ef;
-border-radius:10px;
-padding:12px;
-min-height:90px;
-">
-
-<div style="
-font-weight:bold;
-font-size:17px;
-margin-bottom:10px;
-">
-ملاحظات | Notes
-</div>
-
-<div style="
-font-size:15px;
-line-height:1.7;
-">
-${data.visitReason || "لا توجد ملاحظات | No notes"}
-</div>
-
-</div>
-
-<div style="
-margin-top:12px;
-border:1px solid #dbe3ef;
-border-radius:10px;
-padding:12px;
-min-height:90px;
-">
-
-<div style="
-font-weight:bold;
-font-size:17px;
-margin-bottom:10px;
-">
-الإجراء المتبع | Action Taken
-</div>
-
-<div style="
-font-size:15px;
-line-height:1.7;
-">
-${data.actionTaken || ""}
-</div>
-
-</div>
-
-<div style="
-margin-top:12px;
-border:1px solid #dbe3ef;
-border-radius:10px;
-padding:12px;
-min-height:90px;
-">
-
-<div style="
-font-weight:bold;
-font-size:17px;
-margin-bottom:10px;
-">
-التوصيات الفنية | Technical Recommendation
-</div>
-
-<div style="
-font-size:15px;
-line-height:1.7;
-">
-${data.recommendation || ""}
-</div>
-
-</div>
-
-<div style="
-margin-top:12px;
-border:1px solid #dbe3ef;
-border-radius:10px;
-padding:14px;
-font-size:18px;
-font-weight:bold;
-">
 مبلغ مطلوب | Required Amount :
 ${data.requiredAmount || "0"}
+
 </div>
 
 <div style="
 display:flex;
 justify-content:space-between;
-margin-top:60px;
+margin-top:80px;
 ">
 
 <div style="
@@ -732,8 +627,11 @@ border-top:2px solid #555;
 padding-top:10px;
 text-align:center;
 font-weight:bold;
+font-size:16px;
 ">
+
 توقيع العميل | Customer Signature
+
 </div>
 
 <div style="
@@ -742,19 +640,13 @@ border-top:2px solid #555;
 padding-top:10px;
 text-align:center;
 font-weight:bold;
+font-size:16px;
 ">
+
 توقيع الفني | Technician Signature
-</div>
 
 </div>
 
-<div style="
-margin-top:20px;
-text-align:center;
-font-size:11px;
-color:#777;
-">
-SMOU Group - Elevators & Air Conditioning | Maintenance Report
 </div>
 
 </div>
@@ -846,4 +738,3 @@ pdf.save(fileName);
 </body>
 
 </html>
-```
