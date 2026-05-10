@@ -1,3 +1,4 @@
+```html id="smou-complete-final-working-code"
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -8,7 +9,7 @@
 
 <title>SMOU Maintenance Report</title>
 
-<!-- PDF Library -->
+<!-- PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
@@ -98,6 +99,8 @@ select{
   font-size:15px;
 
   outline:none;
+
+  transition:.3s;
 
 }
 
@@ -321,44 +324,148 @@ button:hover{
 <div id="pdfTemplate"
 style="
 display:none;
-direction:rtl;
 background:#fff;
-padding:30px;
+padding:40px;
+direction:rtl;
+font-family:Arial;
+color:#222;
 width:800px;
-color:#000;
 ">
 
-<h2 style="color:#0b5ed7;">
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+border-bottom:3px solid #0b5ed7;
+padding-bottom:15px;
+">
+
+<div>
+
+<h1 style="
+margin:0;
+color:#0b5ed7;
+font-size:32px;
+">
 تقرير صيانة
-</h2>
+</h1>
 
-<hr>
+<p style="
+margin-top:8px;
+font-size:14px;
+color:#777;
+">
+SMOU GROUP
+</p>
 
-<p><b>رقم التقرير:</b> <span id="p_report"></span></p>
+</div>
 
-<p><b>التاريخ:</b> <span id="p_date"></span></p>
+<img src="logo.png"
+style="
+height:70px;
+">
 
-<p><b>الوقت:</b> <span id="p_time"></span></p>
+</div>
 
-<p><b>اسم العميل:</b> <span id="p_name"></span></p>
+<table style="
+width:100%;
+border-collapse:collapse;
+font-size:18px;
+">
 
-<p><b>رقم الهاتف:</b> <span id="p_phone"></span></p>
+<tr>
+<td style="padding:12px;border:1px solid #ddd;">رقم التقرير</td>
+<td style="padding:12px;border:1px solid #ddd;">
+<span id="p_report"></span>
+</td>
+</tr>
 
-<p><b>رقم العقد:</b> <span id="p_contract"></span></p>
+<tr>
+<td style="padding:12px;border:1px solid #ddd;">التاريخ</td>
+<td style="padding:12px;border:1px solid #ddd;">
+<span id="p_date"></span>
+</td>
+</tr>
 
-<p><b>الإمارة:</b> <span id="p_emirate"></span></p>
+<tr>
+<td style="padding:12px;border:1px solid #ddd;">الوقت</td>
+<td style="padding:12px;border:1px solid #ddd;">
+<span id="p_time"></span>
+</td>
+</tr>
 
-<p><b>العنوان:</b> <span id="p_address"></span></p>
+<tr>
+<td style="padding:12px;border:1px solid #ddd;">اسم العميل</td>
+<td style="padding:12px;border:1px solid #ddd;">
+<span id="p_name"></span>
+</td>
+</tr>
 
-<p><b>سبب الزيارة:</b> <span id="p_reason"></span></p>
+<tr>
+<td style="padding:12px;border:1px solid #ddd;">رقم الهاتف</td>
+<td style="padding:12px;border:1px solid #ddd;">
+<span id="p_phone"></span>
+</td>
+</tr>
 
-<p><b>الإجراء المتبع:</b> <span id="p_action"></span></p>
+<tr>
+<td style="padding:12px;border:1px solid #ddd;">رقم العقد</td>
+<td style="padding:12px;border:1px solid #ddd;">
+<span id="p_contract"></span>
+</td>
+</tr>
 
-<p><b>التوصيات الفنية:</b> <span id="p_rec"></span></p>
+<tr>
+<td style="padding:12px;border:1px solid #ddd;">الإمارة</td>
+<td style="padding:12px;border:1px solid #ddd;">
+<span id="p_emirate"></span>
+</td>
+</tr>
 
-<p><b>المبلغ:</b> <span id="p_amount"></span></p>
+<tr>
+<td style="padding:12px;border:1px solid #ddd;">العنوان</td>
+<td style="padding:12px;border:1px solid #ddd;">
+<span id="p_address"></span>
+</td>
+</tr>
 
-<p><b>اسم الفني:</b> <span id="p_tech"></span></p>
+<tr>
+<td style="padding:12px;border:1px solid #ddd;">سبب الزيارة</td>
+<td style="padding:12px;border:1px solid #ddd;">
+<span id="p_reason"></span>
+</td>
+</tr>
+
+<tr>
+<td style="padding:12px;border:1px solid #ddd;">الإجراء المتبع</td>
+<td style="padding:12px;border:1px solid #ddd;">
+<span id="p_action"></span>
+</td>
+</tr>
+
+<tr>
+<td style="padding:12px;border:1px solid #ddd;">التوصيات الفنية</td>
+<td style="padding:12px;border:1px solid #ddd;">
+<span id="p_rec"></span>
+</td>
+</tr>
+
+<tr>
+<td style="padding:12px;border:1px solid #ddd;">المبلغ</td>
+<td style="padding:12px;border:1px solid #ddd;">
+<span id="p_amount"></span>
+</td>
+</tr>
+
+<tr>
+<td style="padding:12px;border:1px solid #ddd;">الفني</td>
+<td style="padding:12px;border:1px solid #ddd;">
+<span id="p_tech"></span>
+</td>
+</tr>
+
+</table>
 
 </div>
 
@@ -367,7 +474,7 @@ color:#000;
 /* رابط Google Script */
 
 const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbz9c_0TfJDXF_FjzM2tECQ29HokI_GQjzjkxCGEh_EBhf0ZVLci3t6knDH8p04R36ogSQ/exec";
+"https://script.google.com/macros/s/AKfycbwrt1kHC4TRzS1lAyQfV4E0QGBP0tlnw7fbhgxqUYceO50rs8DiYs73gvCC4GQifRI5ow/exec";
 
 /* تشغيل الصفحة */
 
@@ -427,22 +534,43 @@ async function saveData(){
 
   try{
 
+    const response =
     await fetch(SCRIPT_URL,{
 
       method:"POST",
 
-      mode:"no-cors",
+      headers:{
+        "Content-Type":"text/plain;charset=utf-8"
+      },
 
       body:JSON.stringify(data)
 
     });
 
+    const result =
+    await response.json();
+
     loader.style.display="none";
 
-    msg.style.color="green";
+    if(result.status==="success"){
 
-    msg.innerText=
-    "✅ تم الحفظ بنجاح";
+      msg.style.color="green";
+
+      msg.innerText=
+      "✅ تم الحفظ في Google Sheet";
+
+    }
+
+    else{
+
+      msg.style.color="red";
+
+      msg.innerText=
+      "❌ فشل الحفظ";
+
+      console.log(result);
+
+    }
 
   }
 
@@ -493,9 +621,10 @@ function downloadPDF(){
   html2pdf()
   .set({
 
-    margin:0.5,
+    margin:0.3,
 
-    filename:"SMOU-Report.pdf",
+    filename:
+    "SMOU-Maintenance-Report.pdf",
 
     image:{
       type:'jpeg',
@@ -562,3 +691,4 @@ SMOU GROUP`;
 </body>
 
 </html>
+```
