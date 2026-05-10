@@ -8,7 +8,7 @@
 
 <title>SMOU Maintenance Report</title>
 
-<!-- PDF -->
+<!-- PDF Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
@@ -101,6 +101,19 @@ select{
 
 }
 
+input:focus,
+textarea:focus,
+select:focus{
+
+  border-color:#0b5ed7;
+
+  background:#fff;
+
+  box-shadow:
+  0 0 0 4px rgba(11,94,215,.1);
+
+}
+
 textarea{
 
   min-height:120px;
@@ -146,6 +159,12 @@ button{
 
   cursor:pointer;
 
+  transition:.3s;
+
+}
+
+button:hover{
+  transform:translateY(-2px);
 }
 
 #msg{
@@ -301,14 +320,13 @@ button{
 
 <div id="pdfTemplate"
 style="
-position:absolute;
-top:-9999px;
-right:-9999px;
-background:#fff;
+display:none;
 direction:rtl;
+background:#fff;
+padding:30px;
+width:800px;
+color:#000;
 ">
-
-<div style="width:800px;padding:30px">
 
 <h2 style="color:#0b5ed7;">
 تقرير صيانة
@@ -344,14 +362,12 @@ direction:rtl;
 
 </div>
 
-</div>
-
 <script>
 
-/* رابط Google Script */
+/* Google Script URL */
 
 const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbzRUQD30h8js4WsNRCN3LAUiNOabu94OP63dIKQLD-GTCdNgpRj2xNUwturkYFnQ0J_GA/exec";
+"https://script.google.com/macros/s/AKfycbwaxrEOS2siKAnUjf_qby_dIpukdCg6Qf4u3BuSrSHq8AVcFtXNb3Z00_KEyeHsK09auA/exec";
 
 /* تشغيل الصفحة */
 
@@ -423,19 +439,21 @@ async function saveData(){
 
   try{
 
+    const response =
     await fetch(SCRIPT_URL,{
 
       method:"POST",
 
-      mode:"no-cors",
-
       headers:{
-        "Content-Type":"application/json"
+        "Content-Type":"text/plain;charset=utf-8"
       },
 
       body:JSON.stringify(data)
 
     });
+
+    const result =
+    await response.text();
 
     loader.style.display="none";
 
@@ -443,6 +461,8 @@ async function saveData(){
 
     msg.innerText=
     "✅ تم الحفظ بنجاح";
+
+    console.log(result);
 
   }
 
@@ -461,9 +481,11 @@ async function saveData(){
 
 }
 
-/* PDF */
+/* تحميل PDF */
 
 function downloadPDF(){
+
+  document.getElementById("pdfTemplate").style.display="block";
 
   p_report.innerText=reportNo.value;
   p_date.innerText=date.value;
@@ -489,8 +511,38 @@ function downloadPDF(){
   p_tech.innerText=technician.value;
 
   html2pdf()
-  .from(pdfTemplate)
-  .save("SMOU-Report.pdf");
+  .set({
+
+    margin:0.5,
+
+    filename:"SMOU-Report.pdf",
+
+    image:{
+      type:'jpeg',
+      quality:1
+    },
+
+    html2canvas:{
+      scale:2
+    },
+
+    jsPDF:{
+      unit:'in',
+      format:'a4',
+      orientation:'portrait'
+    }
+
+  })
+
+  .from(document.getElementById("pdfTemplate"))
+
+  .save()
+
+  .then(() => {
+
+    document.getElementById("pdfTemplate").style.display="none";
+
+  });
 
 }
 
@@ -528,4 +580,5 @@ SMOU GROUP`;
 </script>
 
 </body>
+
 </html>
