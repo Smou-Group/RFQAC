@@ -1,11 +1,12 @@
-```html id="smou-complete-final-working-code"
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>SMOU Maintenance Report</title>
 
@@ -19,12 +20,18 @@
 }
 
 body{
+
   margin:0;
+
   font-family:'Segoe UI',Tahoma,sans-serif;
+
   background:
   radial-gradient(circle at top,#1c75ff,#081c4f);
+
   min-height:100vh;
+
   padding:15px;
+
 }
 
 .container{
@@ -100,21 +107,6 @@ select{
 
   outline:none;
 
-  transition:.3s;
-
-}
-
-input:focus,
-textarea:focus,
-select:focus{
-
-  border-color:#0b5ed7;
-
-  background:#fff;
-
-  box-shadow:
-  0 0 0 4px rgba(11,94,215,.1);
-
 }
 
 textarea{
@@ -162,12 +154,6 @@ button{
 
   cursor:pointer;
 
-  transition:.3s;
-
-}
-
-button:hover{
-  transform:translateY(-2px);
 }
 
 #msg{
@@ -251,27 +237,42 @@ button:hover{
 
 <input id="time" readonly>
 
-<input id="clientName" placeholder="اسم العميل">
+<input id="clientName"
+placeholder="اسم العميل">
 
-<input id="phone" placeholder="رقم الهاتف">
+<input id="phone"
+placeholder="رقم الهاتف">
 
-<input id="contractNo" placeholder="رقم العقد">
+<input id="contractNo"
+placeholder="رقم العقد">
 
-<input id="emirate" placeholder="الإمارة">
+<input id="emirate"
+placeholder="الإمارة">
 
-<input id="amount" placeholder="المبلغ">
+<input id="amount"
+placeholder="المبلغ">
 
-<input id="address" class="full" placeholder="العنوان">
+<input id="address"
+class="full"
+placeholder="العنوان">
 
-<textarea id="visitReason" class="full" placeholder="سبب الزيارة"></textarea>
+<textarea id="visitReason"
+class="full"
+placeholder="سبب الزيارة"></textarea>
 
-<textarea id="actionTaken" class="full" placeholder="الإجراء المتبع"></textarea>
+<textarea id="actionTaken"
+class="full"
+placeholder="الإجراء المتبع"></textarea>
 
-<textarea id="recommendations" class="full" placeholder="التوصيات الفنية"></textarea>
+<textarea id="recommendations"
+class="full"
+placeholder="التوصيات الفنية"></textarea>
 
 <select id="technician">
 
-<option value="">اختر الفني</option>
+<option value="">
+اختر الفني
+</option>
 
 <option value="Hassan Taher">
 حسن طاهر - Hassan Taher
@@ -313,15 +314,17 @@ button:hover{
 
 </div>
 
-<div class="loader" id="loader"></div>
+<div class="loader"
+id="loader"></div>
 
 <div id="msg"></div>
 
 </div>
 
-<!-- PDF TEMPLATE -->
+<!-- PDF -->
 
 <div id="pdfTemplate"
+
 style="
 display:none;
 background:#fff;
@@ -348,7 +351,9 @@ margin:0;
 color:#0b5ed7;
 font-size:32px;
 ">
+
 تقرير صيانة
+
 </h1>
 
 <p style="
@@ -356,15 +361,15 @@ margin-top:8px;
 font-size:14px;
 color:#777;
 ">
+
 SMOU GROUP
+
 </p>
 
 </div>
 
 <img src="logo.png"
-style="
-height:70px;
-">
+style="height:70px;">
 
 </div>
 
@@ -375,91 +380,117 @@ font-size:18px;
 ">
 
 <tr>
-<td style="padding:12px;border:1px solid #ddd;">رقم التقرير</td>
+<td style="padding:12px;border:1px solid #ddd;">
+رقم التقرير
+</td>
 <td style="padding:12px;border:1px solid #ddd;">
 <span id="p_report"></span>
 </td>
 </tr>
 
 <tr>
-<td style="padding:12px;border:1px solid #ddd;">التاريخ</td>
+<td style="padding:12px;border:1px solid #ddd;">
+التاريخ
+</td>
 <td style="padding:12px;border:1px solid #ddd;">
 <span id="p_date"></span>
 </td>
 </tr>
 
 <tr>
-<td style="padding:12px;border:1px solid #ddd;">الوقت</td>
+<td style="padding:12px;border:1px solid #ddd;">
+الوقت
+</td>
 <td style="padding:12px;border:1px solid #ddd;">
 <span id="p_time"></span>
 </td>
 </tr>
 
 <tr>
-<td style="padding:12px;border:1px solid #ddd;">اسم العميل</td>
+<td style="padding:12px;border:1px solid #ddd;">
+اسم العميل
+</td>
 <td style="padding:12px;border:1px solid #ddd;">
 <span id="p_name"></span>
 </td>
 </tr>
 
 <tr>
-<td style="padding:12px;border:1px solid #ddd;">رقم الهاتف</td>
+<td style="padding:12px;border:1px solid #ddd;">
+رقم الهاتف
+</td>
 <td style="padding:12px;border:1px solid #ddd;">
 <span id="p_phone"></span>
 </td>
 </tr>
 
 <tr>
-<td style="padding:12px;border:1px solid #ddd;">رقم العقد</td>
+<td style="padding:12px;border:1px solid #ddd;">
+رقم العقد
+</td>
 <td style="padding:12px;border:1px solid #ddd;">
 <span id="p_contract"></span>
 </td>
 </tr>
 
 <tr>
-<td style="padding:12px;border:1px solid #ddd;">الإمارة</td>
+<td style="padding:12px;border:1px solid #ddd;">
+الإمارة
+</td>
 <td style="padding:12px;border:1px solid #ddd;">
 <span id="p_emirate"></span>
 </td>
 </tr>
 
 <tr>
-<td style="padding:12px;border:1px solid #ddd;">العنوان</td>
+<td style="padding:12px;border:1px solid #ddd;">
+العنوان
+</td>
 <td style="padding:12px;border:1px solid #ddd;">
 <span id="p_address"></span>
 </td>
 </tr>
 
 <tr>
-<td style="padding:12px;border:1px solid #ddd;">سبب الزيارة</td>
+<td style="padding:12px;border:1px solid #ddd;">
+سبب الزيارة
+</td>
 <td style="padding:12px;border:1px solid #ddd;">
 <span id="p_reason"></span>
 </td>
 </tr>
 
 <tr>
-<td style="padding:12px;border:1px solid #ddd;">الإجراء المتبع</td>
+<td style="padding:12px;border:1px solid #ddd;">
+الإجراء المتبع
+</td>
 <td style="padding:12px;border:1px solid #ddd;">
 <span id="p_action"></span>
 </td>
 </tr>
 
 <tr>
-<td style="padding:12px;border:1px solid #ddd;">التوصيات الفنية</td>
+<td style="padding:12px;border:1px solid #ddd;">
+التوصيات الفنية
+</td>
 <td style="padding:12px;border:1px solid #ddd;">
 <span id="p_rec"></span>
 </td>
 </tr>
 
 <tr>
-<td style="padding:12px;border:1px solid #ddd;">المبلغ</td>
+<td style="padding:12px;border:1px solid #ddd;">
+المبلغ
+</td>
 <td style="padding:12px;border:1px solid #ddd;">
 <span id="p_amount"></span>
 </td>
 </tr>
 
 <tr>
-<td style="padding:12px;border:1px solid #ddd;">الفني</td>
+<td style="padding:12px;border:1px solid #ddd;">
+الفني
+</td>
 <td style="padding:12px;border:1px solid #ddd;">
 <span id="p_tech"></span>
 </td>
@@ -471,10 +502,10 @@ font-size:18px;
 
 <script>
 
-/* رابط Google Script */
+/* Google Script URL */
 
 const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbwrt1kHC4TRzS1lAyQfV4E0QGBP0tlnw7fbhgxqUYceO50rs8DiYs73gvCC4GQifRI5ow/exec";
+"https://script.google.com/macros/s/AKfycbzzfHFci-Ev_zhHU7eBoUEExUGchwLnYs4rBPG2lJo8xOZeoBA2qJSv8wZS13hYC0JMYA/exec";
 
 /* تشغيل الصفحة */
 
@@ -487,17 +518,17 @@ window.onload = function(){
 
   localStorage.setItem("reportNo",last);
 
-  document.getElementById("reportNo").value =
+  reportNo.value =
   new Date().getFullYear()
   + "-"
   + String(last).padStart(4,"0");
 
   const now = new Date();
 
-  document.getElementById("date").value =
+  date.value =
   now.toISOString().split("T")[0];
 
-  document.getElementById("time").value =
+  time.value =
   now.getHours()
   + ":"
   + String(now.getMinutes()).padStart(2,"0");
@@ -508,79 +539,63 @@ window.onload = function(){
 
 async function saveData(){
 
-  loader.style.display="block";
+  loader.style.display = "block";
 
-  msg.style.color="#000";
+  msg.style.color = "#000";
 
-  msg.innerText="⏳ جاري الحفظ...";
+  msg.innerText =
+  "⏳ جاري الحفظ...";
 
   const data = {
 
-    reportNo:reportNo.value,
-    date:date.value,
-    time:time.value,
-    clientName:clientName.value,
-    phone:phone.value,
-    contractNo:contractNo.value,
-    emirate:emirate.value,
-    address:address.value,
-    visitReason:visitReason.value,
-    actionTaken:actionTaken.value,
-    recommendations:recommendations.value,
-    amount:amount.value,
-    technician:technician.value
+    reportNo: reportNo.value,
+    date: date.value,
+    time: time.value,
+    clientName: clientName.value,
+    phone: phone.value,
+    contractNo: contractNo.value,
+    emirate: emirate.value,
+    address: address.value,
+    visitReason: visitReason.value,
+    actionTaken: actionTaken.value,
+    recommendations: recommendations.value,
+    amount: amount.value,
+    technician: technician.value
 
   };
 
   try{
 
-    const response =
     await fetch(SCRIPT_URL,{
 
       method:"POST",
 
+      mode:"no-cors",
+
       headers:{
-        "Content-Type":"text/plain;charset=utf-8"
+        "Content-Type":"text/plain"
       },
 
       body:JSON.stringify(data)
 
     });
 
-    const result =
-    await response.json();
+    loader.style.display = "none";
 
-    loader.style.display="none";
+    msg.style.color = "green";
 
-    if(result.status==="success"){
-
-      msg.style.color="green";
-
-      msg.innerText=
-      "✅ تم الحفظ في Google Sheet";
-
-    }
-
-    else{
-
-      msg.style.color="red";
-
-      msg.innerText=
-      "❌ فشل الحفظ";
-
-      console.log(result);
-
-    }
+    msg.innerText =
+    "✅ تم الحفظ بنجاح";
 
   }
 
   catch(error){
 
-    loader.style.display="none";
+    loader.style.display = "none";
 
-    msg.style.color="red";
+    msg.style.color = "red";
 
-    msg.innerText=
+    msg.innerText =
     "❌ خطأ بالاتصال";
 
     console.log(error);
@@ -589,11 +604,12 @@ async function saveData(){
 
 }
 
-/* تحميل PDF */
+/* PDF */
 
 function downloadPDF(){
 
-  document.getElementById("pdfTemplate").style.display="block";
+  document.getElementById("pdfTemplate")
+  .style.display="block";
 
   p_report.innerText=reportNo.value;
   p_date.innerText=date.value;
@@ -619,6 +635,7 @@ function downloadPDF(){
   p_tech.innerText=technician.value;
 
   html2pdf()
+
   .set({
 
     margin:0.3,
@@ -643,13 +660,16 @@ function downloadPDF(){
 
   })
 
-  .from(document.getElementById("pdfTemplate"))
+  .from(
+    document.getElementById("pdfTemplate")
+  )
 
   .save()
 
   .then(() => {
 
-    document.getElementById("pdfTemplate").style.display="none";
+    document.getElementById("pdfTemplate")
+    .style.display="none";
 
   });
 
@@ -691,4 +711,3 @@ SMOU GROUP`;
 </body>
 
 </html>
-```
