@@ -8,7 +8,7 @@
 
 <title>SMOU Maintenance Report</title>
 
-<!-- PDF Library -->
+<!-- PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
@@ -99,21 +99,6 @@ select{
 
   outline:none;
 
-  transition:.3s;
-
-}
-
-input:focus,
-textarea:focus,
-select:focus{
-
-  border-color:#0b5ed7;
-
-  background:#fff;
-
-  box-shadow:
-  0 0 0 4px rgba(11,94,215,.1);
-
 }
 
 textarea{
@@ -134,9 +119,9 @@ textarea{
 
   display:flex;
 
-  gap:12px;
-
   justify-content:center;
+
+  gap:12px;
 
   flex-wrap:wrap;
 
@@ -160,14 +145,6 @@ button{
   font-weight:bold;
 
   cursor:pointer;
-
-  transition:.3s;
-
-}
-
-button:hover{
-
-  transform:translateY(-2px);
 
 }
 
@@ -327,8 +304,8 @@ style="
 position:absolute;
 top:-9999px;
 right:-9999px;
-direction:rtl;
 background:#fff;
+direction:rtl;
 ">
 
 <div style="width:800px;padding:30px">
@@ -371,7 +348,7 @@ background:#fff;
 
 <script>
 
-/* Google Script URL */
+/* رابط Google Script */
 
 const SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbzRUQD30h8js4WsNRCN3LAUiNOabu94OP63dIKQLD-GTCdNgpRj2xNUwturkYFnQ0J_GA/exec";
@@ -446,12 +423,11 @@ async function saveData(){
 
   try{
 
-    const response =
     await fetch(SCRIPT_URL,{
 
       method:"POST",
 
-      mode:"cors",
+      mode:"no-cors",
 
       headers:{
         "Content-Type":"application/json"
@@ -461,28 +437,16 @@ async function saveData(){
 
     });
 
-    const result =
-    await response.json();
-
     loader.style.display="none";
 
-    if(result.status==="success"){
+    msg.style.color="green";
 
-      msg.style.color="green";
+    msg.innerText=
+    "✅ تم الحفظ بنجاح";
 
-      msg.innerText=
-      "✅ تم الحفظ بنجاح";
+  }
 
-    }else{
-
-      msg.style.color="red";
-
-      msg.innerText=
-      "❌ فشل الإرسال";
-
-    }
-
-  }catch(error){
+  catch(error){
 
     loader.style.display="none";
 
@@ -497,7 +461,7 @@ async function saveData(){
 
 }
 
-/* تحميل PDF */
+/* PDF */
 
 function downloadPDF(){
 
@@ -553,8 +517,10 @@ ${technician.value}
 SMOU GROUP`;
 
   window.open(
+
     "https://wa.me/?text="
     + encodeURIComponent(text)
+
   );
 
 }
